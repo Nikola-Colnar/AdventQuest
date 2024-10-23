@@ -1,30 +1,45 @@
-# Programsko inženjerstvo
-
-> Ime projekta u naslovu ima cilj opisati namjenu projekta te pomoći u podizanju početnog interesa za projekt prezentirajući osnovnu svrhu projekta.
-> Isključivo ovisi o Vama!
-> 
-> Naravno, nijedan predložak nije idealan za sve projekte jer su potrebe i ciljevi različiti. Ne bojte se naglasiti Vaš cilj u ovoj početnoj stranici projekta, podržat ćemo ga bez obzira usredotočili se Vi više na tenologiju ili marketing.
-> 
-> Zašto ovaj dokument? Samo manji dio timova je do sada propoznao potrebu (a i meni je lakše pratiti Vaš rad).  
+# AdventQuest
 
 # Opis projekta
 Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu. 
 
-Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije »Zato što je to bio zadatak i nismo imali ideje za drugo.«). Koji problem rješavate?
-> Obzirom da je ovo zadani projekt navedite i što želite/jeste novo  naučili.
+Cilj ovog projekta je izraditi AdventQuest, web aplikaciju za lakšu organizaciju društvenih događanja u periodu božićnih praznika. 
 
-> Dobro izrađen opis omogućuje vam da pokažete svoj rad drugim programerima, kao i potencijalnim poslodavcima. Ne samo da prvi dojam na stranici opisa često razlikuje dobar projekt od lošeg projekta već i predstavlja dobru praksu koju morate savladati.
+Projektom namjeravamo ubrzati i uvelike olakšati kreiranje blagdanskih aktivnosti i prijavljivanje na njih kako bismo korisnike oslobodili nezanimljivih zadataka poput raspitivanja o terminima događanja te oglašavanja aktivnosti i prijava na njih putem telefonskih poziva, emaila, poruka, društvenih mreža i drugih nespecijaliziranih kanala komunikacije. Aplikacija će uključivati AI agenta za pomoć pri postavljanju aktivnosti u raspored.
+
+Nadamo se da ćemo korisnicima uštedjeti energiju i vrijeme koje umjesto u dosadne administrativne zadatke mogu uložiti u više zabavljanja tijekom blagdanske sezone.
+
+Sudjelujući na projektu želimo naučiti koristiti nove razvojne okvire i paradigme navedene pod [tehnologije](#tehnologije), alate za planiranje arhitekture sustava, upravljanje verzijama izvornog koda i koordinaciju timskog rada (alati za izradu UML dijagrama, git, GitHub). Usput se upoznajemo s ozbiljno vođenim i strukturiranim timskim radom kakav se inače očekuje u inženjerstvu.
 
 # Funkcijski zahtjevi
-> Navedite ključne zahtjeve Vašeg projekta.
-
+- Korisnici (sudionici, „božićni predsjednici“ koji organiziraju događanja i administrator sustava) se registriraju. Kasnije se prije početka rada moraju prijaviti u sustav. Sustav koristi OAuth 2.0 standard za autentikaciju.
+- Korisnici imaju prikaz odbrojavanja vremena do Božića u vremenskim jedinicama od dana do sekunda. Odbrojavanje se ažurira u stvarnom vremenu.
+- **kreiranje korisničkih grupa**: Božićni predsjednik kreira grupu i bira sudionike grupe među registriranim korisnicima
+- Inicijalni prikaz grupe nudi prazan upravljački panel i otvoreni chat za sve sudionike
+- **dodavanje aktivnosti**: moguća su tri načina dodavanja grupne aktivnosti
+  - Božićni predsjednik ručno doda aktivnosti
+  - Božićni predsjednik odabere iz već ponuđenih božićnih aktivnosti one koje smatra da bi bile zanimljive za njegovu grupu sudionika
+  - AI agent automatski doda aktivnost na temelju poruka u chatu (definirati jasnije postupak kada dođemo do implementacije AI agenta).
+ 
+Dodane aktivnosti vidljive su na upravljačkom panelu.
+ - Nakon završetka aktivnosti, sudionici po želji daju povratnu informaciju (like ili dislike i komentar).
+ - Podaci o sudjelovanju sudionika grupe u chatu, aktivnostima ili povratne informacije koje sudionici ostave za pojedinu aktivnost mogu biti analizirani od strane AI agenta te svim sudionicima mogu biti predložene promjene ili poboljšanja u organizaciji budućih aktivnosti.
+ - Administrator ima pristup svim dijelovima aplikacije, uključujući kreiranje i brisanje korisničkih računa, upravljanje aktivnostima, grupama i obavijestima.
 
 # Tehnologije
-
-#Instalcija
+strana poslužitelja: Java, Spring Boot  
+strana klijenta: React  
+relacijska baza podataka  
+API za AI agenta: (odlučiti)
+# Instalacija
 # Članovi tima 
-> Popis članova tima/linkovi/ glavni doprinos
->
+Nikola Colnar  (nikola.colnar@fer.unizg.hr)  
+Roko Vrdoljak  (roko.vrdoljak@fer.unizg.hr)  
+Marko Grgurić  (marko.grguric2@fer.unizg.hr)  
+Karlo Matanić  (karlo.matanic@fer.unizg.hr)  
+Tomislav Pap   (tomislav.pap@fer.unizg.hr)  
+Antonio Poleto (antonio.poleto@fer.unizg.hr)  
+Lovro Vuletić  (lovro.vuletic@fer.unizg.hr)
 
 # Kontribucije
 >Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
@@ -36,17 +51,6 @@ Kao studenti sigurno ste upoznati s minimumom prihvatljivog ponašanja definiran
 Očekujemo da ćete poštovati [etički kodeks IEEE-a](https://www.ieee.org/about/corporate/governance/p7-8.html) koji ima važnu obrazovnu funkciju sa svrhom postavljanja najviših standarda integriteta, odgovornog ponašanja i etičkog ponašanja u profesionalnim aktivnosti. Time profesionalna zajednica programskih inženjera definira opća načela koja definiranju  moralni karakter, donošenje važnih poslovnih odluka i uspostavljanje jasnih moralnih očekivanja za sve pripadnike zajenice.
 
 Kodeks ponašanja skup je provedivih pravila koja služe za jasnu komunikaciju očekivanja i zahtjeva za rad zajednice/tima. Njime se jasno definiraju obaveze, prava, neprihvatljiva ponašanja te  odgovarajuće posljedice (za razliku od etičkog kodeksa). U ovom repozitoriju dan je jedan od široko prihvačenih kodeks ponašanja za rad u zajednici otvorenog koda.
->### Poboljšajte funkcioniranje tima:
->* definirajte načina na koji će rad biti podijeljen među članovima grupe
->* dogovorite kako će grupa međusobno komunicirati.
->* ne gubite vrijeme na dogovore na koji će grupa rješavati sporove primjenite standarde!
->* implicitno podrazmijevamo da će svi članovi grupe slijediti kodeks ponašanja.
- 
->###  Prijava problema
->Najgore što se može dogoditi je da netko šuti kad postoje problemi. Postoji nekoliko stvari koje možete učiniti kako biste najbolje riješili sukobe i probleme:
->* Obratite mi se izravno [e-pošta](mailto:vlado.sruk@fer.hr) i  učinit ćemo sve što je u našoj moći da u punom povjerenju saznamo koje korake trebamo poduzeti kako bismo riješili problem.
->* Razgovarajte s vašim asistentom jer ima najbolji uvid u dinamiku tima. Zajedno ćete saznati kako riješiti sukob i kako izbjeći daljnje utjecanje u vašem radu.
->* Ako se osjećate ugodno neposredno razgovarajte o problemu. Manje incidente trebalo bi rješavati izravno. Odvojite vrijeme i privatno razgovarajte s pogođenim članom tima te vjerujte u iskrenost.
 
 # 📝 Licenca
 Važeča (1)
