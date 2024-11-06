@@ -34,16 +34,16 @@ public class EventUsersService {
     }
 
     // Metoda za ažuriranje EventUsers entiteta
-    public EventUsers updateEventUser(EventUserId id, EventUsers eventUsersDetails) {
-        EventUsers eventUsers = eventUsersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("EventUser not found with id " + id));
-
-        // Ažuriraj potrebne detalje
-        eventUsers.setEvent(eventUsersDetails.getEvent());
-        eventUsers.setUser(eventUsersDetails.getUser());
-
-        return eventUsersRepository.save(eventUsers);
-    }
+//    public EventUsers updateEventUser(EventUserId id, EventUsers eventUsersDetails) {
+//        EventUsers eventUsers = eventUsersRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("EventUser not found with id " + id));
+//
+//        // Ažuriraj potrebne detalje
+//        eventUsers.setEvent(eventUsersDetails.getEvent());
+//        eventUsers.setUser(eventUsersDetails.getUser());
+//
+//        return eventUsersRepository.save(eventUsers);
+//    }
 
     // Metoda za brisanje EventUsers
     public void deleteEventUser(EventUserId id) {
