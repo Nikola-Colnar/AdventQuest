@@ -200,3 +200,41 @@ input {
     transform: translateY(3px); /* Lagano udubljenje pri kliku */
     box-shadow: 5px 4px 10px rgba(2, 170, 44, 0.2);
 }
+
+.vrstaUser-select{
+  display:flex;
+  width: auto;
+  height: 3em;
+  margin-bottom: 2em;
+  /*justify-content: center;  horizontalno*/
+  align-items: center; /*vertikalno*/
+}
+
+.divKorisnik{
+  position:relative;
+  width: 50%;
+}
+.divPredstavnik{
+  position:relative;
+  width: 50%;
+}
+.vrstaUser-button{
+  display: flex;      /*pozicioniralo gumbe u sredinu*/
+  margin: auto;
+  width: 90%;
+  height: 90%;
+  font-size: 1.2em;
+  
+}
+
+.vrstaUser-button.green {
+  background-color: green;
+  color: white;
+  
+}
+
+.vrstaUser-button.red {
+  background-color: red;
+  color: white;
+}
+
