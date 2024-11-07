@@ -45,7 +45,7 @@ function Form() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', width: '300px', margin: '20px auto' }}>
+    <form className="Form" onSubmit={handleSubmit} style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', width: '300px', margin: '20px auto' }}>
       <h2>Create User</h2>
       <label>
         Username:
