@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './snowfall.css';
+import zIndex from '@mui/material/styles/zIndex';
 
 const Snowflake = ({ style }) => {
   return (
@@ -26,6 +27,7 @@ const Snowfall = () => {
 
 
       const style = {
+        zIndex:10,
         animationDelay,
         fontSize,
         left: leftPosition, // Nasumična horizontalna pozicija

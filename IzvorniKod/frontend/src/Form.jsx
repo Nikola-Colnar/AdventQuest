@@ -7,7 +7,7 @@ import { IoIosMail } from "react-icons/io";
 
 const USERS_REST_API_URL = 'http://localhost:8080/api/users';
 
-function Form({onClick}) {
+function Form({onClick, loggedIn  }) {
   //State za pracenje podataka u formi
   const [formData, setFormData] = useState({
     username: '',
@@ -61,6 +61,7 @@ function Form({onClick}) {
       console.log('User created successfully:', result);
       alert('User created successfully!');
       
+      loggedIn(true);
       //Nakon uspjesnog slanja forma se resetira
       setFormData({ username: '', password: '', email: '' });
     } catch (error) {
