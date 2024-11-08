@@ -1,0 +1,46 @@
+
+.snow-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0px;
+    height: 0px;
+    pointer-events: none; /*pahuljice ne ometaju interakciju s ostalim elementima */
+    z-index: 10; 
+  }
+  
+  /*Snowflake styling*/
+  .Snowflake {
+    position: absolute;
+    color: hsla(183, 70%, 34%, 0.879);
+    
+    cursor: default;       /*sprjecavam promjenu kursora kada prodem preko pahuljice*/
+    pointer-events: auto;   /*omogucavam pointer-evente, da mogu maknuti pahuljicu*/
+    
+    animation: fall cubic-bezier(.52,.09,.6,.97) infinite; /*cubic-bezier kretanje nije linearno vec po curve (brzava pa usporava)*/
+    
+  }
+  /*specifikacija animacije*/
+  @keyframes fall { 
+    0% {
+      opacity: 0; 
+    }
+    3% {
+      opacity: 0.9;
+    }
+    90% {
+      opacity: 0.8;
+    }
+    100% {
+            transform: translateY(100vh) rotate(calc(360deg * var(--rotateDirection))); /* Na dnu i završena rotacija */
+            opacity: 0;
+            
+          }
+  }
+  
+/*Na hover uvijemo objekt*/
+.Snowflake:hover {
+  cursor: default;
+  display: none;
+  
+}

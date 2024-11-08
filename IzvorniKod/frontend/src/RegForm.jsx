@@ -7,12 +7,13 @@ import { IoIosMail } from "react-icons/io";
 
 const USERS_REST_API_URL = 'http://localhost:8080/api/users';
 
-function Form({onClick, loggedIn  }) {
+function RegForm({onClick, signIn}) {
   //State za pracenje podataka u formi
   const [formData, setFormData] = useState({
     username: '',
     password: '',
-    email: ''
+    email: '',
+    vrstaUser: 'korisnik'
   });
   const overlayRef = useRef(null); // referenca na overlay div
   const formRef = useRef(null);
@@ -41,6 +42,13 @@ function Form({onClick, loggedIn  }) {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleUserRoleClick = (role) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      vrstaUser: role
+    }));
+  };
+
   //slanje podataka na server
   const handleSubmit = async (e) => {
     e.preventDefault(); //sprjecava ponovno ucitavanje stranice
@@ -61,9 +69,9 @@ function Form({onClick, loggedIn  }) {
       console.log('User created successfully:', result);
       alert('User created successfully!');
       
-      loggedIn(true);
+      signIn(true);
       //Nakon uspjesnog slanja forma se resetira
-      setFormData({ username: '', password: '', email: '' });
+      setFormData({ username: '', password: '', email: '' , vrstaUser:'korisnik'});
     } catch (error) {
       console.error('Error creating user:', error);
       alert('Failed to create user.');
@@ -73,7 +81,7 @@ function Form({onClick, loggedIn  }) {
   return (
     <div ref={overlayRef} className='overlay'>
       <form ref={formRef}className="Form" onSubmit={handleSubmit} >
-        <h2>Login</h2>
+        <h2>Sign in</h2>
         <div className='userdiv'>
           <input
             type="text"
@@ -111,6 +119,27 @@ function Form({onClick, loggedIn  }) {
           <IoIosMail className='mailicon'></IoIosMail>
         </div>
         <br />
+        <div className='vrstaUser-select'>
+          <div className='divKorisnik'>
+          <button
+            type="button"
+            onClick={() => handleUserRoleClick('korisnik')}
+            className={formData.vrstaUser === 'korisnik' ? 'vrstaUser-button green' : 'vrstaUser-button red'}
+          >
+            Korisnik 🎅
+          </button>
+          </div>
+          <div className='divPredstavnik'>
+          <button
+            type="button"
+            onClick={() => handleUserRoleClick('predstavnik')}
+            className={formData.vrstaUser === 'predstavnik' ? 'vrstaUser-button green' : 'vrstaUser-button red'}
+          >
+            Predstavnik 🎄
+            
+          </button>
+          </div>
+        </div>
         <div className='submitDiv'>
         <button className="submit" type="submit">Submit</button>
         </div>
@@ -123,4 +152,4 @@ function Form({onClick, loggedIn  }) {
   );
 }
 
-export default Form;
+export default RegForm;
