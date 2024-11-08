@@ -33,5 +33,5 @@ build/
 .vscode/
 
 ### Firebase config ###
-IzvorniKod/backend/src/main/resources/serviceAccountKey.json
+IzvorniKod/backend/src/main/resources/serviceAccountKey.json:1
 IzvorniKod/frontend/firebaseConfig.js
