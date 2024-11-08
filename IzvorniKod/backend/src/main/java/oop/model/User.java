@@ -9,7 +9,7 @@ public class User {
 
     @Id   //oznacava id, ova dva @ su bitna
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
     @NotEmpty(message = "username is required")
     private String username;
     @NotEmpty(message = "password is required")
@@ -28,11 +28,11 @@ public class User {
         this.vrstaUser = vrstaUser;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

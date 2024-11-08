@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 @CrossOrigin(origins="http://localhost:5174/")
@@ -21,20 +22,40 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        // Spremanje korisnika
-        User createdUser = userService.createUser(user);
+//
+//    public ResponseEntity<User> createUser(@RequestBody User user) {
+//        // Spremanje korisnika
+//        User createdUser = userService.createUser(user);
+//
+//        // Vraća korisnika u odgovoru sa statusom 201 (Created)
+//        return new ResponseEntity(createdUser, HttpStatus.CREATED);
+//    }
+//
+//    public ResponseEntity<List<User>> getAllUsers() {
+//        // Dohvaća sve korisnike
+//        List<User> users = userService.getAllUsers();
+//
+//        // Vraća listu korisnika sa statusom 200 (OK)
+//        return new ResponseEntity(users, HttpStatus.OK);
+//    }
 
-        // Vraća korisnika u odgovoru sa statusom 201 (Created)
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    @PostMapping("/create")
+    public String createUser(@RequestBody User user) throws ExecutionException, InterruptedException {
+        return userService.createUser(user);
     }
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        // Dohvaća sve korisnike
-        List<User> users = userService.getAllUsers();
 
-        // Vraća listu korisnika sa statusom 200 (OK)
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    @GetMapping("/get")
+    public User getUser(@RequestParam String document_id) throws ExecutionException, InterruptedException {
+        return userService.getUserById(document_id);
+    }
+
+    @PutMapping("/update")
+    public String updateUser(@RequestBody User student) throws ExecutionException, InterruptedException {
+        return userService.updateUser(student);
+    }
+
+    @DeleteMapping("/delete")
+    public String deleteUser(@RequestBody String document_id) throws ExecutionException, InterruptedException {
+        return userService.deleteUser(document_id);
     }
 }

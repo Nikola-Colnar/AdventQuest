@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 //@RequestMapping("/index")
@@ -28,10 +29,10 @@ public class IndexController {
     public String submitForm(@RequestParam String username,
                              @RequestParam String password,
                              @RequestParam String email,
-                             @RequestParam String userType) {
+                             @RequestParam String userType) throws ExecutionException, InterruptedException {
         User userMoj = new User(username, password, email, userType);
         System.out.println("Created User: " + userService.createUser(userMoj).toString());
-        System.out.println("Found User: " + userService.getUserByEmail("mm@gmail.com"));
+//        System.out.println("Found User: " + userService.getUserByEmail("mm@gmail.com"));
         return "redirect:/index.html"; // Vraća index.html sa podacima
     }
 }

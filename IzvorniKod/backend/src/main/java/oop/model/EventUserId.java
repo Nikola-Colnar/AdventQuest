@@ -5,12 +5,12 @@ import java.util.Objects;
 
 public class EventUserId implements Serializable {
     private int eventId;
-    private int userId;
+    private String userId;
 
     // Default constructor
     public EventUserId() {}
 
-    public EventUserId(int eventId, int userId) {
+    public EventUserId(int eventId, String userId) {
         this.eventId = eventId;
         this.userId = userId;
     }
