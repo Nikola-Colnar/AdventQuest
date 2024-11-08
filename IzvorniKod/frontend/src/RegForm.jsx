@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "./form.css"
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./Firebase/firebaseConfig";
+import {useAuth} from "./Firebase/AuthContext.jsx";
 import { FaUser, FaLock,} from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { IoIosMail } from "react-icons/io";
 
 
-const USERS_REST_API_URL = 'http://localhost:8080/api/users';
+// const USERS_REST_API_URL = 'http://localhost:8080/api/users';
 
-function RegForm({onClick, signIn}) {
+function RegForm({onClick}) {
   //State za pracenje podataka u formi
   const [formData, setFormData] = useState({
     username: '',
@@ -49,34 +52,46 @@ function RegForm({onClick, signIn}) {
     }));
   };
 
-  //slanje podataka na server
+
+  //registracija korisnika na firebase
   const handleSubmit = async (e) => {
-    e.preventDefault(); //sprjecava ponovno ucitavanje stranice
+    e.preventDefault();
     try {
-      const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.statusText);
-      }
-
-      const result = await response.json();
-      console.log('User created successfully:', result);
-      alert('User created successfully!');
-      
-      signIn(true);
-      //Nakon uspjesnog slanja forma se resetira
-      setFormData({ username: '', password: '', email: '' , vrstaUser:'korisnik'});
+      await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      alert("User registered successfully");
     } catch (error) {
-      console.error('Error creating user:', error);
-      alert('Failed to create user.');
+      setError(error.message);
     }
   };
+
+  // //slanje podataka na server
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault(); //sprjecava ponovno ucitavanje stranice
+  //   try {
+  //     const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify(formData)
+  //     });
+  //
+  //     if (!response.ok) {
+  //       throw new Error('Network response was not ok ' + response.statusText);
+  //     }
+  //
+  //     const result = await response.json();
+  //     console.log('User created successfully:', result);
+  //     alert('User created successfully!');
+  //
+  //     signIn(true);
+  //     //Nakon uspjesnog slanja forma se resetira
+  //     setFormData({ username: '', password: '', email: '' , vrstaUser:'korisnik'});
+  //   } catch (error) {
+  //     console.error('Error creating user:', error);
+  //     alert('Failed to create user.');
+  //   }
+  // };
 
   return (
     <div ref={overlayRef} className='overlay'>

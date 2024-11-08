@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Button, Menu, MenuItem, Avatar, Box } from '@mui/material';
 import { styled } from '@mui/system';
+import {useAuth} from "./Firebase/AuthContext.jsx";
+import SignOutButton from "./Components/SignOutButton.jsx";
 
 //styling for nav bar and components
 const StyledAppBar = styled(AppBar)(() => ({
@@ -33,16 +35,15 @@ const StyledMenu = styled(Menu)(() => ({
   },
 }));
 
-const LogoutButton = styled(MenuItem)(() => ({
-  ':hover': {
-    backgroundColor: 'red',  // red on hover
-    color: 'white',
-  },
-}));
+
 //////////////////
 //function start//
 //////////////////
 function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick, onLogoutClick }) {
+
+  //currentUser ---> null ako nitko nije logiran :: currentUser ako je netko logiran
+  const { currentUser } = useAuth();
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [centered, setCentered] = useState(false); // State to control the centering of the username
 
@@ -66,7 +67,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
         </Logo>
 
         {/* Profile section (login, signup, avatar)*/}
-        {isLoggedIn ? (
+        {currentUser ? (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Avatar with user image or initials */}
             <Avatar 
@@ -105,9 +106,12 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
               >
                 {username}
               </MenuItem>
-              <LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>
-                Logout
-              </LogoutButton>
+              {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}
+              {/*  Logout*/}
+              {/*</LogoutButton>*/}
+              <SignOutButton>
+
+              </SignOutButton>
             </StyledMenu>
           </Box>
         ) : (
