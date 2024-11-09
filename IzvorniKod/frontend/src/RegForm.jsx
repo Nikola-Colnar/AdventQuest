@@ -5,7 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { IoIosMail } from "react-icons/io";
 
 
-const USERS_REST_API_URL = 'http://localhost:8080/api/users';
+const USERS_REST_API_URL = 'http://localhost:8080/api/users/signup';
 
 function RegForm({onClick, signIn}) {
   //State za pracenje podataka u formi
@@ -51,6 +51,8 @@ function RegForm({onClick, signIn}) {
 
   //slanje podataka na server
   const handleSubmit = async (e) => {
+    console.log(formData)
+    console.log(formData.stringify)
     e.preventDefault(); //sprjecava ponovno ucitavanje stranice
     try {
       const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke 

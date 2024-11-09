@@ -5,14 +5,13 @@ import { FcGoogle } from "react-icons/fc";
 import { IoIosMail } from "react-icons/io";
 
 
-const USERS_REST_API_URL = 'http://localhost:8080/api/users';
+const USERS_REST_API_URL = 'http://localhost:8080/api/users/login';
 
 function Form({onClick, loggedIn  }) {
   //State za pracenje podataka u formi
   const [formData, setFormData] = useState({
     username: '',
-    password: '',
-    email: ''
+    password: ''
   });
   const overlayRef = useRef(null); // referenca na overlay div
   const formRef = useRef(null);
@@ -43,30 +42,31 @@ function Form({onClick, loggedIn  }) {
 
   //slanje podataka na server
   const handleSubmit = async (e) => {
+    console.log(formData)
+    console.log(JSON.stringify(formData))
     e.preventDefault(); //sprjecava ponovno ucitavanje stranice
     try {
       const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke 
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData) 
       });
-
+      console.log(response.json);
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
       }
-
-      const result = await response.json();
-      console.log('User created successfully:', result);
-      alert('User created successfully!');
-      
-      loggedIn(true);
+      //ako je response dobar login je uspjesan
+      const identified = await response.json();
+      console.log('User Successfully logged in', identified);
+      alert('Welcome back! Login successfully completed!');
+      loggedIn(true); //skrivamo formu ako smo se prijavili
       //Nakon uspjesnog slanja forma se resetira
-      setFormData({ username: '', password: '', email: '' });
+      setFormData({ username: '', password: ''});
     } catch (error) {
-      console.error('Error creating user:', error);
-      alert('Failed to create user.');
+      console.error('Error logging in', error);
+      alert('Login failed');
     }
   };
 
@@ -78,7 +78,7 @@ function Form({onClick, loggedIn  }) {
           <input
             type="text"
             name="username"
-            placeholder='Username'
+            placeholder='username/email'
             value={formData.username}
             onChange={handleChange} //svaka promjena se handlea
             required  //sprjecava submit dok polje nije ispravno
@@ -99,6 +99,7 @@ function Form({onClick, loggedIn  }) {
           <FaLock className='passicon'></FaLock>
         </div>
         <br />
+        {/*
         <div className='maildiv'>
           <input
             type="email"
@@ -110,6 +111,7 @@ function Form({onClick, loggedIn  }) {
           />
           <IoIosMail className='mailicon'></IoIosMail>
         </div>
+        */}
         <br />
         <div className='submitDiv'>
         <button className="submit" type="submit">Submit</button>

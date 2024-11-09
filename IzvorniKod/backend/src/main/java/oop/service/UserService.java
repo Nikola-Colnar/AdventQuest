@@ -17,11 +17,6 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // Metoda za kreiranje novog korisnika
-    public User createUser(User user) {
-
-        return userRepository.save(user);
-    }
 
     public User getUserByEmail(String email){
         return userRepository.findByEmail(email);
@@ -42,9 +37,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + id));
 
-        user.setUsername(userDetails.getUsername());
         user.setPassword(userDetails.getPassword());
-        user.setEmail(userDetails.getEmail());
 
         return userRepository.save(user);
     }
@@ -52,5 +45,35 @@ public class UserService {
     // Metoda za brisanje korisnika
     public void deleteUser(int id) {
         userRepository.deleteById(id);
+    }
+
+    ////////////Prijava///////////
+    //Metoda za login
+    public User loginUser(String usernameOrEmail, String password) {
+        User user = userRepository.findByUsername(usernameOrEmail);
+        //Ako korisnik nije pronađen po username-u, provjeravamo po mailu
+        //User mora imati jedinstven username i mail
+        if (user == null) {
+            user = userRepository.findByEmail(usernameOrEmail);
+        }
+
+        if (user != null && user.getPassword().equals(password)) {
+            return user; // Korisnik uspješno prijavljen
+        } else {
+            throw new RuntimeException("Invalid credentials");
+        }
+    }
+    //Metoda za prvu registraciju
+    public User createUser(User user) {
+        //Moramo imati jedinstveni username i mail, javlja da je zauzeto vec
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            throw new RuntimeException("Username already exists");
+        }
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        // Ako ne postoji, spremamo korisnika
+        return userRepository.save(user);
     }
 }
