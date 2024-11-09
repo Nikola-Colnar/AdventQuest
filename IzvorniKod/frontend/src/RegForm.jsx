@@ -8,7 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import { IoIosMail } from "react-icons/io";
 
 
-// const USERS_REST_API_URL = 'http://localhost:8080/api/users';
+ const USERS_REST_API_URL = 'http://localhost:8080/api/users/signup';
 
 function RegForm({onClick}) {
   //State za pracenje podataka u formi
@@ -57,41 +57,47 @@ function RegForm({onClick}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const Credentials = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = Credentials.user
+      const uid = user.uid
+      console.log(JSON.stringify(uid, formData.username, formData.vrstaUser))
+      
+    e.preventDefault(); //sprjecava ponovno ucitavanje stranice
+    try {
+      const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          uid: uid,
+          username: formData.username,
+          vrstaUser: formData.vrstaUser
+     })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+  
+      const result = await response.json();
+      console.log('User created successfully:', result);
+      alert('User created successfully!');
+  
+      signIn(true);
+      //Nakon uspjesnog slanja forma se resetira
+      setFormData({ username: '', password: '', email: '' , vrstaUser:'korisnik'});
+    } catch (error) {
+      console.error('Error creating user:', error);
+      alert('Failed to create user.');
+    }
       alert("User registered successfully");
     } catch (error) {
       setError(error.message);
     }
   };
 
-  // //slanje podataka na server
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault(); //sprjecava ponovno ucitavanje stranice
-  //   try {
-  //     const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify(formData)
-  //     });
-  //
-  //     if (!response.ok) {
-  //       throw new Error('Network response was not ok ' + response.statusText);
-  //     }
-  //
-  //     const result = await response.json();
-  //     console.log('User created successfully:', result);
-  //     alert('User created successfully!');
-  //
-  //     signIn(true);
-  //     //Nakon uspjesnog slanja forma se resetira
-  //     setFormData({ username: '', password: '', email: '' , vrstaUser:'korisnik'});
-  //   } catch (error) {
-  //     console.error('Error creating user:', error);
-  //     alert('Failed to create user.');
-  //   }
-  // };
+
 
   return (
     <div ref={overlayRef} className='overlay'>

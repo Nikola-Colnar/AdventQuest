@@ -9,7 +9,7 @@ import { signInWithPopup } from "firebase/auth";
 import {useAuth} from "./Firebase/AuthContext.jsx";
 
 
-const USERS_REST_API_URL = 'http://localhost:8080/api/users';
+const USERS_REST_API_URL = 'http://localhost:8080/api/users/login';
 
 function Form({onClick, loggedIn  }) {
   //State za pracenje podataka u formi
@@ -45,40 +45,43 @@ function Form({onClick, loggedIn  }) {
     setFormData({ ...formData, [name]: value });
   };
 
-  // //slanje podataka na server
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault(); //sprjecava ponovno ucitavanje stranice
-  //   try {
-  //     const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify(formData)
-  //     });
-  //
-  //     if (!response.ok) {
-  //       throw new Error('Network response was not ok ' + response.statusText);
-  //     }
-  //
-  //     const result = await response.json();
-  //     console.log('User created successfully:', result);
-  //     alert('User created successfully!');
-  //
-  //     loggedIn(true);
-  //     //Nakon uspjesnog slanja forma se resetira
-  //     setFormData({ username: '', password: '', email: '' });
-  //   } catch (error) {
-  //     console.error('Error creating user:', error);
-  //     alert('Failed to create user.');
-  //   }
-  // };
+  //slanje podataka na server
+  
 
   //login korisnika na firebase sa mailom i lozinkom
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      const Credentials = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = Credentials.user
+      const uid = user.uid
+      try {
+        const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            uid: uid  
+       })
+        });
+    
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+    
+        const result = await response.json();
+        console.log('User created successfully:', result);
+        alert('User created successfully!');
+    
+        loggedIn(true);
+        //Nakon uspjesnog slanja forma se resetira
+        setFormData({ username: '', password: '', email: '' });
+      } catch (error) {
+        console.error('Error creating user:', error);
+        alert('Failed to create user.');
+      }
+  
       alert("User logged in successfully");
       loggedIn(true);
     } catch (error) {

@@ -17,15 +17,6 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // Metoda za kreiranje novog korisnika
-    public User createUser(User user) {
-
-        return userRepository.save(user);
-    }
-
-    public User getUserByEmail(String email){
-        return userRepository.findByEmail(email);
-    }
 
     // Metoda za dohvaćanje svih korisnika
     public List<User> getAllUsers() {
@@ -37,20 +28,28 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    // Metoda za ažuriranje korisnika
-    public User updateUser(int id, User userDetails) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id " + id));
 
-        user.setUsername(userDetails.getUsername());
-        user.setPassword(userDetails.getPassword());
-        user.setEmail(userDetails.getEmail());
+    ////////////Prijava///////////
+    //Metoda za login
+    public User loginUser(String uid) {
+        User user = userRepository.findByUid(uid);  // Pronađi korisnika po UID-u
 
-        return userRepository.save(user);
+        if (user != null) {
+            return user; // Korisnik uspješno prijavljen
+        } else {
+            throw new RuntimeException("User not found");
+        }
     }
 
-    // Metoda za brisanje korisnika
-    public void deleteUser(int id) {
-        userRepository.deleteById(id);
+    //Metoda za prvu registraciju
+    // Metoda za registraciju korisnika
+    public User createUser(User user) {
+        // Provjera da li korisnik već postoji s istim UID-om
+        if (userRepository.findByUid(user.getUid()) != null) {
+            throw new RuntimeException("User with this UID already exists");
+        }
+
+        // Ako UID nije zauzet, spremamo korisnika
+        return userRepository.save(user);
     }
 }
