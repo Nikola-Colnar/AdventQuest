@@ -32,7 +32,7 @@ function App() {
   };
   const handleSignInStatusChange = (status) => {
     setIsLoggedIn(status)
-    hideRegForm() //skriva regformu nakon logina
+    hideRegForm() //skriva regformu nakon loginay
   };
 
   //funkcije za dobivanje Loginforme i signforme

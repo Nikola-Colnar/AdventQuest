@@ -5,13 +5,14 @@ import { useAuth } from "../Firebase/AuthContext";
 import {styled} from "@mui/system";
 import {MenuItem} from "@mui/material";
 
-const SignOutButton = () => {
+const SignOutButton = ({onClose}) => {
     const { currentUser } = useAuth();
 
     const handleSignOut = () => {
         signOut(auth)
             .then(() => {
                 alert("You have signed out successfully!");
+                onClose();
             })
             .catch((error) => {
                 console.error("Error signing out: ", error);

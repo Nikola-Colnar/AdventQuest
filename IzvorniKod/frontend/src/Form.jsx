@@ -80,6 +80,7 @@ function Form({onClick, loggedIn  }) {
     try {
       await signInWithEmailAndPassword(auth, formData.email, formData.password);
       alert("User logged in successfully");
+      loggedIn(true);
     } catch (error) {
       setError(error.message);
     }

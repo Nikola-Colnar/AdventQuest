@@ -43,7 +43,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
 
   //currentUser ---> null ako nitko nije logiran :: currentUser ako je netko logiran
   const { currentUser } = useAuth();
-
+  
   const [anchorEl, setAnchorEl] = useState(null);
   const [centered, setCentered] = useState(false); // State to control the centering of the username
 
@@ -67,7 +67,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
         </Logo>
 
         {/* Profile section (login, signup, avatar)*/}
-        {currentUser ? (
+        {currentUser? (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Avatar with user image or initials */}
             <Avatar 
@@ -105,13 +105,14 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
                 }}
               >
                 {username}
+                
               </MenuItem>
+              <SignOutButton onClose={handleMenuClose}/>
+
               {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}
               {/*  Logout*/}
               {/*</LogoutButton>*/}
-              <SignOutButton>
-
-              </SignOutButton>
+              
             </StyledMenu>
           </Box>
         ) : (
@@ -120,6 +121,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
             <Button color="inherit" onClick={onSignupClick}>Signup</Button>
           </div>
         )}
+        
       </StyledToolbar>
     </StyledAppBar>
   );
