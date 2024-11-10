@@ -15,11 +15,11 @@ public class UserServiceTest {
 
     @Test
     public void testCreateUser() {
-        User user = new User("username", "password", "email@example.com", "Admin");
+        User user = new User("ufdsafgaaw3245", "username", "korisnik");
         User createdUser = userService.createUser(user);
         assertNotNull(createdUser);
         assertEquals("username", createdUser.getUsername());
-        System.out.println(userService.getUserById(1));
+        System.out.println(userService.getUserById("ufdsafgaaw3245"));
     }
 
 

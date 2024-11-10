@@ -24,7 +24,7 @@ public class UserService {
     }
 
     // Metoda za dohvaćanje korisnika prema ID-u
-    public Optional<User> getUserById(int id) {
+    public Optional<User> getUserById(String id) {
         return userRepository.findById(id);
     }
 

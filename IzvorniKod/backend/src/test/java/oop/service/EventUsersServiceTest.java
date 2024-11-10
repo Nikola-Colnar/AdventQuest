@@ -1,6 +1,9 @@
 package oop.service;
 
+import oop.model.Event;
+import oop.model.EventUsers;
 import oop.model.User;
+import oop.repository.EventRepository;
 import oop.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +21,11 @@ class EventUsersServiceTest {
 
     @Test
     void createEventUser() {
-        Event event = new Event("skijanje", 1, "22.1.2025.");
-        User user = new User("username", "password", "nesto@gmail.com", "KORISNIK");
+        Event event = new Event("skijanje", "1", "22.1.2025.");
+        User user = new User("fjd1234ds", "username", "korisnik");
         event = eventRepository.save(event);   // Spremanje Event entiteta u bazu
         user = userRepository.save(user);
-        System.out.println("USERID: " + user.getId() + "    EventId: " + event.getId());
+        System.out.println("USERUID: " + user.getUid() + "    EventId: " + event.getId());
         EventUsers eu = new EventUsers(event, user);
         System.out.println(eu.getId().toString());
         System.out.println("eventusers: " + eu.toString());
