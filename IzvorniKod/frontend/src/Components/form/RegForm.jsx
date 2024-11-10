@@ -5,12 +5,12 @@ import {auth} from "../../firebase/firebaseConfig.js";
 import {FaUser, FaLock,} from "react-icons/fa";
 import {FcGoogle} from "react-icons/fc";
 import {IoIosMail} from "react-icons/io";
-import {Stack, Alert} from "@mui/material";
+import {Box, Alert} from "@mui/material";
 import PropTypes from "prop-types";
 
 const USERS_REST_API_URL = 'http://localhost:8080/api/users/signup';
 
-function RegForm({onClick}) {
+function RegForm({onClick, signIn}) {
   // state za pracenje podataka u formi
   const [formData, setFormData] = useState({
     username: '',
@@ -18,6 +18,7 @@ function RegForm({onClick}) {
     email: '',
     vrstaUser: 'korisnik'
   });
+  const [severity, setSeverity] = useState('');
   const [message, setMessage] = useState('');
 
   const overlayRef = useRef(null); // referenca na overlay div
@@ -77,19 +78,25 @@ function RegForm({onClick}) {
 
         if (!response.ok) {
           setMessage('Network response was not ok: ' + response.statusText);
+          setSeverity('error');
           return;
         }
-
+        const data = await response.json(); // Dohvaćamo JSON odgovor
+        const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
         //Nakon uspjesnog slanja forma se resetira
         setFormData({username: '', password: '', email: '', vrstaUser: 'korisnik'});
+        signIn(true, username);
       } catch (error) {
         console.error('Database: Error creating user: ', error);
         setMessage('Failed to create user');
+        setSeverity('error');
       }
       setMessage('User created successfully');
+      setSeverity('success');
     } catch (error) {
       console.error('Firebase: Error creating user: ', error);
-      setMessage('Failed to create user');
+      setMessage('User already exist!');
+      setSeverity('error');
     }
   };
 
@@ -151,11 +158,11 @@ function RegForm({onClick}) {
           </div>
         </div>
         {message &&
-          <Stack spacing={2} className={'error-message'} paddingBottom={2}>
-            <Alert severity='error'>
+          <Box spacing={2} className={'error-message'} paddingBottom={2}>
+            <Alert severity={severity}>
               {message}
             </Alert>
-          </Stack>
+          </Box>
         }
         <div className='submitDiv'>
           <button className="submit" type="submit">Submit</button>

@@ -6,7 +6,7 @@ import {IoIosMail} from "react-icons/io";
 import {signInWithEmailAndPassword} from "firebase/auth";
 import {auth, googleProvider} from "../../firebase/firebaseConfig.js";
 import {signInWithPopup} from "firebase/auth";
-import {Stack, Alert} from "@mui/material";
+import {Box, Alert} from "@mui/material";
 import PropTypes from "prop-types";
 
 const USERS_REST_API_URL = 'http://localhost:8080/api/users/login';
@@ -18,6 +18,7 @@ function Form({onClick, loggedIn}) {
     password: '',
     email: ''
   });
+  const [severity, setSeverity] = useState('');
   const [message, setMessage] = useState('');
 
   const overlayRef = useRef(null); // referenca na overlay div
@@ -65,21 +66,27 @@ function Form({onClick, loggedIn}) {
 
         if (!response.ok) {
           setMessage('Network response was not ok: ' + response.statusText);
+          setSeverity('error');
           return;
         }
+        const data = await response.json(); // Dohvaćamo JSON odgovor
+        const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+        console.log(username)
 
-        loggedIn(true);
-        // nakon uspjesnog slanja forma se resetira
-        setFormData({username: '', password: '', email: ''});
+        setMessage('User logged in successfully');
+        setSeverity('success');
+        loggedIn(true, username); // prosljeđujemo username u funkciju loggedIn
+        console.log(loggedIn)
       } catch (error) {
         console.error('Database: Error with login: ', error);
         setMessage('Failed to login');
+        setSeverity('error');
       }
-      setMessage('User logged in successfully');
-      loggedIn(true);
+
     } catch (error) {
       console.error('Firebase: Error with login: ', error);
       setMessage('Failed to login');
+      setSeverity('error');
     }
   };
 
@@ -123,11 +130,11 @@ function Form({onClick, loggedIn}) {
           <FaLock className='passicon'></FaLock>
         </div>
         {message &&
-          <Stack spacing={2} className={'error-message'} paddingBottom={2}>
-            <Alert severity='error'>
+          <Box spacing={2} className={'error-message'} paddingBottom={2}>
+            <Alert severity={severity}>
               {message}
             </Alert>
-          </Stack>
+          </Box>
         }
         <div className='submitDiv'>
           <button className="submit" type="submit">Submit</button>

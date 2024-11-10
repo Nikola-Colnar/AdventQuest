@@ -11,7 +11,9 @@ function App() {
   const [isFormVisible, setIsFormVisible] = useState(false); //stanje vidljivosti login forme
 
   const showForm = () => setIsFormVisible(true); // prikazuje formu
-  const hideForm = () => setIsFormVisible(false); // Sakriva formu
+  const hideForm = () => {
+
+    setIsFormVisible(false)}; // Sakriva formu
 
   const [isRegFormVisible, setIsRegFormVisible] = useState(false); //Stanje vidljivosti login forme
 
@@ -23,18 +25,21 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('Guest');
 
-  const handleLoginStatusChange = (status) => {
+  const handleLoginStatusChange = (status, username) => {
     setIsLoggedIn(status)
-    hideForm()    //skriva formu nakon logina
+    setUsername(username)
+    setTimeout(hideForm, 1000)    //skriva formu nakon logina
   };
-  const handleSignInStatusChange = (status) => {
+  const handleSignInStatusChange = (status, username) => {
     setIsLoggedIn(status)
-    hideRegForm() //skriva regformu nakon loginay
+    setUsername(username)
+
+    setTimeout(hideRegForm, 1000); //skriva regformu nakon loginay
   };
 
   //funkcije za dobivanje Loginforme i signforme
   const handleLoginClick = () => {
-    setUsername('M'); //promjena korisnika
+    setUsername(username); //promjena korisnika
     showForm();
   };
 
