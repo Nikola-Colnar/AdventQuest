@@ -1,0 +1,241 @@
+.Form {
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  width: fit-content;
+  margin: auto;
+  transition: box-shadow 1.5s ease, transform 1.5s ease; /*transition duration*/
+  background: transparent; /*Blur*/
+  backdrop-filter: blur(20px);
+}
+
+.Form:hover {
+  /*red shadowing and elevation */
+  transform: translateY(-10px);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.378), 0 5px 25px rgba(114, 4, 4, 0.626);
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 1.5em;
+  width: 100%;
+  font-size: 1.5em;
+  box-sizing: border-box;
+  text-align: left;
+  padding-left: 1em;
+}
+
+input:focus {
+  color: #3f3f3f; /* Boja teksta unutar inputa */
+  background-color: #c9f4c8; /* Pozadina inputa */
+  outline-color: green;
+}
+
+.userdiv {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: rgba(8, 112, 4, 0.616);
+  margin-bottom: 1em;
+  border-radius: 5px;
+}
+
+.Form h2 {
+  font-size: 3em;
+  text-align: center;
+  color: white;
+}
+
+.userdiv .usericon {
+  position: absolute;
+  font-size: 1.2em;
+  color: rgb(107, 4, 4);
+  text-align: center; /*Centriranje*/
+  right: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 0.4s ease;
+}
+
+.passdiv {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: rgba(8, 112, 4, 0.616);
+  margin-bottom: 1em;
+  border-radius: 5px;
+}
+
+.passdiv .passicon {
+  position: absolute;
+  font-size: 1.2em;
+  color: rgb(107, 4, 4);
+  text-align: center;
+  right: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 0.4s ease;
+}
+
+.maildiv {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: rgba(8, 112, 4, 0.616);
+  margin-bottom: 1em;
+  border-radius: 5px;
+}
+
+.maildiv .mailicon {
+  position: absolute;
+  font-size: 1.4em;
+  color: rgb(107, 4, 4);
+  text-align: center;
+  right: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 0.4s ease; /*Tranzicija kod nestajanja se odvija polako*/
+}
+
+.maildiv input:focus + .mailicon { /*Nestaju ikonice kada unosimo text*/
+  opacity: 0;
+}
+
+.passdiv input:focus + .passicon {
+  opacity: 0;
+}
+
+.userdiv input:focus + .usericon {
+  opacity: 0;
+}
+
+/*SUBMIT BUTTON*/
+.submitDiv {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.submit {
+  background-color: #D32F2F;
+  color: white;
+  padding: 0.8em 1.6em;
+  font-size: 1.3em;
+  width: auto;
+  height: auto;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  font-family: 'Comic Sans MS', cursive; /* Bozicniji*/
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.submit:hover {
+  background-color: #A62626; /* Tamnija crvena na hover */
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+}
+
+.submit:active {
+  background-color: #8B1E1E; /* Jos tamnije na click */
+  transform: translateY(1px); /* Lagano udubljenje pri kliku */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Overlay za zatamnjenu pozadinu */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Tamnimo pozadinu */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 11; /* Iznad pahuljica koje su postavljene na 10*/
+}
+
+/*Google button*/
+.google-signin {
+  margin-top: 2.4em;
+  display: flex;
+  justify-content: center;
+}
+
+.google-button {
+  display: flex;
+  background-color: #ffffff;
+  color: rgb(0, 71, 1);
+  border: none;
+  padding: 0.3em;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9em;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 70%;
+  transition: transform 0.1s ease;
+}
+
+.google-button:hover {
+  background-color: #c9f4c8;
+}
+
+.google-icon {
+  background-color: rgb(255, 249, 249);
+  border-radius: 50%;
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  margin-right: 10px;
+}
+
+
+.google-button:active { /*click*/
+  background-color: #9dd29c;
+  transform: translateY(3px); /* Lagano udubljenje pri kliku */
+  box-shadow: 5px 4px 10px rgba(2, 170, 44, 0.2);
+}
+
+.vrstaUser-select {
+  display: flex;
+  width: auto;
+  height: 3em;
+  margin-bottom: 2em;
+  /*justify-content: center;  horizontalno*/
+  align-items: center; /*vertikalno*/
+}
+
+.divKorisnik {
+  position: relative;
+  width: 50%;
+}
+
+.divPredstavnik {
+  position: relative;
+  width: 50%;
+}
+
+.vrstaUser-button {
+  display: flex; /*pozicioniralo gumbe u sredinu*/
+  margin: auto;
+  width: 90%;
+  height: 90%;
+  font-size: 1.2em;
+}
+
+.vrstaUser-button.green {
+  background-color: green;
+  color: white;
+}
+
+.vrstaUser-button.red {
+  background-color: red;
+  color: white;
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import { signOut } from "firebase/auth";
-import { auth } from "../Firebase/firebaseConfig.js";
-import { useAuth } from "../Firebase/AuthContext";
+import { auth } from "../firebase/firebaseConfig.js";
+import { useAuth } from "../firebase/AuthContext";
 import {styled} from "@mui/system";
 import {MenuItem} from "@mui/material";
 

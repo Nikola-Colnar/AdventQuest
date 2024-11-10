@@ -19,7 +19,7 @@
     right: 0px;
     left: 0px;
     bottom: 0px;
-    background-image: url("./assets/snowflake.png");
+    background-image: url("../../assets/Snowflake.png");
     background-size: cover;
     background-position: top center;
     z-index: -1; /* postavlja iza */

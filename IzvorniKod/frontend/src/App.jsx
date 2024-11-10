@@ -1,13 +1,10 @@
 import { useState } from 'react'
-import './App.css'
-import ListaKorisnika from './ListaKorisnika'
-import Form from './Form'
-import RegForm from './RegForm'
-import Countdown from './Countdown'
-import Snowfall from './Snowfall'
-import LoginButton from './LoginButton'
-import SignupButton from './SignupButton'
-import Header from './Header'
+import './styles/App.css'
+import Form from './components/form/Form.jsx'
+import RegForm from './components/form/RegForm.jsx'
+import Countdown from './components/countdown/Countdown.jsx'
+import Snowfall from './components/snowfall/Snowfall.jsx'
+import Header from './components/Header.jsx'
 
 
 function App() {

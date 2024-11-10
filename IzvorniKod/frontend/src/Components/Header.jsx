@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Button, Menu, MenuItem, Avatar, Box } from '@mui/material';
 import { styled } from '@mui/system';
-import {useAuth} from "./Firebase/AuthContext.jsx";
-import SignOutButton from "./Components/SignOutButton.jsx";
+import {useAuth} from "../firebase/AuthContext.jsx";
+import SignOutButton from "./SignOutButton.jsx";
 
 //styling for nav bar and components
 const StyledAppBar = styled(AppBar)(() => ({
