@@ -7,11 +7,8 @@ import jakarta.validation.constraints.NotEmpty;
 @Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 
-    // Dodajte UID polje za Firebase UID
+    @Id
     @NotEmpty(message = "UID is required")
     private String uid;
 
@@ -29,14 +26,6 @@ public class User {
         this.uid = uid;
         this.username = username;
         this.vrstaUser = vrstaUser;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUid() {
@@ -65,6 +54,10 @@ public class User {
 
     @Override
     public String toString() {
-        return uid + " " + username + " " +   vrstaUser;
+        return "User{" +
+                "uid='" + uid + '\'' +
+                ", username='" + username + '\'' +
+                ", vrstaUser='" + vrstaUser + '\'' +
+                '}';
     }
 }
