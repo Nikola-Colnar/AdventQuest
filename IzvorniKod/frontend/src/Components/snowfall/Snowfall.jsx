@@ -18,7 +18,15 @@ const Snowfall = () => {
   const [snowflakes, setSnowflakes] = useState([]);
 
   useEffect(() => {
-    const snowflakeArray = Array.from({ length: 40 });
+    const snowflakeArray = Array.from({ length: 50 });
+
+    const colors = [
+      'hsla(183, 70%, 34%, 0.879)', // plava
+      'hsla(0, 70%, 90%, 0.879)',   // svetlo crvena
+      'hsla(60, 70%, 80%, 0.879)',  // žućkasta
+      'hsla(120, 70%, 70%, 0.879)', // zelena
+      'hsla(240, 70%, 75%, 0.879)'  // ljubičasta
+    ];
 
     const newSnowflakes = snowflakeArray.map((_, i) => {
       const animationDelay = `${(Math.random() * 25).toFixed(2)}s`;
@@ -29,6 +37,7 @@ const Snowfall = () => {
       const rotateDuration = `${(Math.random() * 10 + 15).toFixed(2)}s`; // Nasumična rotacija traje između 10-20 sekundi
       const rotateDirection = Math.random() > 0.5 ? '1' : '-1'; // Nasumični smjer rotacije (1 za u smjeru kazaljke na satu, -1 za suprotno)
 
+      const color = colors[Math.floor(Math.random() * colors.length)];
 
       const style = {
         zIndex: 10,
@@ -38,7 +47,8 @@ const Snowfall = () => {
         animationDuration,
         top: topPosition,   // Pahuljica počinje iznad ekrana
         rotateDuration,
-        '--rotateDirection': rotateDirection, // Dodajemo CSS varijablu za rotaciju
+        '--rotateDirection': rotateDirection, // Dodajemo CSS varijablu za rotacij
+        color: color
       };
 
       return {id: i, style};
