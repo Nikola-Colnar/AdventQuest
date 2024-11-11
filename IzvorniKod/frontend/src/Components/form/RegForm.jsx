@@ -142,7 +142,7 @@ function RegForm({onClick, signIn}) {
             <button
               type="button"
               onClick={() => handleUserRoleClick('korisnik')}
-              className={formData.vrstaUser === 'korisnik' ? 'vrstaUser-button green' : 'vrstaUser-button red'}
+              className={formData.vrstaUser === 'korisnik' ? 'vrstaUser-button green' : 'vrstaUser-button white'}
             >
               Korisnik 🎅
             </button>
@@ -151,7 +151,7 @@ function RegForm({onClick, signIn}) {
             <button
               type="button"
               onClick={() => handleUserRoleClick('predstavnik')}
-              className={formData.vrstaUser === 'predstavnik' ? 'vrstaUser-button green' : 'vrstaUser-button red'}
+              className={formData.vrstaUser === 'predstavnik' ? 'vrstaUser-button red' : 'vrstaUser-button white'}
             >
               Predstavnik 🎄
             </button>
