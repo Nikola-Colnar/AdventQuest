@@ -10,6 +10,7 @@ import {Box, Alert} from "@mui/material";
 import PropTypes from "prop-types";
 
 const USERS_REST_API_URL = 'http://localhost:8080/api/users/login';
+const USERS_REST_API_URL1 = 'http://localhost:8080/api/users/signup';
 
 function Form({onClick, loggedIn}) {
   //State za pracenje podataka u formi
@@ -72,11 +73,13 @@ function Form({onClick, loggedIn}) {
         const data = await response.json(); // Dohvaćamo JSON odgovor
         const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
         console.log(username)
+        localStorage.setItem('username', username);
 
         setMessage('User logged in successfully');
         setSeverity('success');
         loggedIn(true, username); // prosljeđujemo username u funkciju loggedIn
         console.log(loggedIn)
+
       } catch (error) {
         console.error('Database: Error with login: ', error);
         setMessage('Failed to login');
@@ -95,8 +98,59 @@ function Form({onClick, loggedIn}) {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       // result.user sadrzi info o useru
+      localStorage.setItem('username',result.user.displayName)
       console.log("User info:", result.user);
       alert(`Welcome ${result.user.displayName}`);
+      loggedIn(true,localStorage.getItem('username'));
+
+      //BAZA
+      try {
+        const response = await fetch(USERS_REST_API_URL1, {  //saljemo podatke
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            uid: localStorage.getItem('uid'),
+            username: localStorage.getItem('username'),
+            vrstaUser: 'korisnik'
+          })
+        });
+
+        if (!response.ok) {
+          console.log("user already created")
+          try {
+            const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                uid: localStorage.getItem('uid'),
+              })
+            });
+            const data = await response.json(); // Dohvaćamo JSON odgovor
+            localStorage.setItem('username',data.username)    // Dohvacamo username iz baze
+            //Nakon uspjesnog slanja forma se resetira
+            setFormData({username: '', password: '', email: '', vrstaUser: 'korisnik'});
+            loggedIn(true, data.username);
+          }catch {
+            setMessage('Network response was not ok: ' + response.statusText);
+
+            setSeverity('error');
+            return;
+          }
+        }
+
+      } catch (error) {
+        console.error('Database: Error creating user: ', error);
+        setMessage('Failed to create user');
+        setSeverity('error');
+      }
+      setMessage('User logged in successfully');
+      setSeverity('success');
+
+
     } catch (error) {
       console.error("Error during Google sign-in:", error);
       alert("Failed to sign in with Google");

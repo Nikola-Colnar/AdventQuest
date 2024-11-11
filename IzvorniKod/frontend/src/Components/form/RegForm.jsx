@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef} from 'react';
 import "./form.css"
-import {createUserWithEmailAndPassword} from "firebase/auth";
-import {auth} from "../../firebase/firebaseConfig.js";
+import {createUserWithEmailAndPassword, signInWithPopup} from "firebase/auth";
+import {auth, googleProvider} from "../../firebase/firebaseConfig.js";
 import {FaUser, FaLock,} from "react-icons/fa";
 import {FcGoogle} from "react-icons/fc";
 import {IoIosMail} from "react-icons/io";
@@ -60,6 +60,8 @@ function RegForm({onClick, signIn}) {
       const Credentials = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       const user = Credentials.user
       const uid = user.uid
+
+
       console.log(JSON.stringify(uid, formData.username, formData.vrstaUser))
 
       e.preventDefault(); //sprjecava ponovno ucitavanje stranice
@@ -97,6 +99,54 @@ function RegForm({onClick, signIn}) {
       console.error('Firebase: Error creating user: ', error);
       setMessage('User already exist!');
       setSeverity('error');
+    }
+  };
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      // result.user sadrzi info o useru
+      localStorage.setItem('username',result.user.displayName)
+      localStorage.setItem('uid',result.user.uid)
+      console.log("User info:", result.user);
+      console.log(localStorage.getItem('username'))
+      signIn(true,localStorage.getItem('username'));
+      alert(`Welcome ${result.user.displayName}`);
+
+      //BAZA
+      try {
+        const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            uid: localStorage.getItem('uid'),
+            username: localStorage.getItem('username'),
+            vrstaUser: formData.vrstaUser
+          })
+        });
+
+        if (!response.ok) {
+          setMessage('Network response was not ok: ' + response.statusText);
+          setSeverity('error');
+          return;
+        }
+        const data = await response.json(); // Dohvaćamo JSON odgovor
+        const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+        //Nakon uspjesnog slanja forma se resetira
+        setFormData({username: '', password: '', email: '', vrstaUser: 'korisnik'});
+        signIn(true, username);
+      } catch (error) {
+        console.error('Database: Error creating user: ', error);
+        setMessage('Failed to create user');
+        setSeverity('error');
+      }
+      setMessage('User created successfully');
+      setSeverity('success');
+
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
+      alert("Failed to sign in with Google");
     }
   };
 
@@ -144,16 +194,18 @@ function RegForm({onClick, signIn}) {
               onClick={() => handleUserRoleClick('korisnik')}
               className={formData.vrstaUser === 'korisnik' ? 'vrstaUser-button green' : 'vrstaUser-button red'}
             >
-              Korisnik 🎅
+              User
+              <div className='selector-icon'>🎅</div>
             </button>
           </div>
           <div className='divPredstavnik'>
             <button
-              type="button"
-              onClick={() => handleUserRoleClick('predstavnik')}
-              className={formData.vrstaUser === 'predstavnik' ? 'vrstaUser-button green' : 'vrstaUser-button red'}
+                type="button"
+                onClick={() => handleUserRoleClick('predstavnik')}
+                className={formData.vrstaUser === 'predstavnik' ? 'vrstaUser-button green' : 'vrstaUser-button red'}
             >
-              Predstavnik 🎄
+              Leader
+              <div className='selector-icon'>🎅</div>
             </button>
           </div>
         </div>
@@ -168,7 +220,10 @@ function RegForm({onClick, signIn}) {
           <button className="submit" type="submit">Submit</button>
         </div>
         <div className="google-signin">
-          <button type="button" className="google-button">{<FcGoogle className='google-icon'/>} Sign in with Google
+          <button type="button"
+                  onClick={handleGoogleSignIn}
+                  className="google-button">{<FcGoogle
+              className='google-icon'/>} Sign in with Google
           </button>
         </div>
       </form>

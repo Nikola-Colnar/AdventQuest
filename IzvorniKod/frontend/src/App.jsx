@@ -22,8 +22,10 @@ function App() {
 
 
   // Definiranje stanja prijave i korisničkog imena
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('Guest');
+  ////kod refreshanja stranice provjerava localstorage
+  const [isLoggedIn, setIsLoggedIn] = useState((localStorage.getItem('username') ? true : false));
+
+  const [username, setUsername] = useState((localStorage.getItem('username')) || 'Guest');
 
   const handleLoginStatusChange = (status, username) => {
     setIsLoggedIn(status)

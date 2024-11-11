@@ -215,6 +215,7 @@ input:focus {
 .divKorisnik {
   position: relative;
   width: 50%;
+
 }
 
 .divPredstavnik {
@@ -224,18 +225,43 @@ input:focus {
 
 .vrstaUser-button {
   display: flex; /*pozicioniralo gumbe u sredinu*/
+  justify-content: center;
+  border-radius: 8px;
   margin: auto;
   width: 90%;
-  height: 90%;
-  font-size: 1.2em;
+  height: 100%;
+  font-size: 1.3em;
 }
 
 .vrstaUser-button.green {
-  background-color: green;
+  background-color: #9dd29c;
+  color: rgb(60, 60, 60);
+}
+.vrstaUser-button.green:hover {
+  background-color: rgba(0, 128, 0, 0.6);
   color: white;
+  cursor:pointer;
+
 }
 
 .vrstaUser-button.red {
-  background-color: red;
+  background-color: rgb(172, 70, 70);
   color: white;
+}
+.vrstaUser-button.red:hover {
+  background-color: rgb(163, 21, 21);
+  color: white;
+  cursor: pointer;
+}
+
+.selector-icon {
+  position: absolute;
+  left: -0.1em;
+  top: 40%;
+  transform: translateY(-50%);
+  font-size: 1.4em;
+}
+/*skrivam djeda bozicnjaka ako gumb nije selektiran*/
+.vrstaUser-button.red .selector-icon{
+  display:none
 }
