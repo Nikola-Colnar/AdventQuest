@@ -46,11 +46,11 @@ public class GroupService {
             Group group1 = group.get();
             Set<User> trenutniUseri =  group1.getUsers();
             if(trenutniUseri.size() >= MAX_USERS_IN_GROUP){
-                throw new ArithmeticException("Maksimalan broj korisnika u grupi");
+                throw new RequestDeniedException("Maximum number of users in the group " + group1.getNazivGrupa() + " reached.");
             }
             trenutniUseri.forEach(korisnik -> { // provjera je li user već u toj grupi
                 if(korisnik.getId() == user.getId()){
-                    throw new PersistentObjectException("User with id " + user.getId() + " already exists.");
+                    throw new RequestDeniedException("User with id " + user.getId() + " already exists.");
                 }
             });
             group1.getUsers().add(user); // dodaj ga

@@ -5,7 +5,7 @@ import java.util.*;
 
 
 @Entity
-@Table(name = "SGrup")
+@Table(name = "SGroup")
 public class Group {
 
     @Id

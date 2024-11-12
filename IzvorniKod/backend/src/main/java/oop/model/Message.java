@@ -9,9 +9,21 @@ import java.util.Date;
 @Table(name = "Message")
 public class Message {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long messageID;
+
     private String uid_sender;
     private Date date;
     private String poruka;
+
+    public Message() {}
+
+    public Message(String uid_sender, Date date, String poruka) {
+        this.uid_sender = uid_sender;
+        this.date = date;
+        this.poruka = poruka;
+    }
 
     public String getUid_sender() {
         return uid_sender;
