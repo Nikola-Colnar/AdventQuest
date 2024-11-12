@@ -53,16 +53,14 @@ function Form({onClick, loggedIn}) {
     try {
       const Credentials = await signInWithEmailAndPassword(auth, formData.email, formData.password);
       const user = Credentials.user
-      const uid = user.uid
+      const idToken = await user.getIdToken();
       try {
         const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            uid: uid
-          })
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          }
         });
 
         if (!response.ok) {
@@ -98,6 +96,8 @@ function Form({onClick, loggedIn}) {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       // result.user sadrzi info o useru
+      const user = result.user
+      const idToken = await user.getIdToken();
       localStorage.setItem('username',result.user.displayName)
       console.log("User info:", result.user);
       alert(`Welcome ${result.user.displayName}`);
@@ -108,10 +108,10 @@ function Form({onClick, loggedIn}) {
         const response = await fetch(USERS_REST_API_URL1, {  //saljemo podatke
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
           },
           body: JSON.stringify({
-            uid: localStorage.getItem('uid'),
             username: localStorage.getItem('username'),
             vrstaUser: 'korisnik'
           })

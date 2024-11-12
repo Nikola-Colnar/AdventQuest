@@ -59,31 +59,30 @@ function RegForm({onClick, signIn}) {
     try {
       const Credentials = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       const user = Credentials.user
-      const uid = user.uid
-
-
-      console.log(JSON.stringify(uid, formData.username, formData.vrstaUser))
+      const idToken = await user.getIdToken();
 
       e.preventDefault(); //sprjecava ponovno ucitavanje stranice
       try {
         const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
           },
           body: JSON.stringify({
-            uid: uid,
             username: formData.username,
             vrstaUser: formData.vrstaUser
           })
         });
-
+        console.log(response);
         if (!response.ok) {
+          
           setMessage('Network response was not ok: ' + response.statusText);
           setSeverity('error');
           return;
         }
-        const data = await response.json(); // Dohvaćamo JSON odgovor
+        const data = await response.json();
+        console.log(data); // Dohvaćamo JSON odgovor
         const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
         //Nakon uspjesnog slanja forma se resetira
         setFormData({username: '', password: '', email: '', vrstaUser: 'korisnik'});
@@ -104,9 +103,10 @@ function RegForm({onClick, signIn}) {
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user
+      const idToken = await user.getIdToken();
       // result.user sadrzi info o useru
       localStorage.setItem('username',result.user.displayName)
-      localStorage.setItem('uid',result.user.uid)
       console.log("User info:", result.user);
       console.log(localStorage.getItem('username'))
       signIn(true,localStorage.getItem('username'));
@@ -117,10 +117,10 @@ function RegForm({onClick, signIn}) {
         const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
           },
           body: JSON.stringify({
-            uid: localStorage.getItem('uid'),
             username: localStorage.getItem('username'),
             vrstaUser: formData.vrstaUser
           })
