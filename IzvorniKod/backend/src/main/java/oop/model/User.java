@@ -12,7 +12,7 @@ public class User {
     private int id;
 
     // Dodajte UID polje za Firebase UID
-    @NotEmpty(message = "UID is required")
+//    @NotEmpty(message = "UID is required")
     private String uid;
 
     @NotEmpty(message = "username is required")
