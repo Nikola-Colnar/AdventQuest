@@ -112,8 +112,8 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
                 {username}
                 
               </MenuItem>
+              <Button className="Activity" onClick={handleCalendarToggle}>Activity</Button>
               <SignOutButton onClose={handleMenuClose}/>
-              <Button onClick={handleCalendarToggle}>Activity</Button>
 
               {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}
               {/*  Logout*/}

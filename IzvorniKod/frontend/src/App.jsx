@@ -50,7 +50,7 @@ function App() {
     showRegForm();
   };
   const handleCalendar = (status) => {
-    setShowCalendar(status)
+    setShowCalendar(status);
   };
 
   return (
@@ -62,12 +62,14 @@ function App() {
         onSignupClick={handleSignupClick}
         calendarVisible={handleCalendar}
       />
+
       {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange}/>}
       {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange}/>}
+      {showCalendar && <CalendarComponent hideCalendar={handleCalendar}></CalendarComponent>}
       <Snowfall className="snowfall"/>
       
       <Countdown targetDate="2024-12-25T00:00:00"/>
-      {showCalendar && <CalendarComponent/>}
+
     </>
   )
 }
