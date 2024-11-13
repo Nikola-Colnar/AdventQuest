@@ -29,10 +29,6 @@ public class Group {
         return idGrupa;
     }
 
-    public void setIdGrupa(long idGrupa) {
-        this.idGrupa = idGrupa;
-    }
-
     public String getNazivGrupa() {
         return nazivGrupa;
     }

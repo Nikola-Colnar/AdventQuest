@@ -31,9 +31,8 @@ public class GroupService {
     public Group changeGroupName(Long id, String newName){
         Optional<Group> group = groupRepo.findById(id);
         if(group.isPresent()){
-            Group group1 = group.get();
-            group1.setNazivGrupa(newName);
-            return groupRepo.save(group1);
+            group.get().setNazivGrupa(newName);
+            return groupRepo.save(group.get());
         }
         else{
             throw new NoSuchElementException("Group with ID " + id + " not found.");
