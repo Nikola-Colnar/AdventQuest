@@ -27,33 +27,27 @@ function App() {
 
   const [username, setUsername] = useState((localStorage.getItem('username')) || 'Guest');
 
-  const handleLoginStatusChange = (status, username) => {
+  const handleLoginStatusChange = (status) => {
     setIsLoggedIn(status)
-    setUsername(username)
+    setUsername(localStorage.getItem('username'))
     setTimeout(hideForm, 1000)    //skriva formu nakon logina
   };
-  const handleSignInStatusChange = (status, username) => {
+  const handleSignInStatusChange = (status) => {
     setIsLoggedIn(status)
-    setUsername(username)
+    setUsername(localStorage.getItem('username'))
 
     setTimeout(hideRegForm, 1000); //skriva regformu nakon loginay
   };
 
   //funkcije za dobivanje Loginforme i signforme
   const handleLoginClick = () => {
-    setUsername(username); //promjena korisnika
     showForm();
   };
 
   const handleSignupClick = () => {
-    setUsername('Sign'); //promjena korisnika
     showRegForm();
   };
 
-  const handleLogoutClick = () => {
-    setIsLoggedIn(false);     //logoutbutton
-    setUsername('Guest');
-  };
   return (
     <>
       <Header className="header"
@@ -61,7 +55,6 @@ function App() {
         username={username}
         onLoginClick={handleLoginClick}
         onSignupClick={handleSignupClick}
-        onLogoutClick={handleLogoutClick}
       />
       {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange}/>}
       {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange}/>}

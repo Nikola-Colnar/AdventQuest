@@ -53,6 +53,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    localStorage.clear();
   };
 
   const handleUsernameClick = () => {

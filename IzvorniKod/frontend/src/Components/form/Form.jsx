@@ -66,17 +66,17 @@ function Form({onClick, loggedIn}) {
         if (!response.ok) {
           setMessage('Network response was not ok: ' + response.statusText);
           setSeverity('error');
-          return;
+        }else {
+          const data = await response.json(); // Dohvaćamo JSON odgovor
+          const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+          console.log(username)
+          localStorage.setItem('username', username);
+          loggedIn(true); // prosljeđujemo username u funkciju loggedIn
+          setMessage('User logged in successfully');
+          setSeverity('success');
+          console.log(loggedIn)
         }
-        const data = await response.json(); // Dohvaćamo JSON odgovor
-        const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
-        console.log(username)
-        localStorage.setItem('username', username);
 
-        setMessage('User logged in successfully');
-        setSeverity('success');
-        loggedIn(true, username); // prosljeđujemo username u funkciju loggedIn
-        console.log(loggedIn)
 
       } catch (error) {
         console.error('Database: Error with login: ', error);
@@ -101,7 +101,6 @@ function Form({onClick, loggedIn}) {
       localStorage.setItem('username',result.user.displayName)
       console.log("User info:", result.user);
       alert(`Welcome ${result.user.displayName}`);
-      loggedIn(true,localStorage.getItem('username'));
 
       //BAZA
       try {
@@ -123,23 +122,39 @@ function Form({onClick, loggedIn}) {
             const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`
               },
-              body: JSON.stringify({
-                uid: localStorage.getItem('uid'),
-              })
             });
-            const data = await response.json(); // Dohvaćamo JSON odgovor
-            localStorage.setItem('username',data.username)    // Dohvacamo username iz baze
-            //Nakon uspjesnog slanja forma se resetira
-            setFormData({username: '', password: '', email: '', vrstaUser: 'korisnik'});
-            loggedIn(true, data.username);
+
+            if (!response.ok) {
+              setMessage('Network response was not ok: ' + response.statusText);
+              setSeverity('error');
+            }else {
+              const data = await response.json(); // Dohvaćamo JSON odgovor
+              const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+              console.log(username)
+              localStorage.setItem('username', username);
+              loggedIn(true); // prosljeđujemo username u funkciju loggedIn
+              setMessage('User logged in successfully');
+              setSeverity('success');
+              console.log(loggedIn)
+            }
           }catch {
             setMessage('Network response was not ok: ' + response.statusText);
 
             setSeverity('error');
             return;
           }
+        }else {
+          const data = await response.json(); // Dohvaćamo JSON odgovor
+          const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+          console.log(username)
+          localStorage.setItem('username', username);
+          loggedIn(true); // prosljeđujemo username u funkciju loggedIn
+          setMessage('User logged in successfully');
+          setSeverity('success');
+          console.log(loggedIn)
         }
 
       } catch (error) {
@@ -147,8 +162,6 @@ function Form({onClick, loggedIn}) {
         setMessage('Failed to create user');
         setSeverity('error');
       }
-      setMessage('User logged in successfully');
-      setSeverity('success');
 
 
     } catch (error) {
