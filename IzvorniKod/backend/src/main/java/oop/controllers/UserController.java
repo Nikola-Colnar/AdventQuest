@@ -1,14 +1,21 @@
 package oop.controllers;
 
+import com.google.api.Http;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.UserRecord.CreateRequest;
 import oop.model.User;
 import oop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.SocketHandler;
 
 
@@ -36,69 +43,48 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    //ovaj takodjer
-//    @GetMapping
-//    public ResponseEntity<List<User>> getAllUsers() {
-//        // Dohvaća sve korisnike
-//        List<User> users = userService.getAllUsers();
-//
-//        // Vraća listu korisnika sa statusom 200 (OK)
-//        return new ResponseEntity<>(users, HttpStatus.OK);
-//    }
-
-
-    //Endpoint za login, to ce biti na login formi(React)
-//    @PostMapping("/login")
-//    public ResponseEntity<User> loginUser(@RequestBody User loginDetails) {
-//        try {
-//            // Prijava na temelju UID-a
-//            User user = userService.loginUser(loginDetails.getUid());  // Provjera samo po UID-u
-//            return new ResponseEntity<>(user, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-//        }
-//    }
-
-
     //endpoint za sign up, iz forme za registraciju(React)
     @PostMapping("/signup")
-    public ResponseEntity<User> signupUser(
-            @RequestHeader("Authorization") String authHeader,
-            @RequestBody User user) {  // Prima cijeli User objekt iz body-a
+    public ResponseEntity<Map<String, String>> signupUser(
+            @RequestBody Map<String, String> userData) {  // Prima cijeli User objekt iz body-a
 
         System.out.println("IZVRSAVAM SIGNUP");
-
-        // Provjera je li Authorization header prisutan i ispravan
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("ERRRORRR BROJ 1");
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  // Loš zahtjev ako header nije ispravan
-        }
-
-        // Uklanjanje "Bearer " prefiksa iz Authorization headera
-        String idToken = authHeader.replace("Bearer ", "");
-
         try {
-            // Verifikacija ID tokena koristeći Firebase Admin SDK
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-            String uidFromToken = decodedToken.getUid();
+            String email = userData.get("email");
+            String password = userData.get("password");
+            String username = userData.get("username");
+            String vrstaUser = userData.get("vrstaUser");
 
-            // Postavljanje UID-a iz Firebase tokena
-            user.setUid(uidFromToken);  // Postavljamo UID sa Firebase tokena
+            CreateRequest request = new CreateRequest()
+                    .setEmail(email)
+                    .setPassword(password)
+                    .setDisplayName(username);
 
-            // Pozivanje UserService za spremanje novog korisnika u bazu podataka
-            User savedUser = userService.createUser(user);
+            UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
+            String uid = userRecord.getUid();
 
-            // Vraćanje korisnika nakon što je uspješno spremljen
-            return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+            //Generiraj ID TOKEN na temelju UID-a
+            String idToken = FirebaseAuth.getInstance().createCustomToken(uid);
 
-        } catch (Exception e) {
-            // Ako token nije važeći
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            User user = new User(uid, username, vrstaUser);
+
+            userService.createUser(user);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("idToken", idToken);
+            response.put("username", username);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }
+        catch (FirebaseAuthException e){
+            e.printStackTrace();
+            System.out.println("ERROR: " + e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> loginUser(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<User> loginUser(
+            @RequestHeader("Authorization") String authHeader) {
         System.out.println("IZVRŠAVAM LOGIN");
         String idToken = authHeader.replace("Bearer ", "");
         try {
