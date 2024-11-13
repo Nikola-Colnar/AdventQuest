@@ -39,7 +39,7 @@ const StyledMenu = styled(Menu)(() => ({
 //////////////////
 //function start//
 //////////////////
-function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick, onLogoutClick }) {
+function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick, calendarVisible }) {
 
   //currentUser ---> null ako nitko nije logiran :: currentUser ako je netko logiran
   const { currentUser } = useAuth();
@@ -58,6 +58,10 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
 
   const handleUsernameClick = () => {
     setCentered(!centered); // Toggle centering the username
+  };
+  const handleCalendarToggle = () => {
+    calendarVisible(true)// Toggle the calendar visibility
+    setAnchorEl(null);  // Close the menu when calendar is opened
   };
 
   return (
@@ -109,6 +113,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
                 
               </MenuItem>
               <SignOutButton onClose={handleMenuClose}/>
+              <Button onClick={handleCalendarToggle}>Activity</Button>
 
               {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}
               {/*  Logout*/}

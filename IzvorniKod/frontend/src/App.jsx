@@ -5,6 +5,7 @@ import RegForm from './components/form/RegForm.jsx'
 import Countdown from './components/countdown/Countdown.jsx'
 import Snowfall from './components/snowfall/Snowfall.jsx'
 import Header from './components/Header.jsx'
+import CalendarComponent from "./Components/calendar/CalendarComponent.jsx";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState((localStorage.getItem('username') ? true : false));
 
   const [username, setUsername] = useState((localStorage.getItem('username')) || 'Guest');
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const handleLoginStatusChange = (status) => {
     setIsLoggedIn(status)
@@ -47,6 +49,9 @@ function App() {
   const handleSignupClick = () => {
     showRegForm();
   };
+  const handleCalendar = (status) => {
+    setShowCalendar(status)
+  };
 
   return (
     <>
@@ -55,12 +60,14 @@ function App() {
         username={username}
         onLoginClick={handleLoginClick}
         onSignupClick={handleSignupClick}
+        calendarVisible={handleCalendar}
       />
       {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange}/>}
       {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange}/>}
       <Snowfall className="snowfall"/>
       
       <Countdown targetDate="2024-12-25T00:00:00"/>
+      {showCalendar && <CalendarComponent/>}
     </>
   )
 }
