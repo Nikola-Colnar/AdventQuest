@@ -58,9 +58,17 @@ public class Group {
         return messages;
     }
 
-    public void addUser(User user) {}
-    public void addEvent(Event event) {}
-    public void addMessage(Message message) {}
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
 
     @Override
     public String toString() {

@@ -11,7 +11,7 @@ public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long messageID;
+    private int messageID;
 
     private String uid_sender;
     private Date date;
@@ -23,6 +23,10 @@ public class Message {
         this.uid_sender = uid_sender;
         this.date = date;
         this.poruka = poruka;
+    }
+
+    public int getMessageID() {
+        return messageID;
     }
 
     public String getUid_sender() {

@@ -55,7 +55,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void Delete(User user) {
+    public void deleteUser(User user) {
         // Provjera da li korisnik postoji s istim UID-om
         if (userRepository.findByUid(user.getUid()) == null) {
             throw new RuntimeException("User with this UID doesnt exists");

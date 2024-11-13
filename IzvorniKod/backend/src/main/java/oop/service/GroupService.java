@@ -2,13 +2,8 @@ package oop.service;
 
 import oop.model.*;
 import oop.repository.GroupRepository;
-import org.hibernate.PersistentObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.util.*;
@@ -24,8 +19,21 @@ public class GroupService {
         this.groupRepo = repo;
     }
 
+    public Group createGroup(Group group) {
+        // Jel postoji grupa s tim id
+        if(groupRepo.findById(group.getIdGrupa()) != null){
+            throw new RuntimeException("User with this UID already exists");
+        }
+        // Ako id nije zauzet, spremamo korisnika
+        return groupRepo.save(group);
+    }
+
     public Optional<Group> findById(long id) {
         return groupRepo.findById(id).isEmpty() ? Optional.empty() : Optional.of(groupRepo.findById(id).get());
+    }
+
+    public void deleteGroup(long id) {
+        groupRepo.deleteById(id);
     }
 
     public Group changeGroupName(Long id, String newName){
@@ -39,7 +47,7 @@ public class GroupService {
         }
     }
 
-    public void Put(Long id, User user){ // dodavanj usera u već postojeću grupu
+    public void PutUser(Long id, User user){ // dodavanj usera u već postojeću grupu
         Optional<Group> group = groupRepo.findById(id);
         if(group.isPresent()){
             Group group1 = group.get();
@@ -60,7 +68,7 @@ public class GroupService {
         }
     }
 
-    public void Delete(Long id, User user){ // brisanje usera iz grupe
+    public void DeleteUser(Long id, User user){ // brisanje usera iz grupe
         Optional<Group> group = groupRepo.findById(id);
         if(group.isPresent()){
             Group group1 = group.get();
@@ -78,5 +86,37 @@ public class GroupService {
         }
     }
 
+    public void putEvent(Long id, Event event){
+        Optional<Group> group = groupRepo.findById(id);
+        if(group.isPresent()){
+            Group group1 = group.get();
+            Set<Event> trenutniEvent =  group1.getEvents();
+            trenutniEvent.forEach(postojeciEvent -> {
+                if(postojeciEvent.getIdEvent() == event.getIdEvent()){
+                    throw new RequestDeniedException("Event with id " + event.getIdEvent() + " already exists.");
+                }
+            });
+            group1.getEvents().add(event);
+            groupRepo.save(group1);
+        }else{
+            throw new NoSuchElementException("Group with ID " + id + " not found.");
+        }
+    }
 
+    public void deleteEvent(Long id, Event event){
+        Optional<Group> group = groupRepo.findById(id);
+        if(group.isPresent()){
+            Group group1 = group.get();
+            Set<Event> trenutniEvent =  group1.getEvents();
+            trenutniEvent.forEach(postojeciEvent -> {
+                if(postojeciEvent.getIdEvent() == event.getIdEvent()){
+                    group1.getEvents().remove(event);
+                    groupRepo.save(group1);
+                }
+            });
+            throw new NoSuchElementException("Event with id " + event.getIdEvent() + " not found.");
+        } else{
+            throw new NoSuchElementException("Group with ID " + id + " not found.");
+        }
+    }
 }
