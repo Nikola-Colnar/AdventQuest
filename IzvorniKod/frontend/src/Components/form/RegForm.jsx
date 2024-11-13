@@ -8,7 +8,7 @@ import {IoIosMail} from "react-icons/io";
 import {Box, Alert} from "@mui/material";
 import PropTypes from "prop-types";
 
-const USERS_REST_API_URL = 'http://localhost:8080/api/users/signup';
+const USERS_REST_API_URL = 'https://localhost:8443/api/users/signup';
 
 function RegForm({onClick, signIn}) {
   // state za pracenje podataka u formi
