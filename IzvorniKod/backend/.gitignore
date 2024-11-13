@@ -1,6 +1,8 @@
 HELP.md
 target/
 data/
+src/main/resources/keystore.p12
+src/main/resources/serviceAccountKey.json
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
