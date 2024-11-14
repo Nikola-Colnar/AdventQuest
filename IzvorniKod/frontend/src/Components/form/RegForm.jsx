@@ -61,6 +61,7 @@ function RegForm({ onClick, signIn }) {
       const Credentials = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       const user = Credentials.user;
       const idToken = await user.getIdToken();
+      console.log("email login ID Token:", idToken);
 
       e.preventDefault(); //sprjecava ponovno ucitavanje stranice
       try {
@@ -108,7 +109,9 @@ function RegForm({ onClick, signIn }) {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       const idToken = await user.getIdToken();
+      console.log("Google login ID Token:", idToken);
       // result.user sadrzi info o useru
+      localStorage.setItem("username", user.displayName);
       console.log("User info:", result.user);
       console.log(localStorage.getItem("username"));
       //alert(`Welcome ${result.user.displayName}`);

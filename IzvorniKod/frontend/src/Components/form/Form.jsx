@@ -98,6 +98,8 @@ function Form({ onClick, loggedIn }) {
       // result.user sadrzi info o useru
       const user = result.user;
       const idToken = await user.getIdToken();
+      localStorage.setItem("username", user.displayName);
+      console.log("Google login ID Token:", idToken);
       console.log("User info:", result.user);
       //alert(`Welcome ${result.user.displayName}`);
 
