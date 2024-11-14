@@ -38,7 +38,7 @@ const StyledMenu = styled(Menu)(() => ({
 //////////////////
 //function start//
 //////////////////
-function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick, calendarVisible }) {
+function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, onSignupClick, calendarVisible }) {
 
   //currentUser ---> null ako nitko nije logiran :: currentUser ako je netko logiran
   const { currentUser } = useAuth();
@@ -52,7 +52,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    localStorage.clear();
+    handlelogin(false)
   };
 
   const handleUsernameClick = () => {
@@ -71,7 +71,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
         </Logo>
 
         {/* Profile section (login, signup, avatar)*/}
-        {currentUser? (
+        {(currentUser && isLoggedIn)? (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Avatar with user image or initials */}
             <Avatar 

@@ -112,7 +112,7 @@ function RegForm({onClick, signIn}) {
       localStorage.setItem('username',result.user.displayName)
       console.log("User info:", result.user);
       console.log(localStorage.getItem('username'))
-      alert(`Welcome ${result.user.displayName}`);
+      //alert(`Welcome ${result.user.displayName}`);
 
       //BAZA
       try {

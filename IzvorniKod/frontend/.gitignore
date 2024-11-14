@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Certs
+certs/frontend-key.pem
+certs/frontend-cert.pem

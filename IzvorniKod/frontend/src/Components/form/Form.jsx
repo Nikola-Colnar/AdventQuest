@@ -100,7 +100,7 @@ function Form({onClick, loggedIn}) {
       const idToken = await user.getIdToken();
       localStorage.setItem('username',result.user.displayName)
       console.log("User info:", result.user);
-      alert(`Welcome ${result.user.displayName}`);
+      //alert(`Welcome ${result.user.displayName}`);
 
       //BAZA
       try {

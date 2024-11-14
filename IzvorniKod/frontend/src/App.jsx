@@ -52,11 +52,14 @@ function App() {
   const handleCalendar = (status) => {
     setShowCalendar(status);
   };
-
+  const handlelogin = (status) => {
+    setIsLoggedIn(status)
+  };
   return (
     <>
       <Header className="header"
         isLoggedIn={isLoggedIn}
+        handlelogin={handlelogin}
         username={username}
         onLoginClick={handleLoginClick}
         onSignupClick={handleSignupClick}

@@ -12,6 +12,7 @@ const SignOutButton = ({onClose}) => {
         signOut(auth)
             .then(() => {
                 alert("You have signed out successfully!");
+                localStorage.clear()
                 onClose();
             })
             .catch((error) => {
