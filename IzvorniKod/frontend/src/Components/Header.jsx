@@ -6,16 +6,16 @@ import SignOutButton from "./SignOutButton.jsx";
 
 //styling for nav bar and components
 const StyledAppBar = styled(AppBar)(() => ({
-  position: 'relative',  //position relative jer (static position ne moze mijenjati z index)
-  backgroundColor: 'rgba(255, 0, 0)',  // boja navigacijskog bara
-  boxShadow: 'none',  
+  position: "relative",  //position relative jer (static position ne moze mijenjati z index)
+  backgroundColor: "rgba(255, 0, 0)",  // boja navigacijskog bara
+  boxShadow: "none",
   zIndex: 11,
 }));
 
 const StyledToolbar = styled(Toolbar)(() => ({
-  display: 'flex',   
-  justifyContent: 'space-between', //split components
-  alignItems: 'center',  // vertical centerin
+  display: "flex",
+  justifyContent: "space-between", //split components
+  alignItems: "center",  // vertical centerin
 }));
 
 const Logo = styled(Typography)(() => ({
@@ -31,7 +31,6 @@ const StyledMenu = styled(Menu)(() => ({
   ' .MuiPaper-root': {
     minWidth: '200px',  // default menu size
     padding: '10px',
-    backgroundColor: 'lightgreen'
   },
 }));
 
@@ -39,11 +38,11 @@ const StyledMenu = styled(Menu)(() => ({
 //////////////////
 //function start//
 //////////////////
-function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick, onLogoutClick }) {
+function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, onSignupClick, calendarVisible }) {
 
   //currentUser ---> null ako nitko nije logiran :: currentUser ako je netko logiran
   const { currentUser } = useAuth();
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [centered, setCentered] = useState(false); // State to control the centering of the username
 
@@ -54,9 +53,16 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  const handleLogin = () => {
+    handlelogin(false)
+  };
 
   const handleUsernameClick = () => {
     setCentered(!centered); // Toggle centering the username
+  };
+  const handleCalendarToggle = () => {
+    calendarVisible(true)// Toggle the calendar visibility
+    setAnchorEl(null);  // Close the menu when calendar is opened
   };
 
   return (
@@ -67,25 +73,25 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
         </Logo>
 
         {/* Profile section (login, signup, avatar)*/}
-        {currentUser? (
+        {(currentUser && isLoggedIn)? (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Avatar with user image or initials */}
-            <Avatar 
-              src={userAvatar} 
-              alt={username} 
-              sx={{ 
+            <Avatar
+              src={userAvatar}
+              alt={username}
+              sx={{
                 //avatar styling
-                marginRight: '0.3em', 
-                width: 30,  
-                height: 30, 
-                ':hover': { 
-                  transform: 'scale(1.2)',  // growing on Hover
-                  transition: 'transform 0.3s ease',
+                marginRight: "0.3em",
+                width: 30,
+                height: 30,
+                ":hover": {
+                  transform: "scale(1.2)",  // growing on Hover
+                  transition: "transform 0.3s ease",
                 },
-              }} 
+              }}
               onClick={handleMenuOpen}  //Menu opening on the click of the avatar
             />
-            
+
             {/* Username displayed next to the profile icon */}
             <Typography
               variant="h6"
@@ -101,18 +107,36 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
                 disabled
                 onClick={handleUsernameClick}
                 sx={{
-                  textAlign: centered ? 'center' : 'initial', // Center the username on click
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textAlign: 'center',
                 }}
               >
                 {username}
-                
+
               </MenuItem>
-              <SignOutButton onClose={handleMenuClose}/>
+              <Button sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                textAlign: 'center',
+                width: '100%',
+                alignItems: 'center',
+                backgroundColor: 'rgba(84, 221, 52, 0.24)',
+                color: 'black',
+                transition: 'background-color 0.3s, color 0.3s',
+
+                '&:hover': {
+                  backgroundColor: 'rgb(16, 165, 16)',
+                  color: '#ffffff',
+                },
+              }} disableRipple={true} onClick={handleCalendarToggle}>Activity</Button>
+              <SignOutButton onClick={handleLogin} onClose={handleMenuClose}/>
 
               {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}
               {/*  Logout*/}
               {/*</LogoutButton>*/}
-              
+
             </StyledMenu>
           </Box>
         ) : (
@@ -121,7 +145,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
             <Button color="inherit" onClick={onSignupClick}>Signup</Button>
           </div>
         )}
-        
+
       </StyledToolbar>
     </StyledAppBar>
   );

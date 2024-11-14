@@ -5,6 +5,7 @@ import RegForm from './components/form/RegForm.jsx'
 import Countdown from './components/countdown/Countdown.jsx'
 import Snowfall from './components/snowfall/Snowfall.jsx'
 import Header from './components/Header.jsx'
+import CalendarComponent from "./Components/calendar/CalendarComponent.jsx";
 
 
 function App() {
@@ -26,48 +27,52 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState((localStorage.getItem('username') ? true : false));
 
   const [username, setUsername] = useState((localStorage.getItem('username')) || 'Guest');
+  const [showCalendar, setShowCalendar] = useState(false);
 
-  const handleLoginStatusChange = (status, username) => {
+  const handleLoginStatusChange = (status) => {
     setIsLoggedIn(status)
-    setUsername(username)
+    setUsername(localStorage.getItem('username'))
     setTimeout(hideForm, 1000)    //skriva formu nakon logina
   };
-  const handleSignInStatusChange = (status, username) => {
+  const handleSignInStatusChange = (status) => {
     setIsLoggedIn(status)
-    setUsername(username)
+    setUsername(localStorage.getItem('username'))
 
     setTimeout(hideRegForm, 1000); //skriva regformu nakon loginay
   };
 
   //funkcije za dobivanje Loginforme i signforme
   const handleLoginClick = () => {
-    setUsername(username); //promjena korisnika
     showForm();
   };
 
   const handleSignupClick = () => {
-    setUsername('Sign'); //promjena korisnika
     showRegForm();
   };
-
-  const handleLogoutClick = () => {
-    setIsLoggedIn(false);     //logoutbutton
-    setUsername('Guest');
+  const handleCalendar = (status) => {
+    setShowCalendar(status);
+  };
+  const handlelogin = (status) => {
+    setIsLoggedIn(status)
   };
   return (
     <>
       <Header className="header"
         isLoggedIn={isLoggedIn}
+        handlelogin={handlelogin}
         username={username}
         onLoginClick={handleLoginClick}
         onSignupClick={handleSignupClick}
-        onLogoutClick={handleLogoutClick}
+        calendarVisible={handleCalendar}
       />
+
       {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange}/>}
       {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange}/>}
+      {showCalendar && <CalendarComponent hideCalendar={handleCalendar}></CalendarComponent>}
       <Snowfall className="snowfall"/>
       
       <Countdown targetDate="2024-12-25T00:00:00"/>
+
     </>
   )
 }

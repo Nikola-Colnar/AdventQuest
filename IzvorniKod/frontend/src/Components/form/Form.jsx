@@ -1,26 +1,26 @@
-import {useState, useEffect, useRef} from 'react';
-import "./form.css"
-import {FaLock} from "react-icons/fa";
-import {FcGoogle} from "react-icons/fc";
-import {IoIosMail} from "react-icons/io";
-import {signInWithEmailAndPassword} from "firebase/auth";
-import {auth, googleProvider} from "../../firebase/firebaseConfig.js";
-import {signInWithPopup} from "firebase/auth";
-import {Box, Alert} from "@mui/material";
+import { useState, useEffect, useRef } from "react";
+import "./form.css";
+import { FaLock } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { IoIosMail } from "react-icons/io";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, googleProvider } from "../../firebase/firebaseConfig.js";
+import { signInWithPopup } from "firebase/auth";
+import { Box, Alert } from "@mui/material";
 import PropTypes from "prop-types";
 
-const USERS_REST_API_URL = 'http://localhost:8080/api/users/login';
-const USERS_REST_API_URL1 = 'http://localhost:8080/api/users/signup';
+const USERS_REST_API_URL = "https://localhost:8443/api/users/login";
+const USERS_REST_API_URL1 = "https://localhost:8443/api/users/signup";
 
-function Form({onClick, loggedIn}) {
+function Form({ onClick, loggedIn }) {
   //State za pracenje podataka u formi
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    email: ''
+    username: "",
+    password: "",
+    email: "",
   });
-  const [severity, setSeverity] = useState('');
-  const [message, setMessage] = useState('');
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
 
   const overlayRef = useRef(null); // referenca na overlay div
   const formRef = useRef(null);
@@ -43,8 +43,8 @@ function Form({onClick, loggedIn}) {
 
   // Funkcija za rukovanje promjenama u input poljima
   const handleChange = (e) => {
-    const {name, value} = e.target;
-    setFormData({...formData, [name]: value});
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   //login korisnika na firebase sa mailom i lozinkom
@@ -52,44 +52,42 @@ function Form({onClick, loggedIn}) {
     e.preventDefault();
     try {
       const Credentials = await signInWithEmailAndPassword(auth, formData.email, formData.password);
-      const user = Credentials.user
-      const uid = user.uid
+      const user = Credentials.user;
+      const idToken = await user.getIdToken();
       try {
         const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${idToken}`,
           },
-          body: JSON.stringify({
-            uid: uid
-          })
         });
 
         if (!response.ok) {
-          setMessage('Network response was not ok: ' + response.statusText);
-          setSeverity('error');
-          return;
+          setMessage(`Network response was not ok: ${response.statusText}`);
+          setSeverity("error");
+        } else {
+          const data = await response.json(); // Dohvaćamo JSON odgovor
+          const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+          console.log(username);
+          localStorage.setItem("username", username);
+          loggedIn(true); // prosljeđujemo username u funkciju loggedIn
+          setMessage("User logged in successfully");
+          setSeverity("success");
+          console.log(loggedIn);
         }
-        const data = await response.json(); // Dohvaćamo JSON odgovor
-        const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
-        console.log(username)
-        localStorage.setItem('username', username);
 
-        setMessage('User logged in successfully');
-        setSeverity('success');
-        loggedIn(true, username); // prosljeđujemo username u funkciju loggedIn
-        console.log(loggedIn)
 
       } catch (error) {
-        console.error('Database: Error with login: ', error);
-        setMessage('Failed to login');
-        setSeverity('error');
+        console.error("Database: Error with login: ", error);
+        setMessage("Failed to login");
+        setSeverity("error");
       }
 
     } catch (error) {
-      console.error('Firebase: Error with login: ', error);
-      setMessage('Failed to login');
-      setSeverity('error');
+      console.error("Firebase: Error with login: ", error);
+      setMessage("Failed to login");
+      setSeverity("error");
     }
   };
 
@@ -98,58 +96,73 @@ function Form({onClick, loggedIn}) {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       // result.user sadrzi info o useru
-      localStorage.setItem('username',result.user.displayName)
+      const user = result.user;
+      const idToken = await user.getIdToken();
+      localStorage.setItem("username", user.displayName);
+      console.log("Google login ID Token:", idToken);
       console.log("User info:", result.user);
-      alert(`Welcome ${result.user.displayName}`);
-      loggedIn(true,localStorage.getItem('username'));
+      //alert(`Welcome ${result.user.displayName}`);
 
       //BAZA
       try {
         const response = await fetch(USERS_REST_API_URL1, {  //saljemo podatke
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${idToken}`,
           },
           body: JSON.stringify({
-            uid: localStorage.getItem('uid'),
-            username: localStorage.getItem('username'),
-            vrstaUser: 'korisnik'
-          })
+            username: localStorage.getItem("username"),
+            vrstaUser: "korisnik",
+          }),
         });
 
         if (!response.ok) {
-          console.log("user already created")
+          console.log("user already created");
           try {
             const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
-              method: 'POST',
+              method: "POST",
               headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${idToken}`,
               },
-              body: JSON.stringify({
-                uid: localStorage.getItem('uid'),
-              })
             });
-            const data = await response.json(); // Dohvaćamo JSON odgovor
-            localStorage.setItem('username',data.username)    // Dohvacamo username iz baze
-            //Nakon uspjesnog slanja forma se resetira
-            setFormData({username: '', password: '', email: '', vrstaUser: 'korisnik'});
-            loggedIn(true, data.username);
-          }catch {
-            setMessage('Network response was not ok: ' + response.statusText);
 
-            setSeverity('error');
-            return;
+            if (!response.ok) {
+              setMessage("Network response was not ok: " + response.statusText);
+              setSeverity("error");
+            } else {
+              const data = await response.json(); // Dohvaćamo JSON odgovor
+              const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+              console.log(username);
+              localStorage.setItem("username", username);
+              loggedIn(true); // prosljeđujemo username u funkciju loggedIn
+              setMessage("User logged in successfully");
+              setSeverity("success");
+              console.log(loggedIn);
+            }
+          } catch {
+            setMessage("Network response was not ok: " + response.statusText);
+
+            setSeverity("error");
+
           }
+        } else {
+          const data = await response.json(); // Dohvaćamo JSON odgovor
+          const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+          console.log(username);
+          localStorage.setItem("username", username);
+          loggedIn(true); // prosljeđujemo username u funkciju loggedIn
+          setMessage("User logged in successfully");
+          setSeverity("success");
+          console.log(loggedIn);
         }
 
       } catch (error) {
-        console.error('Database: Error creating user: ', error);
-        setMessage('Failed to create user');
-        setSeverity('error');
+        console.error("Database: Error creating user: ", error);
+        setMessage("Ups! Something went wrong :(");
+        setSeverity("error");
       }
-      setMessage('User logged in successfully');
-      setSeverity('success');
-
 
     } catch (error) {
       console.error("Error during Google sign-in:", error);
@@ -158,44 +171,44 @@ function Form({onClick, loggedIn}) {
   };
 
   return (
-    <div ref={overlayRef} className='overlay'>
+    <div ref={overlayRef} className="overlay">
       <form ref={formRef} className="Form" onSubmit={handleLogin}>
         <h2>Login</h2>
-        <div className='maildiv'>
+        <div className="maildiv">
           <input
             type="email"
             name="email"
-            placeholder='Email'
+            placeholder="Email"
             value={formData.email}
             onChange={handleChange}
             required  // sprjecava submit dok polje nije ispravno
           />
-          <IoIosMail className='mailicon'></IoIosMail>
+          <IoIosMail className="mailicon"></IoIosMail>
         </div>
-        <div className='passdiv'>
+        <div className="passdiv">
           <input
             type="password"
             name="password"
-            placeholder='Password'
+            placeholder="Password"
             value={formData.password}
             onChange={handleChange}
             required  // sprjecava submit dok polje nije ispravno
           />
-          <FaLock className='passicon'></FaLock>
+          <FaLock className="passicon"></FaLock>
         </div>
         {message &&
-          <Box spacing={2} className={'error-message'} paddingBottom={2}>
+          <Box spacing={2} className={"error-message"} paddingBottom={2}>
             <Alert severity={severity}>
               {message}
             </Alert>
           </Box>
         }
-        <div className='submitDiv'>
+        <div className="submitDiv">
           <button className="submit" type="submit">Submit</button>
         </div>
         <div className="google-signin">
           <button type="button" onClick={handleGoogleSignIn} className="google-button">{<FcGoogle
-            className='google-icon'/>} Sign in with Google
+            className="google-icon" />} Sign in with Google
           </button>
         </div>
       </form>
@@ -206,6 +219,6 @@ function Form({onClick, loggedIn}) {
 Form.propTypes = {
   onClick: PropTypes.func.isRequired,
   loggedIn: PropTypes.func.isRequired,
-}
+};
 
 export default Form;
