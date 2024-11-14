@@ -20,6 +20,10 @@ public class User {
 
     private String vrstaUser;
 
+    @ManyToOne
+    @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
+    private Group group;
+    
     // Default constructor
     public User() {
     }
@@ -66,5 +70,9 @@ public class User {
     @Override
     public String toString() {
         return uid + " " + username + " " +   vrstaUser;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

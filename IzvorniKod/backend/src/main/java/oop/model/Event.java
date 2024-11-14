@@ -15,6 +15,10 @@ public class Event {
     private Date date;
     private String eventName;
 
+    @ManyToOne
+    @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
+    private Group group;
+
     public Event() {}
 
     public Event(String eventName, Date date) {
@@ -49,5 +53,9 @@ public class Event {
                 ", date=" + date +
                 ", eventName='" + eventName + '\'' +
                 '}';
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

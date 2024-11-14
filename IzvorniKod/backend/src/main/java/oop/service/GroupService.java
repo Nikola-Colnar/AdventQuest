@@ -11,7 +11,7 @@ import java.util.*;
 @Service
 public class GroupService {
 
-    GroupRepository groupRepo;
+    private final GroupRepository groupRepo;
     public static final int MAX_USERS_IN_GROUP = 21; // Maksimal dopušteni broj korisnika u grupo
 
     @Autowired
@@ -21,22 +21,22 @@ public class GroupService {
 
     public Group createGroup(Group group) {
         // Jel postoji grupa s tim id
-        if(groupRepo.findById(group.getIdGrupa()) != null){
-            throw new RuntimeException("User with this UID already exists");
-        }
+//        if(groupRepo.findById(group.getIdGrupa()) != null){
+//            throw new RuntimeException("User with this UID already exists");
+//        }
         // Ako id nije zauzet, spremamo korisnika
+
         return groupRepo.save(group);
     }
-
-    public Optional<Group> findById(long id) {
+    public Optional<Group> findById(int id) {
         return groupRepo.findById(id).isEmpty() ? Optional.empty() : Optional.of(groupRepo.findById(id).get());
     }
 
-    public void deleteGroup(long id) {
+    public void deleteGroup(int id) {
         groupRepo.deleteById(id);
     }
 
-    public Group changeGroupName(Long id, String newName){
+    public Group changeGroupName(int id, String newName){
         Optional<Group> group = groupRepo.findById(id);
         if(group.isPresent()){
             group.get().setNazivGrupa(newName);
@@ -47,7 +47,7 @@ public class GroupService {
         }
     }
 
-    public void PutUser(Long id, User user){ // dodavanj usera u već postojeću grupu
+    public void PutUser(int id, User user){ // dodavanj usera u već postojeću grupu
         Optional<Group> group = groupRepo.findById(id);
         if(group.isPresent()){
             Group group1 = group.get();
@@ -68,7 +68,7 @@ public class GroupService {
         }
     }
 
-    public void DeleteUser(Long id, User user){ // brisanje usera iz grupe
+    public void DeleteUser(int id, User user){ // brisanje usera iz grupe
         Optional<Group> group = groupRepo.findById(id);
         if(group.isPresent()){
             Group group1 = group.get();
@@ -86,7 +86,7 @@ public class GroupService {
         }
     }
 
-    public void putEvent(Long id, Event event){
+    public void putEvent(int id, Event event){
         Optional<Group> group = groupRepo.findById(id);
         if(group.isPresent()){
             Group group1 = group.get();
@@ -96,6 +96,7 @@ public class GroupService {
                     throw new RequestDeniedException("Event with id " + event.getIdEvent() + " already exists.");
                 }
             });
+            event.setGroup(group1);
             group1.getEvents().add(event);
             groupRepo.save(group1);
         }else{
@@ -103,7 +104,7 @@ public class GroupService {
         }
     }
 
-    public void deleteEvent(Long id, Event event){
+    public void deleteEvent(int id, Event event){
         Optional<Group> group = groupRepo.findById(id);
         if(group.isPresent()){
             Group group1 = group.get();

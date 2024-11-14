@@ -33,9 +33,10 @@ public class MessageService {
 
     public Message createMessage(Message message) {
         // Jel postoji grupa s tim id
-        if(messageRepository.findById(message.getMessageID()) != null){
-            throw new RuntimeException("Message with this ID already exists");
-        }
+//        if(messageRepository.findById(message.getMessageID()) != null){
+//            throw new RuntimeException("Message with this ID already exists");
+//        }
+        messageRepository.save(message);
         // Ako id nije zauzet, spremamo korisnika
         return messageRepository.save(message);
     }

@@ -1,6 +1,8 @@
 package oop.model;
 
 import jakarta.persistence.*;
+import oop.service.GroupService;
+
 import java.util.*;
 
 
@@ -8,24 +10,25 @@ import java.util.*;
 @Table(name = "SGroup")
 public class Group {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idGrupa;
+    private int idGrupa;
 
     private String nazivGrupa;
 
     private String uidPredstavnika;
 
-    @OneToMany
+    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL)
     private Set<User> users = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL)
     private Set<Event> events = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL)
     private List<Message> messages = new ArrayList<>();
 
-    public Long getIdGrupa() {
+    public int getIdGrupa() {
         return idGrupa;
     }
 
@@ -62,18 +65,33 @@ public class Group {
         this.users = users;
     }
 
+    public void addUser(User user) {
+        users.add(user);
+        user.setGroup(this);
+    }
+
     public void setEvents(Set<Event> events) {
         this.events = events;
+    }
+
+    public void addEvent(Event event){
+        events.add(event);
+        event.setGroup(this);
     }
 
     public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 
+    public void addMessage(Message message) {
+        messages.add(message);
+        message.setGroup(this);
+    }
+
     @Override
     public String toString() {
         return "Group{" +
-                "idGrupa=" + idGrupa +
+    //            "idGrupa=" + idGrupa +
                 ", nazivGrupa='" + nazivGrupa + '\'' +
                 ", uidPredstavnika='" + uidPredstavnika + '\'' +
                 ", users=" + users +

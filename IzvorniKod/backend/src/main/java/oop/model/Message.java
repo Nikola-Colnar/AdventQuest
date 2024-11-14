@@ -17,6 +17,10 @@ public class Message {
     private Date date;
     private String poruka;
 
+    @ManyToOne
+    @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
+    private Group group;
+
     public Message() {}
 
     public Message(String uid_sender, Date date, String poruka) {
@@ -48,5 +52,9 @@ public class Message {
                 ", date=" + date +
                 ", poruka='" + poruka + '\'' +
                 '}';
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }
