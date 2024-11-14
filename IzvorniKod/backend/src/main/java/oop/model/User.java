@@ -11,8 +11,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+
     //UID od FireBase
     @NotEmpty(message = "UID is required")
+
+
     private String uid;
 
     @NotEmpty(message = "username is required")

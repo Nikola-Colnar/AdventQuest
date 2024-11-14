@@ -47,20 +47,20 @@ public class UserController {
 //    }
 
 
-
-
-
     //endpoint za sign up, iz forme za registraciju(React)
     @PostMapping("/signup")
     public ResponseEntity<User> signupUser(
             @RequestHeader("Authorization") String authHeader,
             @RequestBody User user) {  // Prima cijeli User objekt iz body-a
 
+
         System.out.println("Signing up...");
 
         // Provjera je li Authorization header prisutan i ispravan
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             System.out.println("No authorization header or no Bearer");
+
+
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  // Loš zahtjev ako header nije ispravan
         }
 
@@ -89,7 +89,10 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestHeader("Authorization") String authHeader) {
+
         System.out.println("Logging in...");
+
+
         String idToken = authHeader.replace("Bearer ", "");
         try {
             // Verificiraj ID token koji je poslan u Authorization headeru
@@ -99,7 +102,10 @@ public class UserController {
             // Provjeri postoji li korisnik s tim UID-om u bazi podataka
             User user = userService.loginUser(uidFromToken);
             if (user == null) {
+
                 System.out.println("No user in database");
+
+
                 // Ako korisnik nije pronađen, vrati HTTP status UNAUTHORIZED (401)
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -109,7 +115,10 @@ public class UserController {
 
         } catch (Exception e) {
             // Ako dođe do greške u verifikaciji tokena, vrati HTTP status UNAUTHORIZED (401)
+
             System.out.println("Tokin not valic." + e);
+
+
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
     }
