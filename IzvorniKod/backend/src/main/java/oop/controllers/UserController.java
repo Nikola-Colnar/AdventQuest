@@ -109,7 +109,7 @@ public class UserController {
             // Provjeri postoji li korisnik s tim UID-om u bazi podataka
             User user = userService.loginUser(uidFromToken);
             if (user == null) {
-                System.out.println("User ne postoji");
+                System.out.println("USERA NEMAAAA ");
                 // Ako korisnik nije pronađen, vrati HTTP status UNAUTHORIZED (401)
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -119,7 +119,7 @@ public class UserController {
 
         } catch (Exception e) {
             // Ako dođe do greške u verifikaciji tokena, vrati HTTP status UNAUTHORIZED (401)
-            System.out.println("Nevalja token" + e);
+            System.out.println("LOŠ TI JE TOKEN LUZERU" + e);
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
     }

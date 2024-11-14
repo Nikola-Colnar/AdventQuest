@@ -8,8 +8,7 @@ import {IoIosMail} from "react-icons/io";
 import {Box, Alert} from "@mui/material";
 import PropTypes from "prop-types";
 
-const USERS_REST_API_URL = 'http://localhost:8080/api/users/signup';
-const USERS_REST_API_URL1 = 'http://localhost:8080/api/users/login';
+const USERS_REST_API_URL = 'https://localhost:8443/api/users/signup';
 
 function RegForm({onClick, signIn}) {
   // state za pracenje podataka u formi
@@ -77,19 +76,17 @@ function RegForm({onClick, signIn}) {
         });
         console.log(response);
         if (!response.ok) {
-          setMessage(`Network response was not ok: ${response.statusText}`);
+          
+          setMessage('Network response was not ok: ' + response.statusText);
           setSeverity('error');
           return;
-        }else {
-          const data = await response.json();
-          console.log(data); // Dohvaćamo JSON odgovor
-          localStorage.setItem('username', data.username)     // pohranjujemo u localStorage dobiveni username
-          signIn(true); //mice formu i postavlja username na stranici
-          //Nakon uspjesnog slanja forma se resetira
-          setFormData({username: '', password: '', email: '', vrstaUser: 'korisnik'});  //restarta signupformu
-          setMessage('User signed in successfully');
-          setSeverity('success');
         }
+        const data = await response.json();
+        console.log(data); // Dohvaćamo JSON odgovor
+        const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+        //Nakon uspjesnog slanja forma se resetira
+        setFormData({username: '', password: '', email: '', vrstaUser: 'korisnik'});
+        signIn(true, username);
       } catch (error) {
         console.error('Database: Error creating user: ', error);
         setMessage('Failed to create user');
@@ -112,7 +109,8 @@ function RegForm({onClick, signIn}) {
       localStorage.setItem('username',result.user.displayName)
       console.log("User info:", result.user);
       console.log(localStorage.getItem('username'))
-      //alert(`Welcome ${result.user.displayName}`);
+      signIn(true,localStorage.getItem('username'));
+      alert(`Welcome ${result.user.displayName}`);
 
       //BAZA
       try {
@@ -129,45 +127,15 @@ function RegForm({onClick, signIn}) {
         });
 
         if (!response.ok) {
-          console.log("user already created")
-          try {
-            const response = await fetch(USERS_REST_API_URL1, {  //saljemo podatke
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${idToken}`
-              },
-            });
-
-            if (!response.ok) {
-              setMessage(`Network response was not ok: ${response.statusText}`);
-              setSeverity('error');
-            }else {
-              const data = await response.json(); // Dohvaćamo JSON odgovor
-              const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
-              console.log(username)
-              localStorage.setItem('username', username);
-              signIn(true); // prosljeđujemo username u funkciju loggedIn
-              setMessage('User logged in successfully');
-              setSeverity('success');
-              console.log(signIn)
-            }
-          }catch {
-            setMessage(`Network response was not ok: ${response.statusText}`);
-
-            setSeverity('error');
-            return;
-          }
-        }else {
-          const data = await response.json(); // Dohvaćamo JSON odgovor
-          const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
-          console.log(username)
-          localStorage.setItem('username', username);
-          signIn(true); // prosljeđujemo username u funkciju loggedIn
-          setMessage('User Signed in successfully');
-          setSeverity('success');
-          console.log(signIn)
+          setMessage('Network response was not ok: ' + response.statusText);
+          setSeverity('error');
+          return;
         }
+        const data = await response.json(); // Dohvaćamo JSON odgovor
+        const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+        //Nakon uspjesnog slanja forma se resetira
+        setFormData({username: '', password: '', email: '', vrstaUser: 'korisnik'});
+        signIn(true, username);
       } catch (error) {
         console.error('Database: Error creating user: ', error);
         setMessage('Failed to create user');
