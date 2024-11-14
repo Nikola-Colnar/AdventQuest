@@ -18,12 +18,12 @@ const Snowfall = () => {
   const [snowflakes, setSnowflakes] = useState([]);
 
   useEffect(() => {
-    const snowflakeArray = Array.from({ length: 40 });
+    const snowflakeArray = Array.from({ length: 65 });
 
     const newSnowflakes = snowflakeArray.map((_, i) => {
       const animationDelay = `${(Math.random() * 25).toFixed(2)}s`;
       const fontSize = `${(Math.floor(Math.random() * 20) + 10)}px`;
-      const leftPosition = `${Math.random() * 96 + 2}vw`; // Nasumična horizontalna pozicija od 0 do 100% širine ekrana
+      const leftPosition = `${Math.random() * 94 + 2}vw`; // Nasumična horizontalna pozicija od 0 do 100% širine ekrana
       const topPosition = `-${Math.random() * 50 + 10}vh`; // Pahuljice počinju iznad ekrana
       const animationDuration = `${(Math.random() * 40 + 20).toFixed(2)}s`;
       const rotateDuration = `${(Math.random() * 10 + 15).toFixed(2)}s`; // Nasumična rotacija traje između 10-20 sekundi
