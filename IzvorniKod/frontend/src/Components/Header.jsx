@@ -53,6 +53,9 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  const handleLogin = () => {
+    handlelogin(false)
+  };
 
   const handleUsernameClick = () => {
     setCentered(!centered); // Toggle centering the username
@@ -128,7 +131,7 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
                   color: '#ffffff',
                 },
               }} disableRipple={true} onClick={handleCalendarToggle}>Activity</Button>
-              <SignOutButton onClose={handleMenuClose}/>
+              <SignOutButton onClick={handleLogin} onClose={handleMenuClose}/>
 
               {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}
               {/*  Logout*/}

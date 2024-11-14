@@ -5,19 +5,20 @@ import { useAuth } from "../firebase/AuthContext";
 import {styled} from "@mui/system";
 import {MenuItem} from "@mui/material";
 
-const SignOutButton = ({onClose}) => {
+const SignOutButton = ({onClick,onClose}) => {
     const { currentUser } = useAuth();
 
     const handleSignOut = () => {
         signOut(auth)
-            .then(() => {
-                alert("You have signed out successfully!");
-                localStorage.clear()
-                onClose();
-            })
-            .catch((error) => {
-                console.error("Error signing out: ", error);
-            });
+          .then(() => {
+              alert("You have signed out successfully!");
+              localStorage.clear()
+              onClick();
+              onClose();
+          })
+          .catch((error) => {
+              console.error("Error signing out: ", error);
+          });
     };
 
     const LogoutButton = styled(MenuItem)(() => ({
@@ -37,7 +38,7 @@ const SignOutButton = ({onClose}) => {
     if (!currentUser) return null;
 
     return (
-        <LogoutButton className="logout_button" onClick={handleSignOut}>Sign Out</LogoutButton>
+      <LogoutButton className="logout_button" onClick={handleSignOut}>Sign Out</LogoutButton>
     );
 };
 
