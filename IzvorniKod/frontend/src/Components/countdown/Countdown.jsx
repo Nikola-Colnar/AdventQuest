@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import "./countdown.css"
+import { useState, useEffect } from "react";
+import "./countdown.css";
+import PropTypes from "prop-types";
+
 
 function Countdown({ targetDate }) {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   function calculateTimeLeft() {
-    const difference = new Date(targetDate) - new Date(); //razlika se izracuna u milisekundama
+    // razlika se izracuna u milisekundama
+    const difference = new Date(targetDate) - new Date();
     if (difference > 0) {
       return {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)), 
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((difference / (1000 * 60)) % 60),
         seconds: Math.floor((difference / 1000) % 60),
@@ -19,30 +22,35 @@ function Countdown({ targetDate }) {
   }
 
   useEffect(() => {
+    // nakon svakih 1000 milisekundi se izvrsava izracun preostalog vremena
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
-    }, 1000); //nakon svakih 1000 milisekundi se izvrsava funkcija
-
-    return () => clearInterval(timer); //ako se unmounta, ukloni s ekrana, koristi druga stranica
-  }, [targetDate]); //ako promjenimo datum, da se stvori novi timer
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [targetDate]);
 
   if (!timeLeft) {
-    return <div>Marry Christmas</div>; // Poruka kada vrijeme istekne
+    // poruka kada vrijeme istekne
+    return <div>Marry Christmas</div>;
   }
 
-  //dinamicko ispisivanje mnozine i jednine
+  // dinamicko ispisivanje mnozine i jednine
   const getSecondsLabel = (time) => {
-    return time === 1 ? 'second' : 'seconds';
+    return time === 1 ? "second" : "seconds";
   };
+
   const getMinutesLabel = (time) => {
-    return time === 1 ? 'minute' : 'minutes';
+    return time === 1 ? "minute" : "minutes";
   };
+
   const getHoursLabel = (time) => {
-    return time === 1 ? 'hour' : 'hours';
+    return time === 1 ? "hour" : "hours";
   };
+
   const getYearsLabel = (days) => {
-    return days === 1 ? 'day' : 'days';
+    return days === 1 ? "day" : "days";
   };
+
   return (
     <div className="countdown-container">
       <h1 className="countdown-title">Christmas Countdown</h1>
@@ -68,6 +76,8 @@ function Countdown({ targetDate }) {
   );
 }
 
+Countdown.propTypes = {
+  targetDate: PropTypes.string.isRequired,
+};
+
 export default Countdown;
-
-
