@@ -6,16 +6,16 @@ import SignOutButton from "./SignOutButton.jsx";
 
 //styling for nav bar and components
 const StyledAppBar = styled(AppBar)(() => ({
-  position: 'relative',  //position relative jer (static position ne moze mijenjati z index)
-  backgroundColor: 'rgba(255, 0, 0)',  // boja navigacijskog bara
-  boxShadow: 'none',  
+  position: "relative",  //position relative jer (static position ne moze mijenjati z index)
+  backgroundColor: "rgba(255, 0, 0)",  // boja navigacijskog bara
+  boxShadow: "none",
   zIndex: 11,
 }));
 
 const StyledToolbar = styled(Toolbar)(() => ({
-  display: 'flex',   
-  justifyContent: 'space-between', //split components
-  alignItems: 'center',  // vertical centerin
+  display: "flex",
+  justifyContent: "space-between", //split components
+  alignItems: "center",  // vertical centerin
 }));
 
 const Logo = styled(Typography)(() => ({
@@ -42,7 +42,7 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
 
   //currentUser ---> null ako nitko nije logiran :: currentUser ako je netko logiran
   const { currentUser } = useAuth();
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [centered, setCentered] = useState(false); // State to control the centering of the username
 
@@ -52,7 +52,6 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    handlelogin(false)
   };
 
   const handleUsernameClick = () => {
@@ -74,22 +73,22 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
         {(currentUser && isLoggedIn)? (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Avatar with user image or initials */}
-            <Avatar 
-              src={userAvatar} 
-              alt={username} 
-              sx={{ 
+            <Avatar
+              src={userAvatar}
+              alt={username}
+              sx={{
                 //avatar styling
-                marginRight: '0.3em', 
-                width: 30,  
-                height: 30, 
-                ':hover': { 
-                  transform: 'scale(1.2)',  // growing on Hover
-                  transition: 'transform 0.3s ease',
+                marginRight: "0.3em",
+                width: 30,
+                height: 30,
+                ":hover": {
+                  transform: "scale(1.2)",  // growing on Hover
+                  transition: "transform 0.3s ease",
                 },
               }}
               onClick={handleMenuOpen}  //Menu opening on the click of the avatar
             />
-            
+
             {/* Username displayed next to the profile icon */}
             <Typography
               variant="h6"
@@ -112,7 +111,7 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
                 }}
               >
                 {username}
-                
+
               </MenuItem>
               <Button sx={{
                 display: 'flex',
@@ -128,13 +127,13 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
                   backgroundColor: 'rgb(16, 165, 16)',
                   color: '#ffffff',
                 },
-              }} onClick={handleCalendarToggle}>Activity</Button>
+              }} disableRipple={true} onClick={handleCalendarToggle}>Activity</Button>
               <SignOutButton onClose={handleMenuClose}/>
 
               {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}
               {/*  Logout*/}
               {/*</LogoutButton>*/}
-              
+
             </StyledMenu>
           </Box>
         ) : (
@@ -143,7 +142,7 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
             <Button color="inherit" onClick={onSignupClick}>Signup</Button>
           </div>
         )}
-        
+
       </StyledToolbar>
     </StyledAppBar>
   );
