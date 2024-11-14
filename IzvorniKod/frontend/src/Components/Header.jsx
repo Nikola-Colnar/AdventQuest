@@ -31,7 +31,6 @@ const StyledMenu = styled(Menu)(() => ({
   ' .MuiPaper-root': {
     minWidth: '200px',  // default menu size
     padding: '10px',
-    backgroundColor: 'lightgreen'
   },
 }));
 
@@ -87,7 +86,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
                   transform: 'scale(1.2)',  // growing on Hover
                   transition: 'transform 0.3s ease',
                 },
-              }} 
+              }}
               onClick={handleMenuOpen}  //Menu opening on the click of the avatar
             />
             
@@ -106,13 +105,30 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
                 disabled
                 onClick={handleUsernameClick}
                 sx={{
-                  textAlign: centered ? 'center' : 'initial', // Center the username on click
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textAlign: 'center',
                 }}
               >
                 {username}
                 
               </MenuItem>
-              <Button className="Activity" onClick={handleCalendarToggle}>Activity</Button>
+              <Button sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                textAlign: 'center',
+                width: '100%',
+                alignItems: 'center',
+                backgroundColor: 'rgba(84, 221, 52, 0.24)',
+                color: 'black',
+                transition: 'background-color 0.3s, color 0.3s',
+
+                '&:hover': {
+                  backgroundColor: 'rgb(16, 165, 16)',
+                  color: '#ffffff',
+                },
+              }} onClick={handleCalendarToggle}>Activity</Button>
               <SignOutButton onClose={handleMenuClose}/>
 
               {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}

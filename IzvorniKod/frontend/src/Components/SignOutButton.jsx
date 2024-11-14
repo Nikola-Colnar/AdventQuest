@@ -20,16 +20,23 @@ const SignOutButton = ({onClose}) => {
     };
 
     const LogoutButton = styled(MenuItem)(() => ({
+        backgroundColor: 'rgba(255, 24, 24, 0.27)',  // osnovna pozadina
+        color: 'black',  // osnovna boja teksta
+        textAlign: 'center',
+        justifyContent: 'center',
+
         ':hover': {
             backgroundColor: 'red',  // red on hover
             color: 'white',
+            textAlign: 'center',
+            justifyContent:'center',
         },
     }));
 
     if (!currentUser) return null;
 
     return (
-        <LogoutButton onClick={handleSignOut}>Sign Out</LogoutButton>
+        <LogoutButton className="logout_button" onClick={handleSignOut}>Sign Out</LogoutButton>
     );
 };
 
