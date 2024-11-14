@@ -31,7 +31,6 @@ const StyledMenu = styled(Menu)(() => ({
   ' .MuiPaper-root': {
     minWidth: '200px',  // default menu size
     padding: '10px',
-    backgroundColor: 'lightgreen'
   },
 }));
 
@@ -39,7 +38,7 @@ const StyledMenu = styled(Menu)(() => ({
 //////////////////
 //function start//
 //////////////////
-function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick, onLogoutClick }) {
+function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, onSignupClick, calendarVisible }) {
 
   //currentUser ---> null ako nitko nije logiran :: currentUser ako je netko logiran
   const { currentUser } = useAuth();
@@ -53,10 +52,15 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    handlelogin(false)
   };
 
   const handleUsernameClick = () => {
     setCentered(!centered); // Toggle centering the username
+  };
+  const handleCalendarToggle = () => {
+    calendarVisible(true)// Toggle the calendar visibility
+    setAnchorEl(null);  // Close the menu when calendar is opened
   };
 
   return (
@@ -67,7 +71,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
         </Logo>
 
         {/* Profile section (login, signup, avatar)*/}
-        {currentUser? (
+        {(currentUser && isLoggedIn)? (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Avatar with user image or initials */}
             <Avatar 
@@ -82,7 +86,7 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
                   transform: 'scale(1.2)',  // growing on Hover
                   transition: 'transform 0.3s ease',
                 },
-              }} 
+              }}
               onClick={handleMenuOpen}  //Menu opening on the click of the avatar
             />
             
@@ -101,12 +105,30 @@ function Header({ isLoggedIn, username, userAvatar, onLoginClick, onSignupClick,
                 disabled
                 onClick={handleUsernameClick}
                 sx={{
-                  textAlign: centered ? 'center' : 'initial', // Center the username on click
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textAlign: 'center',
                 }}
               >
                 {username}
                 
               </MenuItem>
+              <Button sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                textAlign: 'center',
+                width: '100%',
+                alignItems: 'center',
+                backgroundColor: 'rgba(84, 221, 52, 0.24)',
+                color: 'black',
+                transition: 'background-color 0.3s, color 0.3s',
+
+                '&:hover': {
+                  backgroundColor: 'rgb(16, 165, 16)',
+                  color: '#ffffff',
+                },
+              }} onClick={handleCalendarToggle}>Activity</Button>
               <SignOutButton onClose={handleMenuClose}/>
 
               {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}
