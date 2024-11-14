@@ -11,8 +11,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    // Dodajte UID polje za Firebase UID
-//    @NotEmpty(message = "UID is required")
+
+    //UID od FireBase
+    @NotEmpty(message = "UID is required")
+
+
     private String uid;
 
     @NotEmpty(message = "username is required")
@@ -20,6 +23,10 @@ public class User {
 
     private String vrstaUser;
 
+    @ManyToOne
+    @JoinColumn(name = "idGrupa")
+    private Group group;
+    
     // Default constructor
     public User() {
     }
@@ -66,5 +73,9 @@ public class User {
     @Override
     public String toString() {
         return uid + " " + username + " " +   vrstaUser;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

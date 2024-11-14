@@ -26,15 +26,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    //ovaj endpoint koristiti za admine!!!
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        // Spremanje korisnika
-        User createdUser = userService.createUser(user);
-
-        // Vraća korisnika u odgovoru sa statusom 201 (Created)
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
+//    //ovaj endpoint koristiti za admine!!!
+//    @PostMapping
+//    public ResponseEntity<User> createUser(@RequestBody User user) {
+//        // Spremanje korisnika
+//        User createdUser = userService.createUser(user);
+//
+//        // Vraća korisnika u odgovoru sa statusom 201 (Created)
+//        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+//    }
 
     //ovaj takodjer
 //    @GetMapping
@@ -47,30 +47,20 @@ public class UserController {
 //    }
 
 
-    //Endpoint za login, to ce biti na login formi(React)
-//    @PostMapping("/login")
-//    public ResponseEntity<User> loginUser(@RequestBody User loginDetails) {
-//        try {
-//            // Prijava na temelju UID-a
-//            User user = userService.loginUser(loginDetails.getUid());  // Provjera samo po UID-u
-//            return new ResponseEntity<>(user, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-//        }
-//    }
-
-
     //endpoint za sign up, iz forme za registraciju(React)
     @PostMapping("/signup")
     public ResponseEntity<User> signupUser(
             @RequestHeader("Authorization") String authHeader,
             @RequestBody User user) {  // Prima cijeli User objekt iz body-a
 
-        System.out.println("IZVRSAVAM SIGNUP");
+
+        System.out.println("Signing up...");
 
         // Provjera je li Authorization header prisutan i ispravan
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("ERRRORRR BROJ 1");
+            System.out.println("No authorization header or no Bearer");
+
+
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  // Loš zahtjev ako header nije ispravan
         }
 
@@ -99,7 +89,10 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestHeader("Authorization") String authHeader) {
-        System.out.println("IZVRŠAVAM LOGIN");
+
+        System.out.println("Logging in...");
+
+
         String idToken = authHeader.replace("Bearer ", "");
         try {
             // Verificiraj ID token koji je poslan u Authorization headeru
@@ -109,7 +102,10 @@ public class UserController {
             // Provjeri postoji li korisnik s tim UID-om u bazi podataka
             User user = userService.loginUser(uidFromToken);
             if (user == null) {
-                System.out.println("USERA NEMAAAA ");
+
+                System.out.println("No user in database");
+
+
                 // Ako korisnik nije pronađen, vrati HTTP status UNAUTHORIZED (401)
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -119,7 +115,10 @@ public class UserController {
 
         } catch (Exception e) {
             // Ako dođe do greške u verifikaciji tokena, vrati HTTP status UNAUTHORIZED (401)
-            System.out.println("LOŠ TI JE TOKEN LUZERU" + e);
+
+            System.out.println("Tokin not valic." + e);
+
+
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
     }
