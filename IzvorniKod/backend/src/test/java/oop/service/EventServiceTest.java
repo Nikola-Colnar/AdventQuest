@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class EventServiceTest {
-//
+
     @Autowired
     private EventService eventService;
 
     @Test
     public void testCreateEvent() {
-////        // Kreiramo novi događaj s trenutnim datumom
+         // Stvaramo novi događaj s trenutnim datumom
          Date currentDate = new Date();
          Event event = new Event("Skijanje", currentDate);
          eventService.createEvent(event);

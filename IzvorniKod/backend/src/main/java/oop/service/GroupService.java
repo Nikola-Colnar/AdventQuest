@@ -21,9 +21,9 @@ public class GroupService {
 
     public Group createGroup(Group group) {
         // Jel postoji grupa s tim id
-//        if(groupRepo.findById(group.getIdGrupa()) != null){
-//            throw new RuntimeException("User with this UID already exists");
-//        }
+        if(groupRepo.findById(group.getIdGrupa()).isPresent()){
+            throw new RuntimeException("User with this UID already exists");
+        }
         // Ako id nije zauzet, spremamo korisnika
 
         return groupRepo.save(group);
@@ -47,7 +47,7 @@ public class GroupService {
         }
     }
 
-    public void PutUser(int id, User user){ // dodavanj usera u već postojeću grupu
+    public void PutUser(int id, User user){ // dodavanje usera u već postojeću grupu
         Optional<Group> group = groupRepo.findById(id);
         if(group.isPresent()){
             Group group1 = group.get();

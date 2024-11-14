@@ -19,13 +19,13 @@ public class Group {
 
     private String uidPredstavnika;
 
-    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Event> events = new HashSet<>();
 
-    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 
     public int getIdGrupa() {

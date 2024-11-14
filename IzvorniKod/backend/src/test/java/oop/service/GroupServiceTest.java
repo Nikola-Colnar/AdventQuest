@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class GroupServiceTest {
     @Autowired
@@ -21,18 +20,18 @@ class GroupServiceTest {
     void createGroup() {
         Group group = new Group();
         group.setNazivGrupa("Grupa jedan");
-        group.setUidPredstavnika("UID213R3523");
-        User user = new User("UID124123341325", "usern3123am1e", "Admin");
+        group.setUidPredstavnika("UID_predstavnika");
+        User user = new User("uidNoviUserNeki", "UserName", "Admin");
         Date currentDate = new Date();
         Event event = new Event("Skijanje", currentDate);
-        Event event2 = new Event("sanjkanje", currentDate);
-        Message message = new Message("uid123457890", currentDate, "MojaPoruka");
+        Event event2 = new Event("Sanjkanje", currentDate);
+        Message message = new Message("UID_posiljatelja", currentDate, "MojaPoruka");
+
         group.addUser(user);
         group.addEvent(event);
         group.addEvent(event2);
         group.addMessage(message);
         System.out.println(group.getEvents());
-        System.out.println(group.toString());
       //  group.getIdGrupa(); //PRAZNO
         Group createdGroup = groupService.createGroup(group);
         System.out.println(createdGroup.toString());

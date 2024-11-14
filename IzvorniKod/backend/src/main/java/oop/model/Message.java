@@ -18,7 +18,7 @@ public class Message {
     private String poruka;
 
     @ManyToOne
-    @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
+    @JoinColumn(name = "idGrupa")
     private Group group;
 
     public Message() {}

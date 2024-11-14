@@ -11,7 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    // Dodajte UID polje za Firebase UID
+    //UID od FireBase
     @NotEmpty(message = "UID is required")
     private String uid;
 
@@ -21,7 +21,7 @@ public class User {
     private String vrstaUser;
 
     @ManyToOne
-    @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
+    @JoinColumn(name = "idGrupa")
     private Group group;
     
     // Default constructor
