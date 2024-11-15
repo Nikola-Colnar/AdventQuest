@@ -8,8 +8,10 @@ import { IoIosMail } from "react-icons/io";
 import { Box, Alert } from "@mui/material";
 import PropTypes from "prop-types";
 
+
 const USERS_REST_API_URL = "https://localhost:8443/api/users/signup";
 const USERS_REST_API_URL1 = "https://localhost:8443/api/users/login";
+
 
 function RegForm({ onClick, signIn }) {
   // state za pracenje podataka u formi
@@ -22,7 +24,8 @@ function RegForm({ onClick, signIn }) {
   const [severity, setSeverity] = useState("");
   const [message, setMessage] = useState("");
 
-  const overlayRef = useRef(null); // referenca na overlay div
+  // referenca na overlay div
+  const overlayRef = useRef(null);
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -32,21 +35,22 @@ function RegForm({ onClick, signIn }) {
         onClick(); // poziva onClick (hideForm) kad je kliknut overlay
       }
     };
-    // Dodajemo event listener za klikove na dokument
+    // dodajemo event listener za klikove na dokument
     document.addEventListener("click", handleClickOutside);
 
-    // Čistimo event listener kad se komponenta unmounta
+    // cistimo event listener kad se komponenta unmounta
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [onClick]); // useEffect će se ponovo pozvati samo ako se onClick promijeni
+  }, [onClick]); // useEffect ce se ponovo pozvati samo ako se onClick promijeni
 
-  // Funkcija za rukovanje promjenama u input poljima
+  // funkcija za rukovanje promjenama u input poljima
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // funkcija za postavljanje tipa korisnika
   const handleUserRoleClick = (role) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -54,7 +58,7 @@ function RegForm({ onClick, signIn }) {
     }));
   };
 
-  //registracija korisnika na firebase
+  // registracija korisnika na firebase
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -63,9 +67,11 @@ function RegForm({ onClick, signIn }) {
       const idToken = await user.getIdToken();
       console.log("email login ID Token:", idToken);
 
-      e.preventDefault(); //sprjecava ponovno ucitavanje stranice
+      e.preventDefault(); // sprjecava ponovno ucitavanje stranice
+
       try {
-        const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
+        // saljemo podatke
+        const response = await fetch(USERS_REST_API_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -77,33 +83,35 @@ function RegForm({ onClick, signIn }) {
           }),
         });
         console.log(response);
+        // provjeravamo statusni kod
         if (!response.ok) {
-          setMessage(`Network response was not ok: ${response.statusText}`);
+          setMessage("Network response was not ok");
           setSeverity("error");
-          return;
         } else {
+          // dohvacamo JSON odgovor
           const data = await response.json();
-          console.log(data); // Dohvaćamo JSON odgovor
-          localStorage.setItem("username", data.username);     // pohranjujemo u localStorage dobiveni username
-          signIn(true); //mice formu i postavlja username na stranici
-          //Nakon uspjesnog slanja forma se resetira
-          setFormData({ username: "", password: "", email: "", vrstaUser: "korisnik" });  //restarta signupformu
-          setMessage("User signed in successfully");
+          console.log(data);
+          // pohranjujemo u localStorage dobiveni username
+          localStorage.setItem("username", data.username);
+          signIn(true); // makne formu i postavlja username na stranici
+          // nakon uspjesnog slanja forma se resetira
+          setFormData({ username: "", password: "", email: "", vrstaUser: "korisnik" });
+          setMessage("User created successfully");
           setSeverity("success");
         }
       } catch (error) {
         console.error("Database: Error creating user: ", error);
-        setMessage("Failed to create user");
+        setMessage("Ups! Something went wrong :(");
         setSeverity("error");
       }
-      setMessage("User created successfully");
-      setSeverity("success");
     } catch (error) {
       console.error("Firebase: Error creating user: ", error);
       setMessage("User already exist!");
       setSeverity("error");
     }
   };
+
+  // signup korisnika sa google racunom
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
@@ -114,11 +122,10 @@ function RegForm({ onClick, signIn }) {
       localStorage.setItem("username", user.displayName);
       console.log("User info:", result.user);
       console.log(localStorage.getItem("username"));
-      //alert(`Welcome ${result.user.displayName}`);
 
-      //BAZA
       try {
-        const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
+        // saljemo podatke
+        const response = await fetch(USERS_REST_API_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -129,47 +136,55 @@ function RegForm({ onClick, signIn }) {
             vrstaUser: formData.vrstaUser,
           }),
         });
-
+        // provjeravamo statusni kod
         if (!response.ok) {
           console.log("user already created");
+
           try {
-            const response = await fetch(USERS_REST_API_URL1, {  //saljemo podatke
+            // saljemo podatke
+            const response = await fetch(USERS_REST_API_URL1, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${idToken}`,
               },
             });
-
+            // provjeravamo statusni kod
             if (!response.ok) {
-              setMessage(`Network response was not ok: ${response.statusText}`);
+              setMessage("Network response was not ok");
               setSeverity("error");
             } else {
-              const data = await response.json(); // Dohvaćamo JSON odgovor
-              const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+              // dohvacamo JSON odgovor
+              const data = await response.json();
+              // pretpostavljamo da odgovor sadrzi username
+              const username = data.username;
               console.log(username);
               localStorage.setItem("username", username);
-              signIn(true); // prosljeđujemo username u funkciju loggedIn
+              // prosljedujemo username u funkciju loggedIn
+              signIn(true);
               setMessage("User logged in successfully");
               setSeverity("success");
               console.log(signIn);
             }
           } catch {
-            setMessage(`Network response was not ok: ${response.statusText}`);
-
+            setMessage("Network response was not ok");
             setSeverity("error");
-
           }
+
         } else {
-          const data = await response.json(); // Dohvaćamo JSON odgovor
-          const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+          // dohvacamo JSON odgovor
+          const data = await response.json();
+          // pretpostavljamo da odgovor sadrzi username
+          const username = data.username;
           console.log(username);
           localStorage.setItem("username", username);
-          signIn(true); // prosljeđujemo username u funkciju loggedIn
+          // prosljedujemo username u funkciju loggedIn
+          signIn(true);
           setMessage("User Signed in successfully");
           setSeverity("success");
           console.log(signIn);
         }
+
       } catch (error) {
         console.error("Database: Error creating user: ", error);
         setMessage("Ups! Something went wrong :(");
@@ -192,8 +207,8 @@ function RegForm({ onClick, signIn }) {
             name="username"
             placeholder="Username"
             value={formData.username}
-            onChange={handleChange} //svaka promjena se handlea
-            required  //sprjecava submit dok polje nije ispravno
+            onChange={handleChange} // svaka promjena se handlea
+            required  // sprjecava submit dok polje nije ispravno
           />
           <FaUser className="usericon"></FaUser>
         </div>
@@ -204,7 +219,7 @@ function RegForm({ onClick, signIn }) {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            required  //sprjecava submit dok polje nije ispravno
+            required  // sprjecava submit dok polje nije ispravno
           />
           <FaLock className="passicon"></FaLock>
         </div>
@@ -215,7 +230,7 @@ function RegForm({ onClick, signIn }) {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            required  //sprjecava submit dok polje nije ispravno
+            required  // sprjecava submit dok polje nije ispravno
           />
           <IoIosMail className="mailicon"></IoIosMail>
         </div>
