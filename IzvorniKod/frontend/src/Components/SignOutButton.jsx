@@ -47,7 +47,7 @@ const SignOutButton = ({ onClick, onClose }) => {
 
 SignOutButton.propTypes = {
   onClick: PropTypes.func.isRequired,
-  onClose: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default SignOutButton;
