@@ -8,6 +8,12 @@ export default defineConfig({
     https: {
       key: fs.readFileSync('./certs/frontend-key.pem'),
       cert: fs.readFileSync('./certs/frontend-cert.pem')
-    }
+    },
+    proxy: {
+      "/api/": {
+        target: "http://localhost:8080",
+        changeOrigin: true
+      },
+    },
   }
 })
