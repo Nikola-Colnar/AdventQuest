@@ -1,71 +1,81 @@
-import { useState } from 'react'
-import './App.css'
-import ListaKorisnika from './ListaKorisnika'
-import Form from './Form'
-import RegForm from './RegForm'
-import Countdown from './Countdown'
-import Snowfall from './Snowfall'
-import LoginButton from './LoginButton'
-import SignupButton from './SignupButton'
-import Header from './Header'
+import { useState } from "react";
+import "./styles/App.css";
+import Form from "./components/form/Form.jsx";
+import RegForm from "./components/form/RegForm.jsx";
+import Countdown from "./components/countdown/Countdown.jsx";
+import Snowfall from "./components/snowfall/Snowfall.jsx";
+import Header from "./components/Header.jsx";
+import CalendarComponent from "./Components/calendar/CalendarComponent.jsx";
 
 
 function App() {
-  const [isFormVisible, setIsFormVisible] = useState(false); //stanje vidljivosti login forme
+  // stanje vidljivosti login forme
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  // prikaz i sakrivanje forme
+  const showForm = () => setIsFormVisible(true);
+  const hideForm = () => setIsFormVisible(false);
 
-  const showForm = () => setIsFormVisible(true); // prikazuje formu
-  const hideForm = () => setIsFormVisible(false); // Sakriva formu
+  // stanje vidljivosti registracijske forme
+  const [isRegFormVisible, setIsRegFormVisible] = useState(false);
+  // prikaz i sakrivanje forme
+  const showRegForm = () => setIsRegFormVisible(true);
+  const hideRegForm = () => setIsRegFormVisible(false);
 
-  const [isRegFormVisible, setIsRegFormVisible] = useState(false); //Stanje vidljivosti login forme
-
-  const showRegForm = () => setIsRegFormVisible(true); // prikazuje formu
-  const hideRegForm = () => setIsRegFormVisible(false); // Sakriva formu
-
-
-  // Definiranje stanja prijave i korisničkog imena
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('Guest');
+  // definiranje stanja prijave, korisnickog imena i kalendara
+  // * kod refreshanja stranice provjerava se localstorage
+  const [isLoggedIn, setIsLoggedIn] = useState((localStorage.getItem("username") ? true : false));
+  const [username, setUsername] = useState((localStorage.getItem("username")) || "Guest");
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const handleLoginStatusChange = (status) => {
-    setIsLoggedIn(status)
-    hideForm()    //skriva formu nakon logina
-  };
-  const handleSignInStatusChange = (status) => {
-    setIsLoggedIn(status)
-    hideRegForm() //skriva regformu nakon logina
+    setIsLoggedIn(status);
+    setUsername(localStorage.getItem("username"));
+    setTimeout(hideForm, 1000);    // sakriva formu nakon logina
   };
 
-  //funkcije za dobivanje Loginforme i signforme
+  const handleSignInStatusChange = (status) => {
+    setIsLoggedIn(status);
+    setUsername(localStorage.getItem("username"));
+    setTimeout(hideRegForm, 1000); // sakriva regformu nakon signin-a
+  };
+
+  // funkcije za prikaz loginforme i signinforme
   const handleLoginClick = () => {
-    setUsername('M'); //promjena korisnika
     showForm();
   };
 
   const handleSignupClick = () => {
-    setUsername('Sign'); //promjena korisnika
     showRegForm();
   };
 
-  const handleLogoutClick = () => {
-    setIsLoggedIn(false);     //logoutbutton
-    setUsername('Guest');
+  // funkcija za prikaz kalendara
+  const handleCalendar = (status) => {
+    setShowCalendar(status);
   };
+
+  const handlelogin = (status) => {
+    setIsLoggedIn(status);
+  };
+
   return (
     <>
       <Header className="header"
-        isLoggedIn={isLoggedIn}
-        username={username}
-        onLoginClick={handleLoginClick}
-        onSignupClick={handleSignupClick}
-        onLogoutClick={handleLogoutClick}
+              isLoggedIn={isLoggedIn}
+              handlelogin={handlelogin}
+              username={username}
+              onLoginClick={handleLoginClick}
+              onSignupClick={handleSignupClick}
+              calendarVisible={handleCalendar}
       />
-      {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange}/>}
-      {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange}/>}
-      <Snowfall className="snowfall"/>
-      
-      <Countdown targetDate="2024-12-25T00:00:00"/>
+
+      {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange} />}
+      {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange} />}
+      {showCalendar && <CalendarComponent hideCalendar={handleCalendar}></CalendarComponent>}
+
+      <Snowfall className="snowfall" />
+      <Countdown targetDate="2024-12-25T00:00:00" />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

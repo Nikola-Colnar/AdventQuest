@@ -1,71 +1,61 @@
 package oop.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import oop.repository.EventRepository;
 
-@Entity //jako bitno da JPA prepozna
-@Table(name = "events")
+import java.util.Date;
+
+@Entity
+@Table(name = "Event")
 public class Event {
 
-    @Id   //oznacava id, ova dva @ su bitna
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String nazivEventa;
-    private int idPredstavnika;
-    private String datumEventa;
+    private int idEvent;
 
-    public Event(){
+    private Date date;
+    private String eventName;
 
+    @ManyToOne
+    @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
+    private Group group;
+
+    public Event() {}
+
+    public Event(String eventName, Date date) {
+        this.eventName = eventName;
+        this.date = date;
     }
 
-    public Event(String nazivEventa, int idPredstavnika, String datumEventa) {
-        this.nazivEventa = nazivEventa;
-        this.idPredstavnika = idPredstavnika;
-        this.datumEventa = datumEventa;
+    public int getIdEvent() {
+        return idEvent;
     }
 
-
-    public int getId() {
-        return id;
+    public Date getDate() {
+        return date;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public String getNazivEventa() {
-        return nazivEventa;
+    public String getEventName() {
+        return eventName;
     }
 
-    public void setNazivEventa( String nazivEventa) {
-        this.nazivEventa = nazivEventa;
-    }
-
-    public int getIdPredstavnika() {
-        return idPredstavnika;
-    }
-
-    public void setIdPredstavnika(int idPredstavnika) {
-        this.idPredstavnika = idPredstavnika;
-    }
-
-    public String getDatumEventa() {
-        return datumEventa;
-    }
-
-    public void setDatumEventa(String datumEventa) {
-        this.datumEventa = datumEventa;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
     @Override
     public String toString() {
         return "Event{" +
-                "id=" + id +
-                ", nazivEventa='" + nazivEventa + '\'' +
-                ", idPredstavnika='" + idPredstavnika + '\'' +
-                ", datumEventa='" + datumEventa + '\'' +
+                "idEvent=" + idEvent +
+                ", date=" + date +
+                ", eventName='" + eventName + '\'' +
                 '}';
     }
 
+    public void setGroup(Group group) {
+        this.group = group;
+    }
 }

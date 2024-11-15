@@ -1,6 +1,7 @@
 package oop.service;
 
 import oop.model.Event;
+import oop.model.Message;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,19 +9,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
-public class EventServiceTest {
-
+class MessageServiceTest {
     @Autowired
-    private EventService eventService;
+    private MessageService messageService;
 
     @Test
-    public void testCreateEvent() {
-         // Stvaramo novi događaj s trenutnim datumom
-         Date currentDate = new Date();
-         Event event = new Event("Skijanje", currentDate);
-         eventService.createEvent(event);
-
+    void createMessage() {
+        Date currentDate = new Date();
+        Message message = new Message("uid123457890", currentDate, "MojaPoruka");
+        messageService.createMessage(message);
     }
 }
