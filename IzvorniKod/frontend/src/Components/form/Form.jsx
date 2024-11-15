@@ -9,11 +9,13 @@ import { signInWithPopup } from "firebase/auth";
 import { Box, Alert } from "@mui/material";
 import PropTypes from "prop-types";
 
+
 const USERS_REST_API_URL = "https://localhost:8443/api/users/login";
 const USERS_REST_API_URL1 = "https://localhost:8443/api/users/signup";
 
+
 function Form({ onClick, loggedIn }) {
-  //State za pracenje podataka u formi
+  // state za pracenje podataka u formi
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -22,65 +24,70 @@ function Form({ onClick, loggedIn }) {
   const [severity, setSeverity] = useState("");
   const [message, setMessage] = useState("");
 
-  const overlayRef = useRef(null); // referenca na overlay div
+  // referenca na overlay div
+  const overlayRef = useRef(null);
   const formRef = useRef(null);
 
   useEffect(() => {
-    // Funkcija koja detektira klik izvan forme (na overlay)
+    // funkcija koja detektira klik izvan forme (na overlay)
     const handleClickOutside = (e) => {
       if (overlayRef.current && overlayRef.current.contains(e.target) && !formRef.current.contains(e.target)) {
         onClick(); // poziva onClick (hideForm) kad je kliknut overlay
       }
     };
-    // Dodajemo event listener za klikove na dokument
+    // dodajemo event listener za klikove na dokument
     document.addEventListener("click", handleClickOutside);
 
-    // Čistimo event listener kad se komponenta unmounta
+    // cistimo event listener kad se komponenta unmounta
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [onClick]); // useEffect će se ponovo pozvati samo ako se onClick promijeni
+  }, [onClick]); // useEffect ce se ponovo pozvati samo ako se onClick promijeni
 
-  // Funkcija za rukovanje promjenama u input poljima
+  // funkcija za rukovanje promjenama u input poljima
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  //login korisnika na firebase sa mailom i lozinkom
+  // login korisnika na firebase sa mailom i lozinkom
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const Credentials = await signInWithEmailAndPassword(auth, formData.email, formData.password);
       const user = Credentials.user;
       const idToken = await user.getIdToken();
+
       try {
-        const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
+        // saljemo podatke
+        const response = await fetch(USERS_REST_API_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${idToken}`,
           },
         });
-
+        // provjeravamo statusni kod
         if (!response.ok) {
-          setMessage(`Network response was not ok: ${response.statusText}`);
+          setMessage("Network response was not ok");
           setSeverity("error");
         } else {
-          const data = await response.json(); // Dohvaćamo JSON odgovor
-          const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+          // dohvacamo JSON odgovor
+          const data = await response.json();
+          // pretpostavljamo da odgovor sadrzi username
+          const username = data.username;
           console.log(username);
+          // pohranjujemo u localStorage dobiveni username
           localStorage.setItem("username", username);
-          loggedIn(true); // prosljeđujemo username u funkciju loggedIn
+          // prosljedujemo username u funkciju loggedIn
+          loggedIn(true);
           setMessage("User logged in successfully");
           setSeverity("success");
           console.log(loggedIn);
         }
-
-
       } catch (error) {
         console.error("Database: Error with login: ", error);
-        setMessage("Failed to login");
+        setMessage("Ups! Something went wrong :(");
         setSeverity("error");
       }
 
@@ -101,11 +108,10 @@ function Form({ onClick, loggedIn }) {
       localStorage.setItem("username", user.displayName);
       console.log("Google login ID Token:", idToken);
       console.log("User info:", result.user);
-      //alert(`Welcome ${result.user.displayName}`);
 
-      //BAZA
       try {
-        const response = await fetch(USERS_REST_API_URL1, {  //saljemo podatke
+        // saljemo podatke
+        const response = await fetch(USERS_REST_API_URL1, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -116,43 +122,50 @@ function Form({ onClick, loggedIn }) {
             vrstaUser: "korisnik",
           }),
         });
-
+        // provjeravamo statusni kod
         if (!response.ok) {
           console.log("user already created");
+
           try {
-            const response = await fetch(USERS_REST_API_URL, {  //saljemo podatke
+            // saljemo podatke
+            const response = await fetch(USERS_REST_API_URL, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${idToken}`,
               },
             });
-
+            // provjeravamo statusni kod
             if (!response.ok) {
-              setMessage("Network response was not ok: " + response.statusText);
+              setMessage("Network response was not ok");
               setSeverity("error");
             } else {
-              const data = await response.json(); // Dohvaćamo JSON odgovor
-              const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+              // dohvacamo JSON odgovor
+              const data = await response.json();
+              // pretpostavljamo da odgovor sadrzi username
+              const username = data.username;
               console.log(username);
               localStorage.setItem("username", username);
-              loggedIn(true); // prosljeđujemo username u funkciju loggedIn
+              // prosljedujemo username u funkciju loggedIn
+              loggedIn(true);
               setMessage("User logged in successfully");
               setSeverity("success");
               console.log(loggedIn);
             }
           } catch {
-            setMessage("Network response was not ok: " + response.statusText);
-
+            setMessage("Network response was not ok");
             setSeverity("error");
-
           }
+
         } else {
-          const data = await response.json(); // Dohvaćamo JSON odgovor
-          const username = data.username;     // Pretpostavljamo da odgovor sadrži 'username'
+          // dohvacamo JSON odgovor
+          const data = await response.json();
+          // pretpostavljamo da odgovor sadrzi username
+          const username = data.username;
           console.log(username);
           localStorage.setItem("username", username);
-          loggedIn(true); // prosljeđujemo username u funkciju loggedIn
+          // prosljedujemo username u funkciju loggedIn
+          loggedIn(true);
           setMessage("User logged in successfully");
           setSeverity("success");
           console.log(loggedIn);

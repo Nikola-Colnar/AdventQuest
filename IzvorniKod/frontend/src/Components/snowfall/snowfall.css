@@ -4,22 +4,22 @@
   left: 0;
   width: 0;
   height: 0;
-  pointer-events: none; /*pahuljice ne ometaju interakciju s ostalim elementima */
+  pointer-events: none; /* pahuljice ne ometaju interakciju s ostalim elementima */
   z-index: 10;
 }
 
-/*Snowflake styling*/
+/* snowflake styling */
 .Snowflake {
   position: absolute;
   color: hsla(183, 70%, 34%, 0.879);
-  cursor: default; /*sprjecavam promjenu kursora kada prodem preko pahuljice*/
-  pointer-events: auto; /*omogucavam pointer-evente, da mogu maknuti pahuljicu*/
-  /*cubic-bezier kretanje nije linearno vec po krivulji (ubrzava pa usporava)*/
+  cursor: default; /* sprjecava promjenu kursora kada prodemo preko pahuljice */
+  pointer-events: auto; /* omogucava pointer-evente, da mozemo maknuti pahuljicu */
+  /* cubic-bezier kretanje nije linearno vec po krivulji (ubrzava pa usporava) */
   animation: fall cubic-bezier(.52, .09, .6, .97) infinite;
   --rotateDirection: 1;
 }
 
-/*specifikacija animacije*/
+/* specifikacija animacije */
 @keyframes fall {
   0% {
     opacity: 0;
@@ -36,7 +36,7 @@
   }
 }
 
-/*na hover unistimo objekt*/
+/* na hover unistimo objekt */
 .Snowflake:hover {
   display: none;
 }
