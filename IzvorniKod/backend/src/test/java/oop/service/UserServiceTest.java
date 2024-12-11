@@ -15,7 +15,7 @@ public class UserServiceTest {
 
     @Test
     public void testCreateUser() {
-        User user = new User("UID_UserNovi", "UserName", "Admin");
+        User user = new User("UID_UserNovi", "UserName");
         User createdUser = userService.createUser(user);
         //     assertNotNull(createdUser);
         //      assertEquals("username", createdUser.getUsername());

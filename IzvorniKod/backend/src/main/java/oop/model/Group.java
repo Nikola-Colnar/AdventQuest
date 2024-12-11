@@ -28,6 +28,16 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 
+    public Group(String nazivGrupa, String uidPredstavnika, Set<User> users, Set<Event> events, List<Message> messages) {
+        this.nazivGrupa = nazivGrupa;
+        this.uidPredstavnika = uidPredstavnika;
+        this.users = users;
+        this.events = events;
+        this.messages = messages;
+    }
+
+    public Group() {}
+
     public int getIdGrupa() {
         return idGrupa;
     }
@@ -91,7 +101,7 @@ public class Group {
     @Override
     public String toString() {
         return "Group{" +
-    //            "idGrupa=" + idGrupa +
+                "idGrupa=" + idGrupa +
                 ", nazivGrupa='" + nazivGrupa + '\'' +
                 ", uidPredstavnika='" + uidPredstavnika + '\'' +
                 ", users=" + users +

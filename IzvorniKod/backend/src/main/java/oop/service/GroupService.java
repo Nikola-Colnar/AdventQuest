@@ -28,6 +28,7 @@ public class GroupService {
 
         return groupRepo.save(group);
     }
+
     public Optional<Group> findById(int id) {
         return groupRepo.findById(id).isEmpty() ? Optional.empty() : Optional.of(groupRepo.findById(id).get());
     }
@@ -85,6 +86,7 @@ public class GroupService {
             throw new NoSuchElementException("Group with ID " + id + " not found.");
         }
     }
+
 
     public void putEvent(int id, Event event){
         Optional<Group> group = groupRepo.findById(id);

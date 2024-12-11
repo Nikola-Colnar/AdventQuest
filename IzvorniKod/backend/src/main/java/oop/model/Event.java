@@ -12,30 +12,44 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idEvent;
 
-    private Date date;
+    private Date StartDate;
+    private Date EndDate;
     private String eventName;
 
     @ManyToOne
     @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
     private Group group;
 
-    public Event() {}
-
-    public Event(String eventName, Date date) {
+    public Event(String eventName, Date startDate, Date endDate) {
+        StartDate = startDate;
+        EndDate = endDate;
         this.eventName = eventName;
-        this.date = date;
     }
+
+    public Event() {}
 
     public int getIdEvent() {
         return idEvent;
     }
 
-    public Date getDate() {
-        return date;
+    public void setIdEvent(int idEvent) {
+        this.idEvent = idEvent;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public Date getStartDate() {
+        return StartDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        StartDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return EndDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        EndDate = endDate;
     }
 
     public String getEventName() {
@@ -46,12 +60,18 @@ public class Event {
         this.eventName = eventName;
     }
 
+    public Group getGroup() {
+        return group;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
                 "idEvent=" + idEvent +
-                ", date=" + date +
+                ", StartDate=" + StartDate +
+                ", EndDate=" + EndDate +
                 ", eventName='" + eventName + '\'' +
+                ", group=" + group +
                 '}';
     }
 

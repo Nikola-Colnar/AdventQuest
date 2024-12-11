@@ -21,7 +21,6 @@ public class User {
     @NotEmpty(message = "username is required")
     private String username;
 
-    private String vrstaUser;
 
     @ManyToOne
     @JoinColumn(name = "idGrupa")
@@ -32,10 +31,9 @@ public class User {
     }
 
     // Konstruktor s UID, username i vrstaUser
-    public User(String uid, String username, String vrstaUser) {
+    public User(String uid, String username) {
         this.uid = uid;
         this.username = username;
-        this.vrstaUser = vrstaUser;
     }
 
     public int getId() {
@@ -62,17 +60,9 @@ public class User {
         this.username = username;
     }
 
-    public String getVrstaUser() {
-        return vrstaUser;
-    }
-
-    public void setVrstaUser(String vrstaUser) {
-        this.vrstaUser = vrstaUser;
-    }
-
     @Override
     public String toString() {
-        return uid + " " + username + " " +   vrstaUser;
+        return uid + " " + username + " ";
     }
 
     public void setGroup(Group group) {

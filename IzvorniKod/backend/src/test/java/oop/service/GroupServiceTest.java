@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @SpringBootTest
@@ -21,10 +22,10 @@ class GroupServiceTest {
         Group group = new Group();
         group.setNazivGrupa("Grupa jedan");
         group.setUidPredstavnika("UID_predstavnika");
-        User user = new User("uidNoviUserNeki", "UserName", "Admin");
+        User user = new User("uidNoviUserNeki", "UserName");
         Date currentDate = new Date();
-        Event event = new Event("Skijanje", currentDate);
-        Event event2 = new Event("Sanjkanje", currentDate);
+        Event event = new Event("Skijanje", currentDate, currentDate);
+        Event event2 = new Event("Sanjkanje", currentDate, currentDate);
         Message message = new Message("UID_posiljatelja", currentDate, "MojaPoruka");
 
         group.addUser(user);
