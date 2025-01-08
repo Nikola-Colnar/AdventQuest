@@ -45,25 +45,80 @@ const CalendarComponent = ({ hideCalendar }) => {
     });
   };
 
-  const handleEventSubmit = (e) => {
+  const handleEventSubmit = async (e) => {
     e.preventDefault();
-    setEvents([
-      ...events,
-      {
-        title: eventDetails.title,
-        start: eventDetails.start,
-        end: eventDetails.end,
-        description: eventDetails.description,
-        color: eventDetails.color,
-      },
-    ]);
-    setShowEventForm(false);
+
+    const newEvent = {
+      title: eventDetails.title,
+      start: eventDetails.start,
+      end: eventDetails.end,
+      description: eventDetails.description,
+      color: eventDetails.color,
+    };
+
+    try {
+      const response = await fetch("https://localhost:8443/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newEvent),
+      });
+
+      if (response.ok) {
+        const savedEvent = await response.json();
+        setEvents([...events, savedEvent]);
+
+        const calendarApi = calendarRef.current?.calendar;
+        if (calendarApi) {
+          calendarApi.addEvent(savedEvent);
+        }
+
+        setShowEventForm(false);
+        setEventDetails({
+          title: "",
+          description: "",
+          start: "",
+          end: "",
+          color: "#a31515",
+        });
+      } else {
+        console.error("Failed to save event to backend");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   // funkcija za zatvaranje kalendara kada je otvoren
   const handleCloseButtonClick = () => {
     hideCalendar(false);
   };
+  useEffect(() => {
+    const calendar = new Calendar(calendarRef.current, {
+      plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
+      initialView: "dayGridMonth",
+      headerToolbar: {
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,timeGridWeek,listWeek",
+      },
+      events: events,
+      eventClick: (info) => {
+        alert(`
+        Event: ${info.event.title}
+        Start: ${info.event.start}
+        End: ${info.event.end}
+        Description: ${info.event.extendedProps.description || "N/A"}
+      `);
+      },
+    });
+    calendar.render();
+
+    return () => {
+      calendar.destroy();
+    };
+  }, [events]);
 
   return (
     <div className="calendar-wrapper">
