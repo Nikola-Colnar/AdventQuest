@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Calendar } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -9,6 +9,7 @@ import PropTypes from "prop-types";
 
 const CalendarComponent = ({ hideCalendar }) => {
   const calendarRef = useRef(null);
+  const calendarInstance = useRef(null); // Referenca na instancu kalendara
   const [events, setEvents] = useState([]);
   const [showEventForm, setShowEventForm] = useState(false);
   const [eventDetails, setEventDetails] = useState({
@@ -18,9 +19,43 @@ const CalendarComponent = ({ hideCalendar }) => {
     end: "",
     color: "#a31515",
   });
+  // fetchanje s backenda
+  const fetchEvents = useCallback(async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/groups/5/events", {
+        headers: {
+          "Content-Type": "application/json",
+          "uid": "0FIglHrt7CT33FZAsOlFPn7j78q2",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const formattedEvents = data.map((event) => ({
+          title: event.eventName,
+          start: event.startDate,
+          end: event.endDate,
+          description: event.description,
+        }));
+        setEvents(formattedEvents);
 
+        // azuriranje s novim dogadanjima
+        if (calendarInstance.current) {
+          calendarInstance.current.setOption('events', formattedEvents);
+        }
+      } else {
+        console.error("Failed to fetch events");
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  }, []);
+
+
+  // Inicijalizacija kalendara (jednom)
   useEffect(() => {
-    const calendar = new Calendar(calendarRef.current, {
+    if (!calendarRef.current) return;
+
+    calendarInstance.current = new Calendar(calendarRef.current, {
       plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
       initialView: "dayGridMonth",
       headerToolbar: {
@@ -29,13 +64,26 @@ const CalendarComponent = ({ hideCalendar }) => {
         right: "dayGridMonth,timeGridWeek,listWeek",
       },
       events: events,
+      eventClick: (info) => {
+        alert(`
+          Event: ${info.event.title}
+          Start: ${info.event.start}
+          End: ${info.event.end}
+          Description: ${info.event.extendedProps.description || "N/A"}
+        `);
+      },
     });
-    calendar.render();
+
+    calendarInstance.current.render();
 
     return () => {
-      calendar.destroy();
+      calendarInstance.current.destroy();
     };
-  }, [events]);
+  }, []);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   // funkcije za dodavanje dogadaja u kalendar
   const handleEventFormChange = (e) => {
@@ -48,32 +96,31 @@ const CalendarComponent = ({ hideCalendar }) => {
   const handleEventSubmit = async (e) => {
     e.preventDefault();
 
+    // Pretpostavljam da imaš ID grupe, na primjer kroz props ili state
+    const groupId = 5; // Zamijeni sa stvarnim ID-om grupe
+
     const newEvent = {
-      title: eventDetails.title,
-      start: eventDetails.start,
-      end: eventDetails.end,
-      description: eventDetails.description,
-      color: eventDetails.color,
+      eventName: eventDetails.title,
+      startDate: eventDetails.start,
+      endDate: eventDetails.end
+      //description: eventDetails.description,
+      //color: eventDetails.color,
+      //groupId: groupId, // Povezivanje događaja s grupom
     };
 
     try {
-      const response = await fetch("https://localhost:8080/api/events", {
+      const response = await fetch(`http://localhost:8080/api/groups/5/events`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "uid": "0FIglHrt7CT33FZAsOlFPn7j78q2"
         },
         body: JSON.stringify(newEvent),
       });
 
       if (response.ok) {
-        const savedEvent = await response.json();
-        setEvents([...events, savedEvent]);
-
-        const calendarApi = calendarRef.current?.calendar;
-        if (calendarApi) {
-          calendarApi.addEvent(savedEvent);
-        }
-
+        //ako je u redu dohvacamo s backenda podatke
+        await fetchEvents();
         setShowEventForm(false);
         setEventDetails({
           title: "",
@@ -82,6 +129,7 @@ const CalendarComponent = ({ hideCalendar }) => {
           end: "",
           color: "#a31515",
         });
+
       } else {
         console.error("Failed to save event to backend");
       }
@@ -94,31 +142,6 @@ const CalendarComponent = ({ hideCalendar }) => {
   const handleCloseButtonClick = () => {
     hideCalendar(false);
   };
-  useEffect(() => {
-    const calendar = new Calendar(calendarRef.current, {
-      plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
-      initialView: "dayGridMonth",
-      headerToolbar: {
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth,timeGridWeek,listWeek",
-      },
-      events: events,
-      eventClick: (info) => {
-        alert(`
-        Event: ${info.event.title}
-        Start: ${info.event.start}
-        End: ${info.event.end}
-        Description: ${info.event.extendedProps.description || "N/A"}
-      `);
-      },
-    });
-    calendar.render();
-
-    return () => {
-      calendar.destroy();
-    };
-  }, [events]);
 
   return (
     <div className="calendar-wrapper">
@@ -178,6 +201,13 @@ const CalendarComponent = ({ hideCalendar }) => {
                   name="color"
                   value={eventDetails.color}
                   onChange={handleEventFormChange}
+                  // input za boje mijennja boju ovisno o selektiranoj boji
+                  style={{
+                    backgroundColor: eventDetails.color,
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
                 />
               </label>
               <button type="submit">Save Event</button>
