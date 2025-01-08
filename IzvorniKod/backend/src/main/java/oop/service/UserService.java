@@ -4,6 +4,10 @@ import oop.model.Group;
 import oop.model.User;
 import oop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +17,18 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired JWTService jwtService;
 
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
 
 
     // Metoda za dohvaćanje svih korisnika
@@ -33,8 +44,8 @@ public class UserService {
 
     ////////////Prijava///////////
     //Metoda za login
-    public User loginUser(String uid) {
-        User user = userRepository.findByUid(uid);  // Pronađi korisnika po UID-u
+    public User getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);  // Pronađi korisnika po password-u
 
         if (user != null) {
             return user; // Korisnik uspješno prijavljen
@@ -43,22 +54,31 @@ public class UserService {
         }
     }
 
+    public boolean userExists(User user){
+        if(userRepository.findByEmail(user.getEmail()) != null) {
+            return true;
+        }
+        return false;
+    }
+
     //Metoda za prvu registraciju
     // Metoda za registraciju korisnika
-    public User createUser(User user) {
-        // Provjera da li korisnik već postoji s istim UID-om
-        if (userRepository.findByUid(user.getUid()) != null) {
-            throw new RuntimeException("User with this UID already exists");
+    public String createUser(User user) {
+        // Provjera da li korisnik već postoji s istim email-om
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            throw new RuntimeException("User with this email already exists");
         }
 
-        // Ako UID nije zauzet, spremamo korisnika
-        return userRepository.save(user);
+        // Ako username nije zauzet, spremamo korisnika
+        user.setPassword(encoder.encode(user.getPassword()));   //enkodiranje passworda
+        userRepository.save(user);
+        return jwtService.generateToken(user.getUsername());
     }
 
     public void deleteUser(User user) {
-        // Provjera da li korisnik postoji s istim UID-om
-        if (userRepository.findByUid(user.getUid()) == null) {
-            throw new RuntimeException("User with this UID doesn't exist");
+        // Provjera da li korisnik postoji s istim email-om
+        if (userRepository.findByEmail(user.getEmail()) == null) {
+            throw new RuntimeException("User with this username doesn't exist");
         }
         userRepository.delete(user);
     }
@@ -73,5 +93,14 @@ public class UserService {
         else{
             throw new NoSuchElementException("Group with ID " + id + " not found.");
         }
+    }
+
+    public String verify(User user) {
+        Authentication authentication =
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        if(authentication.isAuthenticated()) {
+            return jwtService.generateToken(user.getUsername());  //vracamo token
+        }
+        return "Error";
     }
 }

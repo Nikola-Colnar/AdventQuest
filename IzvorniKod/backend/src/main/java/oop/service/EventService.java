@@ -1,56 +1,54 @@
 package oop.service;
 
 import oop.model.Event;
+import oop.model.Message;
 import oop.repository.EventRepository;
+import oop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class EventService {
 
+    private final EventRepository eventRepository;
+
     @Autowired
-    private EventRepository eventRepository;
-
-    // Dohvati sve događaje
-    public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+    public EventService(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
     }
 
-    // Dohvati događaj po ID-u
-    public Optional<Event> getEventById(int id) {
-        return eventRepository.findById(id);
-    }
-
-    // Spremi novi događaj ili ažuriraj postojeći
-    public Event saveEvent(Event event) {
+    public Event createEvent(Event event) {
+        //Provjera postoji li event s tim id
+        if(eventRepository.findById(event.getIdEvent()).isPresent()) {
+            throw new RuntimeException("User with this UID already exists");
+        }
         return eventRepository.save(event);
     }
 
-    // Izbriši događaj po ID-u
-    public void deleteEvent(int id) {
-        eventRepository.deleteById(id);
-    }
-
-    // Promijeni naziv događaja
-    public void changeEventName(int id, String newName) {
-        Optional<Event> optionalEvent = eventRepository.findById(id);
-        if (optionalEvent.isPresent()) {
-            Event event = optionalEvent.get();
-            event.setEventName(newName);
-            eventRepository.save(event);
-        } else {
+    public void deleteEvent(Event event) {
+        if(!eventRepository.findById(event.getIdEvent()).isPresent()) {
             throw new RuntimeException("Event with this ID does not exist");
         }
+        eventRepository.deleteById(event.getIdEvent());
     }
-
-    // Kreiraj događaj s provjerom dupliciranja
-    public Event createEvent(Event event) {
-        if (event.getIdEvent() != 0 && eventRepository.existsById(event.getIdEvent())) {
-            throw new RuntimeException("Event with this ID already exists");
+    public void ChangeEventName(int id, String newName) {
+        Optional<Event> event = eventRepository.findById(id);
+        if(event.isPresent()) {
+            Event newEvent = event.get();
+            newEvent.setEventName(newName);
+            eventRepository.save(newEvent);
+        } else {
+            throw new NoSuchElementException("Event with this ID does not exist");
         }
-        return eventRepository.save(event);
+    }
+    public Event GetEventById(int id){
+        Optional<Event> event = eventRepository.findById(id);
+        if(!event.isPresent()) {
+            throw new NoSuchElementException("Event with this ID does not exist");
+        }
+        return event.get();
     }
 }

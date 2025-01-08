@@ -11,16 +11,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
-    //UID od FireBase
-    @NotEmpty(message = "UID is required")
-
-
-    private String uid;
-
+    @Column(unique = true)
     @NotEmpty(message = "username is required")
     private String username;
+    //password
+    private String password;
 
+    @Column(unique = true)
+    @NotEmpty(message = "email is required")
+    private  String email;
+
+
+    
 
     @ManyToOne
     @JoinColumn(name = "idGrupa")
@@ -30,10 +32,19 @@ public class User {
     public User() {
     }
 
-    // Konstruktor s UID, username i vrstaUser
-    public User(String uid, String username) {
-        this.uid = uid;
+    // Konstruktor s password, username i vrstaUser
+    public User(String username, String password, String email) {
+        this.password = password;
         this.username = username;
+        this.email = email;
+    }
+
+    public @NotEmpty(message = "email is required") String getEmail() {
+        return email;
+    }
+
+    public void setEmail(@NotEmpty(message = "email is required") String email) {
+        this.email = email;
     }
 
     public int getId() {
@@ -44,12 +55,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUid() {
-        return uid;
+    public String getPassword() {
+        return password;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUsername() {
@@ -62,7 +73,7 @@ public class User {
 
     @Override
     public String toString() {
-        return uid + " " + username + " ";
+        return password + " " + username + " " + email;
     }
 
     public void setGroup(Group group) {

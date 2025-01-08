@@ -1,6 +1,5 @@
 package oop.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import oop.service.GroupService;
 
@@ -9,7 +8,6 @@ import java.util.*;
 
 @Entity
 @Table(name = "SGroup")
-@JsonIgnoreProperties({"users", "events", "messages"})
 public class Group {
 
 
@@ -19,7 +17,7 @@ public class Group {
 
     private String nazivGrupa;
 
-    private String uidPredstavnika;
+    private int idPredstavnika;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<User> users = new HashSet<>();
@@ -30,9 +28,9 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 
-    public Group(String nazivGrupa, String uidPredstavnika, Set<User> users, Set<Event> events, List<Message> messages) {
+    public Group(String nazivGrupa, int idPredstavnika, Set<User> users, Set<Event> events, List<Message> messages) {
         this.nazivGrupa = nazivGrupa;
-        this.uidPredstavnika = uidPredstavnika;
+        this.idPredstavnika = idPredstavnika;
         this.users = users;
         this.events = events;
         this.messages = messages;
@@ -52,12 +50,12 @@ public class Group {
         this.nazivGrupa = nazivGrupa;
     }
 
-    public String getUidPredstavnika() {
-        return uidPredstavnika;
+    public int getUidPredstavnika() {
+        return idPredstavnika;
     }
 
-    public void setUidPredstavnika(String uidPredstavnika) {
-        this.uidPredstavnika = uidPredstavnika;
+    public void setUidPredstavnika(int uidPredstavnika) {
+        this.idPredstavnika = uidPredstavnika;
     }
 
 
@@ -105,7 +103,7 @@ public class Group {
         return "Group{" +
                 "idGrupa=" + idGrupa +
                 ", nazivGrupa='" + nazivGrupa + '\'' +
-                ", uidPredstavnika='" + uidPredstavnika + '\'' +
+                ", idPredstavnika='" + idPredstavnika + '\'' +
                 ", users=" + users +
                 ", events=" + events +
                 ", messages=" + messages +

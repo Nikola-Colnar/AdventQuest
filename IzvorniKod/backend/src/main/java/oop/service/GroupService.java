@@ -88,37 +88,22 @@ public class GroupService {
     }
 
 
-    public void putEvent(int id, Event event) {
+    public void putEvent(int id, Event event){
         Optional<Group> group = groupRepo.findById(id);
-        if(group.isPresent()) {
+        if(group.isPresent()){
             Group group1 = group.get();
-            Set<Event> currentEvents = group1.getEvents();
-
-            // Provjera da li događaj već postoji
-            currentEvents.forEach(existingEvent -> {
-                if(existingEvent.getIdEvent() == event.getIdEvent()) {
+            Set<Event> trenutniEvent =  group1.getEvents();
+            trenutniEvent.forEach(postojeciEvent -> {
+                if(postojeciEvent.getIdEvent() == event.getIdEvent()){
                     throw new RequestDeniedException("Event with id " + event.getIdEvent() + " already exists.");
                 }
             });
-
-            // Postavljanje grupe za događaj
             event.setGroup(group1);
-
-            // Dodavanje događaja u grupu
             group1.getEvents().add(event);
             groupRepo.save(group1);
-        } else {
+        }else{
             throw new NoSuchElementException("Group with ID " + id + " not found.");
         }
-    }
-    public Group getGroupById(int groupId) {
-        return groupRepo.findById(groupId).orElse(null); // Vraća null ako grupa nije pronađena
-    }
-    //dohvacaevente
-    public List<Event> getEventsByGroupId(int groupId) {
-        Group group = groupRepo.findById(groupId)
-                .orElseThrow(() -> new NoSuchElementException("Group with ID " + groupId + " not found."));
-        return new ArrayList<>(group.getEvents()); // Vraća sve događaje povezane s grupom
     }
 
     public void deleteEvent(int id, Event event){
