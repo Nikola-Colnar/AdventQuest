@@ -1,5 +1,6 @@
 package oop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import oop.service.GroupService;
 
@@ -8,6 +9,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "SGroup")
+@JsonIgnoreProperties({"users", "events", "messages"})
 public class Group {
 
 

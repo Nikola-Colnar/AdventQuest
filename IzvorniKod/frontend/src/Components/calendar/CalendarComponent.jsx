@@ -57,7 +57,7 @@ const CalendarComponent = ({ hideCalendar }) => {
     };
 
     try {
-      const response = await fetch("https://localhost:8443/api/events", {
+      const response = await fetch("https://localhost:8080/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
