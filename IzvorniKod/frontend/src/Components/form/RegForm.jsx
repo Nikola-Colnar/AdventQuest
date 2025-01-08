@@ -1,17 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import "./form.css";
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../../firebase/firebaseConfig.js";
 import { FaUser, FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { IoIosMail } from "react-icons/io";
 import { Box, Alert } from "@mui/material";
 import PropTypes from "prop-types";
 
-
-const USERS_REST_API_URL = "http://localhost:8080/api/users/signup";
-const USERS_REST_API_URL1 = "http://localhost:8080/api/users/login";
-
+const REGISTER_API_URL = "http://localhost:8080/register";
+const GOOGLE_LOGIN_API_URL = "http://localhost:8080/api/login/google";
 
 function RegForm({ onClick, signIn }) {
   // state za pracenje podataka u formi
@@ -31,7 +27,11 @@ function RegForm({ onClick, signIn }) {
   useEffect(() => {
     // funkcija koja detektira klik izvan forme (na overlay)
     const handleClickOutside = (e) => {
-      if (overlayRef.current && overlayRef.current.contains(e.target) && !formRef.current.contains(e.target)) {
+      if (
+        overlayRef.current &&
+        overlayRef.current.contains(e.target) &&
+        !formRef.current.contains(e.target)
+      ) {
         onClick(); // poziva onClick (hideForm) kad je kliknut overlay
       }
     };
@@ -62,139 +62,38 @@ function RegForm({ onClick, signIn }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const Credentials = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-      const user = Credentials.user;
-      const idToken = await user.getIdToken();
-      console.log("email login ID Token:", idToken);
+      const response = await fetch(REGISTER_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.username,  // username korisnika
+          password: formData.password,  // lozinka korisnika
+          email: formData.email // mail korisnika
+        }),
+      });
 
-      e.preventDefault(); // sprjecava ponovno ucitavanje stranice
-
-      try {
-        // saljemo podatke
-        const response = await fetch(USERS_REST_API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${idToken}`,
-          },
-          body: JSON.stringify({
-            username: formData.username,
-            vrstaUser: formData.vrstaUser,
-          }),
-        });
-        console.log(response);
-        // provjeravamo statusni kod
-        if (!response.ok) {
-          setMessage("Network response was not ok");
-          setSeverity("error");
-        } else {
-          // dohvacamo JSON odgovor
-          const data = await response.json();
-          console.log(data);
-          // pohranjujemo u localStorage dobiveni username
-          localStorage.setItem("username", data.username);
-          signIn(true); // makne formu i postavlja username na stranici
-          // nakon uspjesnog slanja forma se resetira
-          setFormData({ username: "", password: "", email: "", vrstaUser: "korisnik" });
-          setMessage("User created successfully");
-          setSeverity("success");
-        }
-      } catch (error) {
-        console.error("Database: Error creating user: ", error);
-        setMessage("Ups! Something went wrong :(");
+      if (response.ok) {
+        setMessage("User registered successfully");
+        setSeverity("success");
+        const data = await response.json();  // Parsiranje JSON odgovora
+        const username = data.username;
+        localStorage.setItem("username", username);
+        signIn(true);
+      } else {
+        setMessage("Failed to register user");
         setSeverity("error");
       }
     } catch (error) {
-      console.error("Firebase: Error creating user: ", error);
-      setMessage("User already exist!");
+      setMessage("Error registering user: " + error.message);
       setSeverity("error");
     }
   };
 
   // signup korisnika sa google racunom
-  const handleGoogleSignIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      const idToken = await user.getIdToken();
-      console.log("Google login ID Token:", idToken);
-      // result.user sadrzi info o useru
-      localStorage.setItem("username", user.displayName);
-      console.log("User info:", result.user);
-      console.log(localStorage.getItem("username"));
-
-      try {
-        // saljemo podatke
-        const response = await fetch(USERS_REST_API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${idToken}`,
-          },
-          body: JSON.stringify({
-            username: localStorage.getItem("username"),
-            vrstaUser: formData.vrstaUser,
-          }),
-        });
-        // provjeravamo statusni kod
-        if (!response.ok) {
-          console.log("user already created");
-
-          try {
-            // saljemo podatke
-            const response = await fetch(USERS_REST_API_URL1, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${idToken}`,
-              },
-            });
-            // provjeravamo statusni kod
-            if (!response.ok) {
-              setMessage("Network response was not ok");
-              setSeverity("error");
-            } else {
-              // dohvacamo JSON odgovor
-              const data = await response.json();
-              // pretpostavljamo da odgovor sadrzi username
-              const username = data.username;
-              console.log(username);
-              localStorage.setItem("username", username);
-              // prosljedujemo username u funkciju loggedIn
-              signIn(true);
-              setMessage("User logged in successfully");
-              setSeverity("success");
-              console.log(signIn);
-            }
-          } catch {
-            setMessage("Network response was not ok");
-            setSeverity("error");
-          }
-
-        } else {
-          // dohvacamo JSON odgovor
-          const data = await response.json();
-          // pretpostavljamo da odgovor sadrzi username
-          const username = data.username;
-          console.log(username);
-          localStorage.setItem("username", username);
-          // prosljedujemo username u funkciju loggedIn
-          signIn(true);
-          setMessage("User Signed in successfully");
-          setSeverity("success");
-          console.log(signIn);
-        }
-
-      } catch (error) {
-        console.error("Database: Error creating user: ", error);
-        setMessage("Ups! Something went wrong :(");
-        setSeverity("error");
-      }
-
-    } catch (error) {
-      console.error("Error during Google sign-in:", error);
-      alert("Failed to sign in with Google");
-    }
+  const handleGoogleSignIn = () => {
+    window.location.href = GOOGLE_LOGIN_API_URL;
   };
 
   return (
@@ -208,7 +107,7 @@ function RegForm({ onClick, signIn }) {
             placeholder="Username"
             value={formData.username}
             onChange={handleChange} // svaka promjena se handlea
-            required  // sprjecava submit dok polje nije ispravno
+            required // sprjecava submit dok polje nije ispravno
           />
           <FaUser className="usericon"></FaUser>
         </div>
@@ -219,7 +118,7 @@ function RegForm({ onClick, signIn }) {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            required  // sprjecava submit dok polje nije ispravno
+            required // sprjecava submit dok polje nije ispravno
           />
           <FaLock className="passicon"></FaLock>
         </div>
@@ -230,7 +129,7 @@ function RegForm({ onClick, signIn }) {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            required  // sprjecava submit dok polje nije ispravno
+            required // sprjecava submit dok polje nije ispravno
           />
           <IoIosMail className="mailicon"></IoIosMail>
         </div>
@@ -239,7 +138,11 @@ function RegForm({ onClick, signIn }) {
             <button
               type="button"
               onClick={() => handleUserRoleClick("korisnik")}
-              className={formData.vrstaUser === "korisnik" ? "vrstaUser-button green" : "vrstaUser-button red"}
+              className={
+                formData.vrstaUser === "korisnik"
+                  ? "vrstaUser-button green"
+                  : "vrstaUser-button red"
+              }
             >
               User
               <div className="selector-icon">🎅</div>
@@ -249,28 +152,57 @@ function RegForm({ onClick, signIn }) {
             <button
               type="button"
               onClick={() => handleUserRoleClick("predstavnik")}
-              className={formData.vrstaUser === "predstavnik" ? "vrstaUser-button green" : "vrstaUser-button red"}
+              className={
+                formData.vrstaUser === "predstavnik"
+                  ? "vrstaUser-button green"
+                  : "vrstaUser-button red"
+              }
             >
               Leader
               <div className="selector-icon">🎅</div>
             </button>
           </div>
         </div>
-        {message &&
-          <Box spacing={2} className={"error-message"} paddingBottom={2}>
-            <Alert severity={severity}>
+        {message && (
+          <Box
+            spacing={2}
+            className={"error-message"}
+            paddingBottom={2}
+            sx={{
+              width: '100%',
+              maxWidth: '400px',
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word',
+              whiteSpace: 'normal',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <Alert
+              severity={severity}
+              sx={{
+                width: '100%',
+                wordWrap: 'break-word',
+                overflowWrap: 'break-word',
+                whiteSpace: 'normal',
+              }}
+            >
               {message}
             </Alert>
           </Box>
-        }
+        )}
         <div className="submitDiv">
-          <button className="submit" type="submit">Submit</button>
+          <button className="submit" type="submit">
+            Submit
+          </button>
         </div>
         <div className="google-signin">
-          <button type="button"
-                  onClick={handleGoogleSignIn}
-                  className="google-button">{<FcGoogle
-            className="google-icon" />} Sign in with Google
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            className="google-button"
+          >
+            {<FcGoogle className="google-icon" />} Sign in with Google
           </button>
         </div>
       </form>

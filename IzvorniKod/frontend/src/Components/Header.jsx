@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { AppBar, Toolbar, Typography, Button, Menu, MenuItem, Avatar, Box } from "@mui/material";
 import { styled } from "@mui/system";
-import { useAuth } from "../firebase/AuthContext.jsx";
 import SignOutButton from "./SignOutButton.jsx";
 import PropTypes from "prop-types";
 
@@ -37,8 +36,7 @@ const StyledMenu = styled(Menu)(() => ({
 }));
 
 function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, onSignupClick, calendarVisible }) {
-  // currentUser --> null ako nitko nije logiran :: currentUser ako je netko logiran
-  const { currentUser } = useAuth();
+
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -69,7 +67,7 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
         </Logo>
 
         {/* Conditional rendering ovisno je li korisnik prijavljen ili nije */}
-        {(currentUser && isLoggedIn) ? (
+        {(isLoggedIn) ? (
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Avatar
               src={userAvatar}

@@ -1,47 +1,36 @@
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase/firebaseConfig.js";
-import { useAuth } from "../firebase/AuthContext";
 import { styled } from "@mui/system";
 import { MenuItem } from "@mui/material";
 import PropTypes from "prop-types";
 
+// styling za logout gumb
+const LogoutButton = styled(MenuItem)(() => ({
+  backgroundColor: "rgba(255, 24, 24, 0.27)",
+  color: "black",
+  textAlign: "center",
+  justifyContent: "center",
 
-const SignOutButton = ({ onClick, onClose }) => {
-  const { currentUser } = useAuth();
-
-  // funkcija za sign out
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        alert("You have signed out successfully!");
-        localStorage.clear();
-        onClick();
-        onClose();
-      })
-      .catch((error) => {
-        console.error("Error signing out: ", error);
-      });
-  };
-
-  // styling za logout gumb
-  const LogoutButton = styled(MenuItem)(() => ({
-    backgroundColor: "rgba(255, 24, 24, 0.27)",
-    color: "black",
+  ":hover": {
+    backgroundColor: "red",
+    color: "white",
     textAlign: "center",
     justifyContent: "center",
+  },
+}));
 
-    ":hover": {
-      backgroundColor: "red",
-      color: "white",
-      textAlign: "center",
-      justifyContent: "center",
-    },
-  }));
-
-  if (!currentUser) return null;
+const SignOutButton = ({ onClick, onClose }) => {
+  // funkcija za sign out
+  const handleSignOut = () => {
+    // Resetiraj lokalno stanje i očisti localStorage
+    localStorage.clear();
+    console.log("User signed out successfully!");
+    onClick(); // Resetira stanje prijave (isLoggedIn -> false)
+    onClose(); // Zatvori meni
+  };
 
   return (
-    <LogoutButton className="logout_button" onClick={handleSignOut}>Sign Out</LogoutButton>
+    <LogoutButton className="logout_button" onClick={handleSignOut}>
+      Sign Out
+    </LogoutButton>
   );
 };
 

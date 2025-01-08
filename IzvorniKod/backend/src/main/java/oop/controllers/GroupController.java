@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/groups")
 public class GroupController {
 
@@ -38,10 +39,10 @@ public class GroupController {
         //samo predstavnik moze raditi grupe
         //Ako uidPredstavnika u grupi ne odgovara uid korisnika koji šalje zahtjev, status 403 (Forbidden) se vraća
         //Provjera da li je korisnik koji šalje zahtjev predstavnik (isti uid kao u grupi)
-        if (!group.getUidPredstavnika().equals(uid)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(null); // Korisnik nije predstavnik ove grupe
-        }
+        //if (!group.getUidPredstavnika().equals(uid)) {
+        //    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        //            .body(null); // Korisnik nije predstavnik ove grupe
+        //}
 
         // Postavljanje grupe za događaj
         event.setGroup(group);
