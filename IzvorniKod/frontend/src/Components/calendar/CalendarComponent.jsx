@@ -21,8 +21,9 @@ const CalendarComponent = ({ hideCalendar }) => {
   });
   // fetchanje s backenda
   const fetchEvents = useCallback(async () => {
+    const groupId = localStorage.getItem("myGroupId");
     try {
-      const response = await fetch("http://localhost:8080/api/groups/5/events", {
+      const response = await fetch(`http://localhost:8080/api/groups/${groupId}/events`, {
         headers: {
           "Content-Type": "application/json",
           "uid": "0FIglHrt7CT33FZAsOlFPn7j78q2",
@@ -96,8 +97,8 @@ const CalendarComponent = ({ hideCalendar }) => {
   const handleEventSubmit = async (e) => {
     e.preventDefault();
 
-    // Pretpostavljam da imaš ID grupe, na primjer kroz props ili state
-    const groupId = 5; // Zamijeni sa stvarnim ID-om grupe
+    // groupId
+    const groupId = localStorage.getItem("myGroupId"); // Zamijeni sa stvarnim ID-om grupe
 
     const newEvent = {
       eventName: eventDetails.title,
@@ -109,7 +110,7 @@ const CalendarComponent = ({ hideCalendar }) => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/api/groups/5/events`, {
+      const response = await fetch(`http://localhost:8080/api/groups/${groupId}/events`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
