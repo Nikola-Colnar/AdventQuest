@@ -15,12 +15,13 @@ import {
 const SelectGroupForUserButton = () => {
   const [open, setOpen] = useState(false);
   const [groups, setGroups] = useState([]);
-  const [selectedGroup, setSelectedGroup] = useState("");
-  const [username, setUsername] = useState("markoG"); // Trenutno hardkodirano
+  const [selectedGroupId, setSelectedGroupId] = useState("");
+  const [selectedGroupName, setSelectedGroupName] = useState("");
 
   const fetchUserGroups = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/user-groups/user/${username}`);
+      const storedUsername = localStorage.getItem("username");
+      const response = await fetch(`http://localhost:8080/api/user-groups/user/${storedUsername}`);
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched groups:", data); // Provjera podataka
@@ -43,11 +44,22 @@ const SelectGroupForUserButton = () => {
   };
 
   const handleGroupSelect = (event) => {
-    setSelectedGroup(event.target.value);
+    const groupId = event.target.value; // GroupId iz odabrane vrijednosti
+    setSelectedGroupId(groupId); // postavljamo vrijednost
+    const selectedGroup = groups.find(group => group.groupId === groupId);
+    setSelectedGroupName(selectedGroup?.groupName || ""); // Postavimo naziv grupe
   };
 
   const handleSubmit = () => {
-    console.log("Selected Group:", selectedGroup);
+    if (selectedGroupId) {
+      localStorage.setItem("myGroupId", selectedGroupId); // Spremi groupId u localStorage
+      localStorage.setItem("myGroupName", selectedGroupName);
+      console.log("Selected Group ID saved to localStorage:", selectedGroupId);
+      console.log("Selected Group Name saved to localStorage:", selectedGroupName);
+    } else {
+      console.error("No group selected!");
+    }
+
     setOpen(false);
   };
 
@@ -62,12 +74,12 @@ const SelectGroupForUserButton = () => {
           <FormControl fullWidth margin="dense">
             <InputLabel>Group</InputLabel>
             <Select
-              value={selectedGroup}
+              value={selectedGroupId}
               onChange={handleGroupSelect}
               label="Group"
             >
               {groups.map((group) => (
-                <MenuItem key={group.id} value={group.groupName}>
+                <MenuItem key={group.groupId} value={group.groupId}>
                   {group.groupName} {/* Provjera prikaza naziva grupe */}
                 </MenuItem>
               ))}
@@ -84,7 +96,7 @@ const SelectGroupForUserButton = () => {
         </DialogActions>
       </Dialog>
 
-      {selectedGroup && <p>Selected Group: {selectedGroup}</p>}
+      {selectedGroupId && <p>Selected Group: {selectedGroupName}</p>}
     </Box>
   );
 };

@@ -12,7 +12,6 @@ import {
 const AddUserToGroupButton = () => {
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
-  const [groupId, setGroupId] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -23,7 +22,16 @@ const AddUserToGroupButton = () => {
   };
 
   const handleAddUser = async () => {
-    if (!username || !groupId) return;
+    if (!username) {
+      console.error("Username is required!");
+      return;
+    }
+
+    const groupId = localStorage.getItem("myGroupId"); // Dohvati groupId iz localStorage
+    if (!groupId) {
+      console.error("Group ID not found in localStorage!");
+      return;
+    }
 
     const userToAdd = {
       username: username,
@@ -43,9 +51,8 @@ const AddUserToGroupButton = () => {
         console.log("User added to group successfully");
         setOpen(false);
         setUsername("");
-        setGroupId("");
       } else {
-        console.error("Failed to add user to group");
+        console.error("User doesn't exist");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -68,14 +75,6 @@ const AddUserToGroupButton = () => {
             fullWidth
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            label="Group ID"
-            type="number"
-            fullWidth
-            value={groupId}
-            onChange={(e) => setGroupId(e.target.value)}
           />
         </DialogContent>
         <DialogActions>

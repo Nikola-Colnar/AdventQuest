@@ -19,9 +19,10 @@ const DeleteUserFromGroup = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
-  const groupId = 5; // ID grupe koji je hardkodiran
+
 
   const fetchUsersByGroup = async () => {
+    const groupId = localStorage.getItem("myGroupId"); // ID grupe u kojem se nalazi ovaj user
     try {
       const response = await fetch(`http://localhost:8080/api/user-groups/group/${groupId}`);
       if (response.ok) {
@@ -36,6 +37,7 @@ const DeleteUserFromGroup = () => {
   };
 
   const handleClickOpen = () => {
+    setUsers([]);
     fetchUsersByGroup(); // Dohvati korisnike pri otvaranju dijaloga
     setOpen(true);
   };
