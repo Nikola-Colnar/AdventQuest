@@ -55,6 +55,7 @@ function Form({ onClick, loggedIn }) {
           username: formData.username,  // username korisnika
           password: formData.password,  // Lozinka korisnika
         }),
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -77,7 +78,8 @@ function Form({ onClick, loggedIn }) {
 
   };
   // signup korisnika sa google racunom
-  const handleGoogleSignIn = () => {
+  const handleGoogleOAuth2Login = () => {
+    console.log("Redirecting to Google OAuth2 login...");
     window.location.href = GOOGLE_LOGIN_API_URL;
   };
   return (
@@ -119,7 +121,7 @@ function Form({ onClick, loggedIn }) {
         <div className="google-signin">
           <button
             type="button"
-            onClick={handleGoogleSignIn}
+            onClick={handleGoogleOAuth2Login}  // Funkcija za google login
             className="google-button"
           >
             {<FcGoogle className="google-icon" />} Sign in with Google

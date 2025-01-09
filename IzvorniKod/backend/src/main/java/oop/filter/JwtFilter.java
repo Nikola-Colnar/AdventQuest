@@ -39,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("Unauthorized access, initiating authorization");
+        System.out.println("Need access, initiating authorization");
 
         String token = null;
         String username = null;

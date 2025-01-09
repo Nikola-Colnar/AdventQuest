@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { BrowserRouter as Router, useRoutes} from "react-router-dom";
 import "./styles/App.css";
 import Form from "./components/form/Form.jsx";
 import RegForm from "./components/form/RegForm.jsx";
@@ -6,6 +7,8 @@ import Countdown from "./components/countdown/Countdown.jsx";
 import Snowfall from "./components/snowfall/Snowfall.jsx";
 import Header from "./components/Header.jsx";
 import CalendarComponent from "./Components/calendar/CalendarComponent.jsx";
+import { element } from "prop-types";
+import UserInfo from "./Components/form/UserInfo.jsx";
 
 
 function App() {
@@ -57,24 +60,43 @@ function App() {
     setIsLoggedIn(status);
   };
 
-  return (
-    <>
-      <Header className="header"
+  const AppRoutes = () => {
+    const routes = [
+      {
+        path: "/",
+        element: (
+          <>
+            <Header
+              className="header"
               isLoggedIn={isLoggedIn}
               handlelogin={handlelogin}
               username={username}
               onLoginClick={handleLoginClick}
               onSignupClick={handleSignupClick}
               calendarVisible={handleCalendar}
-      />
+            />
 
-      {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange} />}
-      {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange} />}
-      {showCalendar && <CalendarComponent hideCalendar={handleCalendar}></CalendarComponent>}
+            {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange} />}
+            {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange} />}
+            {showCalendar && <CalendarComponent hideCalendar={handleCalendar} />}
 
-      <Snowfall className="snowfall" />
-      <Countdown targetDate="2024-12-25T00:00:00" />
-    </>
+            <Snowfall className="snowfall" />
+            <Countdown targetDate="2024-12-25T00:00:00" />
+          </>
+        ),
+      },
+      {
+        path: "/userinfo",
+        element: <UserInfo />
+      }
+    ];
+    return useRoutes(routes);
+  };
+
+  return (
+    <Router>
+      <AppRoutes />
+    </Router>
   );
 }
 

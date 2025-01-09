@@ -19,12 +19,27 @@ const LogoutButton = styled(MenuItem)(() => ({
 
 const SignOutButton = ({ onClick, onClose }) => {
   // funkcija za sign out
-  const handleSignOut = () => {
-    // Resetiraj lokalno stanje i očisti localStorage
-    localStorage.clear();
-    console.log("User signed out successfully!");
-    onClick(); // Resetira stanje prijave (isLoggedIn -> false)
-    onClose(); // Zatvori meni
+  const handleSignOut = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Include credentials in the request
+      });
+  
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+  
+      // Resetiraj lokalno stanje i očisti localStorage
+      localStorage.removeItem("username");
+      onClick(); // Resetira stanje prijave (isLoggedIn -> false)
+      onClose(); // Zatvori meni
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
   };
 
   return (

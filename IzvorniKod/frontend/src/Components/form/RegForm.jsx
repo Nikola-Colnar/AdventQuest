@@ -72,6 +72,7 @@ function RegForm({ onClick, signIn }) {
           password: formData.password,  // lozinka korisnika
           email: formData.email // mail korisnika
         }),
+        credentials: 'include',
       });
 
       if (response.ok) {
@@ -92,7 +93,8 @@ function RegForm({ onClick, signIn }) {
   };
 
   // signup korisnika sa google racunom
-  const handleGoogleSignIn = () => {
+  const handleGoogleOAuth2Login = () => {
+    console.log("Redirecting to Google OAuth2 login...");
     window.location.href = GOOGLE_LOGIN_API_URL;
   };
 
@@ -199,7 +201,7 @@ function RegForm({ onClick, signIn }) {
         <div className="google-signin">
           <button
             type="button"
-            onClick={handleGoogleSignIn}
+            onClick={handleGoogleOAuth2Login}
             className="google-button"
           >
             {<FcGoogle className="google-icon" />} Sign in with Google

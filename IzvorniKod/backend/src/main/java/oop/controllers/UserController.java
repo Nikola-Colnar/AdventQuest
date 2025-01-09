@@ -1,10 +1,12 @@
 package oop.controllers;
 
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import oop.model.User;
+import oop.service.JWTService;
 import oop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,12 +23,15 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
+
+    private final JWTService jwtService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JWTService jwtService) {
 
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/")
@@ -39,6 +44,17 @@ public class UserController {
         System.out.println(userService.getAllUsers());
         return userService.getAllUsers().toString();
         }
+
+//    @PostMapping("/logout")
+//    public void logout(HttpServletResponse response) {
+//        System.out.println("izvrsavam logout");
+//        Cookie cookie = new Cookie("jwtToken", null);
+//        cookie.setPath("/");
+//        cookie.setHttpOnly(true);
+//        cookie.setSecure(false); // Ensure the cookie is sent over HTTPS
+//        cookie.setMaxAge(0); // Set Max-Age to 0 to delete the cookie
+//        response.addCookie(cookie);
+//    }
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@RequestBody User user, HttpServletResponse response) {
@@ -101,12 +117,28 @@ public class UserController {
     @GetMapping("/csrf_token")
     public CsrfToken getToken(HttpServletRequest request){
         return (CsrfToken) request.getAttribute("_csrf");
-
     }
 
     @GetMapping("/api/login/google")
     public void redirectToGoogleLogin(HttpServletResponse response) throws IOException {
+        System.out.println("Redirecting to Google login");
         response.sendRedirect("/oauth2/authorization/google");
+    }
+
+    @GetMapping("/api/userinfo")
+    public ResponseEntity<Map<String, Object>> getUserInfo(HttpServletRequest request) {
+        System.out.println("Getting user info for Oauth2 user");
+        String token = jwtService.extractJwtFromCookies(request);
+        System.out.println("Token: " + token);
+        if (token != null) {
+            Claims claims = jwtService.getAllClaimsFromToken(token);
+            String username = claims.getSubject(); // Assuming the username is stored in the subject
+            System.out.println("Username: " + username);
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("username", username);
+            return ResponseEntity.ok(responseBody);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 
 //    @GetMapping("/profile")

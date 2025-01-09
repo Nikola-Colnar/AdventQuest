@@ -1,5 +1,6 @@
 package oop.configs;
 
+import jakarta.servlet.http.HttpServletResponse;
 import oop.filter.JwtFilter;
 import oop.service.CustomOAuth2UserService;
 import oop.service.MyUserDetailsService;
@@ -23,6 +24,11 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -61,22 +67,44 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/h2-console/**", "/register", "/login", "/api/login/google").permitAll()
+                        .requestMatchers("/", "/h2-console/**", "/register", "/login", "/logout", "login?logout", "/api/login/google").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler((request, response, authentication) -> {
-                            response.sendRedirect("/");
+                            response.sendRedirect("http://localhost:5173/userinfo");
+                        }))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
                         }))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));   //za h2
         http.csrf(csrf -> csrf.disable());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-
+        http.cors(withDefaults()); // Enable CORS with default configuration
+        http.logout(logout -> logout
+                .permitAll()
+                .deleteCookies("jwtToken")
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                })
+        );
 
         return http.build();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:5173"); // Specify allowed origins
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 
     @Bean
