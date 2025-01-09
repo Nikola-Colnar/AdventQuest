@@ -6,6 +6,9 @@ import Countdown from "./components/countdown/Countdown.jsx";
 import Snowfall from "./components/snowfall/Snowfall.jsx";
 import Header from "./components/Header.jsx";
 import CalendarComponent from "./Components/calendar/CalendarComponent.jsx";
+import CreateGroupButton from "./Components/CreateGroupButton.jsx";
+import AddUserToGroupButton from "./Components/AddUserToGroupButton.jsx";
+import SelectGroupForUserButton from "./Components/SelectGroupForUserButton.jsx";
 
 
 function App() {
@@ -73,8 +76,12 @@ function App() {
       {showCalendar && <CalendarComponent hideCalendar={handleCalendar}></CalendarComponent>}
 
       <Snowfall className="snowfall" />
-      <Countdown targetDate="2024-12-25T00:00:00" />
+      <Countdown targetDate="2025-12-25T00:00:00" />
+      <CreateGroupButton></CreateGroupButton>
+      <AddUserToGroupButton></AddUserToGroupButton>
+      <SelectGroupForUserButton></SelectGroupForUserButton>
     </>
+
   );
 }
 

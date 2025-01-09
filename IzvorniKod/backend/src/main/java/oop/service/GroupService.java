@@ -137,4 +137,12 @@ public class GroupService {
             throw new NoSuchElementException("Group with ID " + id + " not found.");
         }
     }
+    // Dohvati naziv grupe prema ID-u
+    public String getGroupNameById(int groupId) {
+        Group group = groupRepo.findById(groupId).orElse(null);
+        if (group != null) {
+            return group.getNazivGrupa();
+        }
+        return null; // Ako grupa nije pronađena, vrati null
+    }
 }
