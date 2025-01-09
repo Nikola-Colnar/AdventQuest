@@ -14,4 +14,6 @@ public interface UserGroupRepository extends JpaRepository<UserGroup, Long> {
 
     // Provjera postoji li zapis s istim korisničkim imenom i grupom
     boolean existsByUsernameAndGroupId(String username, int groupId);
+
+    UserGroup findByUsernameAndGroupId(String username, int groupId);
 }

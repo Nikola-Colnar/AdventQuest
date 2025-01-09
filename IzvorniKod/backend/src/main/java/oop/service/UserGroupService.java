@@ -40,6 +40,15 @@ public class UserGroupService {
         // Spremi u bazu
         return userGroupRepository.save(userGroup);
     }
+    //brisanje korisnika iz grupe po imenu i grupi
+    public boolean deleteUserFromGroup(String username, int groupId) {
+        UserGroup userGroup = userGroupRepository.findByUsernameAndGroupId(username, groupId);
+        if (userGroup != null) {
+            userGroupRepository.delete(userGroup);
+            return true; // Ako je korisnik uspješno obrisan
+        }
+        return false; // Ako korisnik ili grupa nisu pronađeni
+    }
 
     public List<UserGroup> getAllUsersByGroupId(int groupId) {
         return userGroupRepository.findByGroupId(groupId);

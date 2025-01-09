@@ -23,13 +23,25 @@ public class UserGroupController {
 
     @Autowired
     private GroupRepository groupRepository;
-
+    //dodavanje korisnika u grupu
     @PostMapping("/{username}/group/{groupId}")
     public ResponseEntity<UserGroup> addUserToGroup(
             @PathVariable String username,
             @PathVariable int groupId) {
         UserGroup userGroup = userGroupService.addUserToGroup(username, groupId);
         return ResponseEntity.ok(userGroup);
+    }
+    //brisanje korisnika iz grupe
+    @DeleteMapping("/user/{username}/group/{groupId}")
+    public ResponseEntity<String> deleteUserFromGroup(
+            @PathVariable String username,
+            @PathVariable int groupId) {
+        boolean deleted = userGroupService.deleteUserFromGroup(username, groupId);
+        if (deleted) {
+            return ResponseEntity.ok("User successfully removed from group.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User or group not found.");
+        }
     }
 
     @GetMapping("/group/{groupId}")
