@@ -2,6 +2,7 @@ package oop.service;
 
 import oop.model.Group;
 import oop.model.User;
+import oop.repository.GroupRepository;
 import oop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,8 @@ public class UserService {
     private AuthenticationManager authenticationManager;
 
     @Autowired JWTService jwtService;
+    @Autowired
+    private GroupRepository groupRepository;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -106,9 +109,7 @@ public class UserService {
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent()) {
             List<String> listGroupId = new ArrayList<>();
-            for(Group group : user.get().getGroups()) {
-                listGroupId.add(group.getNazivGrupa());
-            }
+            user.get().getGroups().forEach(group -> listGroupId.add(group.getNazivGrupa()));
             return listGroupId;
         }
         throw new RuntimeException("User not found");
@@ -118,4 +119,13 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public List<String> getAllUsersByGroupId(int groupId) {
+        Optional<Group> group = groupRepository.findById(groupId);
+        if(group.isPresent()) {
+            List<String> listUserNames = new ArrayList<>();
+            group.get().getUsers().forEach(user -> listUserNames.add(user.getUsername()));
+            return listUserNames;
+        }
+        throw new RuntimeException("User not found");
+    }
 }

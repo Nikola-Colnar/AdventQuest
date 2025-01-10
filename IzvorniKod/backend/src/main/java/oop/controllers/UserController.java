@@ -52,19 +52,22 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdGroup);
     }
 
-    @GetMapping("/{userId}/groups") //Dohvaćanje svih grupa od korisnika
+    @GetMapping("/{userId}/groups") //Dohvaćanje svih grupa od korisnika (Vraća groupname vrlo lako može i vraćati group Id)
     public ResponseEntity<List<String>> getGroupsByUserId(@PathVariable int userId) {
-        List<String> listaGroupId = userService.getGroupsByUserId(userId);
-        if (listaGroupId.isEmpty()) {
+        List<String> listaGroupNames = userService.getGroupsByUserId(userId);
+        if (listaGroupNames.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return ResponseEntity.ok(listaGroupId);
+        return ResponseEntity.ok(listaGroupNames);
     }
 
-    @GetMapping("/{groupId}/getUsers") //Dohvaćanje svih korisnika od grupe
-    public Set<User> getAllUsers(@PathVariable int groupId) {
-        Group group = groupService.getGroupById(groupId);
-        return  group.getUsers();
+    @GetMapping("/{groupId}/getUsers") //Dohvaćanje svih korisnika od grupe (Vraća username vrlo lako može i vraćati user Id)
+    public ResponseEntity<List<String>> getAllUsersByGroupId(@PathVariable int groupId) {
+        List<String> listaUserNames = userService.getAllUsersByGroupId(groupId);
+        if (listaUserNames.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(listaUserNames);
     }
 
     @PostMapping("/{groupId}/addUser")
