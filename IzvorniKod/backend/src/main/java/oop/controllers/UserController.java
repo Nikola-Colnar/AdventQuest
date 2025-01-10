@@ -44,18 +44,21 @@ public class UserController {
 
     // Kreiranje nove grupe
     @PostMapping("/{userId}/createGroup")
-    public ResponseEntity<Group> createGroup(@RequestBody Group group) {
+    public ResponseEntity<Group> createGroup(@RequestBody Group group, @PathVariable String userId) {
         Group createdGroup = groupService.createGroup(group);
+        User user = userService.getUserById(Integer.parseInt(userId)).get();
+        user.getGroups().add(createdGroup);
+        userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdGroup);
     }
 
     @GetMapping("/{userId}/groups") //Dohvaćanje svih grupa od korisnika
-    public ResponseEntity<Set<Group>> getGroupsByUserId(@PathVariable int id) {
-        Set<Group> groups = userService.getGroupsByUserId(id);
-        if (groups.isEmpty()) {
+    public ResponseEntity<List<String>> getGroupsByUserId(@PathVariable int userId) {
+        List<String> listaGroupId = userService.getGroupsByUserId(userId);
+        if (listaGroupId.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return ResponseEntity.ok(groups);
+        return ResponseEntity.ok(listaGroupId);
     }
 
     @GetMapping("/{groupId}/getUsers") //Dohvaćanje svih korisnika od grupe
@@ -65,23 +68,32 @@ public class UserController {
     }
 
     @PostMapping("/{groupId}/addUser")
-    public ResponseEntity<User> addUserToGroup(@PathVariable int groupId, @RequestBody String userJson) {
+    public ResponseEntity<?> addUserToGroup(@PathVariable int groupId, @RequestBody Map<String, String> request) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(userJson);
-            String userName = jsonNode.get("username").asText();
-
-            System.out.println("Received username: " + userName);
-            Group group = groupService.getGroupById(groupId);
-            User user = userService.getUserByUsername(userName);
-            if (group == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            // Extracting username from request
+            String userName = request.get("username");
+            if (userName == null || userName.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username is required");
             }
 
-            group.addUser(user);
+            // Fetching group and user
+            Group group = groupService.getGroupById(groupId);
+            if (group == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Group not found");
+            }
+
+            User user = userService.getUserByUsername(userName);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            // Adding group to the user's groups (owning side)
+            user.getGroups().add(group);
+            userService.saveUser(user);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
 

@@ -38,6 +38,9 @@ public class GroupController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
+
+
+
     @GetMapping("/{groupId}/getEvents") //Dohvaćanje svih događaja od grupe
     public ResponseEntity<List<Event>> getEventsByGroupId(@PathVariable int groupId) {
         List<Event> events = groupService.getEventsByGroupId(groupId);

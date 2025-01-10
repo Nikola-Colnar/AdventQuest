@@ -10,10 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -105,7 +102,20 @@ public class UserService {
         return "Error";
     }
 
-    public Set<Group> getGroupsByUserId(int id) {
-        return userRepository.getGroupsByUserId(id);
+    public List<String> getGroupsByUserId(int userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent()) {
+            List<String> listGroupId = new ArrayList<>();
+            for(Group group : user.get().getGroups()) {
+                listGroupId.add(group.getNazivGrupa());
+            }
+            return listGroupId;
+        }
+        throw new RuntimeException("User not found");
     }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
 }

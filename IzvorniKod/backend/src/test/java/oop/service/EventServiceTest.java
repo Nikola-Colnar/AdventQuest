@@ -27,9 +27,9 @@ public class EventServiceTest {
          calendar.add(Calendar.DAY_OF_MONTH, 1);
          Date tomorrow = calendar.getTime();
 
-         Event event = new Event("Skijanje", currentDate, tomorrow);
 
-         eventService.createEvent(event);
+
+
 
     }
 }

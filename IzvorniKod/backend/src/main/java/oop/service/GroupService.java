@@ -140,4 +140,8 @@ public class GroupService {
             throw new NoSuchElementException("Group with ID " + id + " not found.");
         }
     }
+
+    public Group saveGroup(Group group) {
+        return groupRepo.save(group);
+    }
 }

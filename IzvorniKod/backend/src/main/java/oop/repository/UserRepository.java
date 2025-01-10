@@ -16,6 +16,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findByEmail(String email);
 
-    @Query("SELECT s.groups FROM User s WHERE s.id = :id")
-    Set<Group> getGroupsByUserId(@Param("id") int id);
 }

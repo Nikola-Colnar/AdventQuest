@@ -27,56 +27,54 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private ApplicationContext context;
 
-    private static final List<String> PROTECTED_PATHS = new ArrayList<>(List.of("/students"));
+    private static final List<String> PROTECTED_PATHS = List.of("/api/protected", "/api/secure");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String requestURI = request.getRequestURI();
 
-        // Apply filter only to protected endpoints
-        if (!PROTECTED_PATHS.contains(requestURI)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
-        System.out.println("Need access, initiating authorization");
 
-        String token = null;
-        String username = null;
 
-        // Extract token from cookies
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("jwtToken".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
+
+        if (PROTECTED_PATHS.contains(request.getRequestURI())) {
+            System.out.println("Protected path, checking authorization");
+
+
+            String token = null;
+            String username = null;
+
+            // Extract token from cookies
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if ("jwtToken".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        break;
+                    }
                 }
             }
-        }
 
-        if (token != null) {
-            username = jwtService.extractUserName(token);
-            System.out.println("Username: " + username);
-        }
+            if (token != null) {
+                username = jwtService.extractUserName(token);
+                System.out.println("Username: " + username);
+            }
 
-        if (username != null) {
-            UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
+            if (username != null) {
+                UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
 
-            if (jwtService.validateToken(token, userDetails)) {
-                response.setStatus(HttpServletResponse.SC_OK);
+                if (jwtService.validateToken(token, userDetails)) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return; // Stop the filter chain
+                return;
             }
+
         } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return; // Stop the filter chain
+            System.out.println("Public path, no authorization needed");
         }
-
         filterChain.doFilter(request, response);
-    }
-
-    public static void addProtectedPath(String path) {
-        PROTECTED_PATHS.add(path);
     }
 }

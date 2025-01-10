@@ -22,15 +22,17 @@ public class Event {
     @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
     private Group group;
 
-    public Event(String eventName, Date startDate, Date endDate) {
-        this(eventName, startDate, endDate, "green");
+    public Event(String eventName, Date startDate, Date endDate, String description) {
+        this(eventName, startDate, endDate, description,"green");
     }
 
-    public Event(String eventName, Date startDate, Date endDate, String color) {
-        StartDate = startDate;
-        EndDate = endDate;
+    public Event(String eventName, Date startDate, Date endDate,String description, String color) {
+        this.StartDate = startDate;
+        this.EndDate = endDate;
         this.eventName = eventName;
+        this.description = description;
         this.color = color;
+
     }
 
     public Event() {}

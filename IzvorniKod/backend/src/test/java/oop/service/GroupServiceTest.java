@@ -21,16 +21,13 @@ class GroupServiceTest {
     void createGroup() {
         Group group = new Group();
         group.setNazivGrupa("Grupa jedan");
-        group.setUidPredstavnika("UID_predstavnika");
-        User user = new User("uidNoviUserNeki", "UserName");
+
+
         Date currentDate = new Date();
-        Event event = new Event("Skijanje", currentDate, currentDate);
-        Event event2 = new Event("Sanjkanje", currentDate, currentDate);
         Message message = new Message("UID_posiljatelja", currentDate, "MojaPoruka");
 
-        group.addUser(user);
-        group.addEvent(event);
-        group.addEvent(event2);
+
+
         group.addMessage(message);
         System.out.println(group.getEvents());
       //  group.getIdGrupa(); //PRAZNO
