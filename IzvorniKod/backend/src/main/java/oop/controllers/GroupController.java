@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@RestController //Rad izmedu grupa i događaja
 @CrossOrigin("*")
 @RequestMapping("/api/groups")
 public class GroupController {
@@ -22,36 +22,23 @@ public class GroupController {
         this.groupService = groupService;
     }
 
-    // Kreiranje nove grupe
-    @PostMapping
-    public ResponseEntity<Group> createGroup(@RequestBody Group group) {
-        Group createdGroup = groupService.createGroup(group);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdGroup);
-    }
-    @PostMapping("/{groupId}/events")
-    public ResponseEntity<Event> createEventForGroup(@PathVariable int groupId, @RequestBody Event event, @RequestHeader("uid") String uid) {
-        System.out.println("Received UID: " + uid);
+
+
+
+    @PostMapping("/{groupId}/addEvent") //Dodavanje događaja u grupu
+    public ResponseEntity<Event> createEventForGroup(@PathVariable int groupId, @RequestBody Event event, @RequestHeader("id") String idUser) {
+        System.out.println("Received ID USER: " + idUser);
         //Provjera postoji li grupa
         Group group = groupService.getGroupById(groupId);
         if (group == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        //samo predstavnik moze raditi grupe
-        //Ako uidPredstavnika u grupi ne odgovara uid korisnika koji šalje zahtjev, status 403 (Forbidden) se vraća
-        //Provjera da li je korisnik koji šalje zahtjev predstavnik (isti uid kao u grupi)
-        //if (!group.getUidPredstavnika().equals(uid)) {
-        //    return ResponseEntity.status(HttpStatus.FORBIDDEN)
-        //            .body(null); // Korisnik nije predstavnik ove grupe
-        //}
 
-        // Postavljanje grupe za događaj
-        event.setGroup(group);
+        group.addEvent(event);
 
-        // Spremanje događaja s grupom
-        groupService.putEvent(groupId, event);
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
-    @GetMapping("/{groupId}/events")
+    @GetMapping("/{groupId}/getEvents") //Dohvaćanje svih događaja od grupe
     public ResponseEntity<List<Event>> getEventsByGroupId(@PathVariable int groupId) {
         List<Event> events = groupService.getEventsByGroupId(groupId);
         if (events.isEmpty()) {

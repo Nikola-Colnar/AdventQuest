@@ -3,8 +3,11 @@ package oop.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 public class User {
 
     @Id
@@ -22,11 +25,15 @@ public class User {
     private  String email;
 
 
-    
 
-    @ManyToOne
-    @JoinColumn(name = "idGrupa")
-    private Group group;
+
+    @ManyToMany
+    @JoinTable(
+            name = "group_user",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "idgrupa")
+    )
+    private Set<Group> groups = new HashSet<>();
     
     // Default constructor
     public User() {
@@ -71,12 +78,19 @@ public class User {
         this.username = username;
     }
 
+
     @Override
     public String toString() {
         return password + " " + username + " " + email;
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public void addGroup(Group group) {
+        groups.add(group);
+        group.getUsers().add(this); // dodavanje korisnika u grupu
+    }
+
+    public void removeGroup(Group group) {
+        groups.remove(group);
+        group.getUsers().remove(this); // Sinhronizacija relacije
     }
 }

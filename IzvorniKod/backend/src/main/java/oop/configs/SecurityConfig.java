@@ -68,7 +68,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/h2-console/**", "/register", "/login", "/logout", "login?logout", "/api/login/google").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler((request, response, authentication) -> {
@@ -110,7 +110,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(){  //ovo je setup da ce spring boot usporedivati passworde sa nase baze podataka
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(10)); 
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(10));
         provider.setUserDetailsService(myUserDetailsService);
         return provider;
     }

@@ -15,15 +15,22 @@ public class Event {
     private Date StartDate;
     private Date EndDate;
     private String eventName;
+    private String color = "green";
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
     private Group group;
 
     public Event(String eventName, Date startDate, Date endDate) {
+        this(eventName, startDate, endDate, "green");
+    }
+
+    public Event(String eventName, Date startDate, Date endDate, String color) {
         StartDate = startDate;
         EndDate = endDate;
         this.eventName = eventName;
+        this.color = color;
     }
 
     public Event() {}

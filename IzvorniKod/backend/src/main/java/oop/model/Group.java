@@ -1,7 +1,10 @@
 package oop.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import oop.service.GroupService;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
@@ -15,11 +18,13 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idGrupa;
 
+    @NotEmpty(message = "Naziv grupe je obavezan")
     private String nazivGrupa;
 
+    @NotNull(message = "Id predstavnika je obavezan")
     private int idPredstavnika;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(mappedBy = "groups")
     private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -28,12 +33,9 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 
-    public Group(String nazivGrupa, int idPredstavnika, Set<User> users, Set<Event> events, List<Message> messages) {
+    public Group(String nazivGrupa, int idPredstavnika) {
         this.nazivGrupa = nazivGrupa;
         this.idPredstavnika = idPredstavnika;
-        this.users = users;
-        this.events = events;
-        this.messages = messages;
     }
 
     public Group() {}
@@ -50,11 +52,11 @@ public class Group {
         this.nazivGrupa = nazivGrupa;
     }
 
-    public int getUidPredstavnika() {
+    public int getidPredstavnika() {
         return idPredstavnika;
     }
 
-    public void setUidPredstavnika(int uidPredstavnika) {
+    public void setidPredstavnika(int uidPredstavnika) {
         this.idPredstavnika = uidPredstavnika;
     }
 
@@ -77,7 +79,7 @@ public class Group {
 
     public void addUser(User user) {
         users.add(user);
-        user.setGroup(this);
+
     }
 
     public void setEvents(Set<Event> events) {

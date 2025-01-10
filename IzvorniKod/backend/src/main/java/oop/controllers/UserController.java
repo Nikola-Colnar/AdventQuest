@@ -1,11 +1,18 @@
 package oop.controllers;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import oop.model.Group;
 import oop.model.User;
+import oop.service.GroupService;
 import oop.service.JWTService;
 import oop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,136 +24,65 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-@RestController
+@RestController  //Rad izmedu usera i grupe
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     private final UserService userService;
-
-    private final JWTService jwtService;
+    private final GroupService groupService;
 
     @Autowired
-    public UserController(UserService userService, JWTService jwtService) {
 
+    public UserController(UserService userService, GroupService groupService) {
         this.userService = userService;
-        this.jwtService = jwtService;
+        this.groupService = groupService;
     }
 
-    @GetMapping("/")
-    public String greet(HttpServletRequest request){
-        return "welkomen" + request.getSession().getId();
-    };
-
-    @GetMapping("/students")
-        public String studenti(){
-        System.out.println(userService.getAllUsers());
-        return userService.getAllUsers().toString();
-        }
-
-//    @PostMapping("/logout")
-//    public void logout(HttpServletResponse response) {
-//        System.out.println("izvrsavam logout");
-//        Cookie cookie = new Cookie("jwtToken", null);
-//        cookie.setPath("/");
-//        cookie.setHttpOnly(true);
-//        cookie.setSecure(false); // Ensure the cookie is sent over HTTPS
-//        cookie.setMaxAge(0); // Set Max-Age to 0 to delete the cookie
-//        response.addCookie(cookie);
-//    }
-
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody User user, HttpServletResponse response) {
-        System.out.println("izvrsavam register");
-
-        Map<String, Object> responseBody = new HashMap<>();
-
-        // Provjera postoji li korisnik
-        if (userService.userExists(user)) {
-            System.out.println("User already exists.");
-            responseBody.put("message", "User already exists.");
-            responseBody.put("username", user.getUsername()); // Vraća korisničko ime
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody); // HTTP 400 BAD_REQUEST
-        }
-
-        // Ako korisnik ne postoji, stvaramo novog korisnika
-        System.out.println("Stvaram usera");
-        String token = userService.createUser(user);
-
-        // Postavljanje JWT tokena u cookie
-        Cookie cookie = new Cookie("jwtToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
-        // Vraća samo korisničko ime
-        responseBody.put("username", user.getUsername());
-
-        return ResponseEntity.ok(responseBody); // HTTP 200 OK
+    // Kreiranje nove grupe
+    @PostMapping("/{userId}/createGroup")
+    public ResponseEntity<Group> createGroup(@RequestBody Group group) {
+        Group createdGroup = groupService.createGroup(group);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdGroup);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody User user, HttpServletResponse response) {
-        System.out.println("izvrsavam login");
+    @GetMapping("/{userId}/groups") //Dohvaćanje svih grupa od korisnika
+    public ResponseEntity<Set<Group>> getGroupsByUserId(@PathVariable int id) {
+        Set<Group> groups = userService.getGroupsByUserId(id);
+        if (groups.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(groups);
+    }
+
+    @GetMapping("/{groupId}/getUsers") //Dohvaćanje svih korisnika od grupe
+    public Set<User> getAllUsers(@PathVariable int groupId) {
+        Group group = groupService.getGroupById(groupId);
+        return  group.getUsers();
+    }
+
+    @PostMapping("/{groupId}/addUser")
+    public ResponseEntity<User> addUserToGroup(@PathVariable int groupId, @RequestBody String userJson) {
         try {
-            System.out.println("Loginam usera");
-            String token = userService.verify(user);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(userJson);
+            String userName = jsonNode.get("username").asText();
 
-            if (!token.equals("error")) {
-                // Postavljanje JWT tokena u cookie
-                Cookie cookie = new Cookie("jwtToken", token);
-                cookie.setHttpOnly(true);
-                cookie.setPath("/");
-                response.addCookie(cookie);
-
-                // Kreiranje odgovora s korisničkim imenom
-                Map<String, Object> responseBody = new HashMap<>();
-                responseBody.put("username", user.getUsername()); // Pretpostavljamo da je korisničko ime dio User objekta
-                return ResponseEntity.ok(responseBody);
+            System.out.println("Received username: " + userName);
+            Group group = groupService.getGroupById(groupId);
+            User user = userService.getUserByUsername(userName);
+            if (group == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
-        } catch (Exception e) {
-            System.out.println("DOŠLO JE DO GREŠKE " + e.getMessage());
+
+            group.addUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        // Ako dođe do pogreške, vraćamo JSON s porukom
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("message", "Invalid credentials or error occurred");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-    @GetMapping("/csrf_token")
-    public CsrfToken getToken(HttpServletRequest request){
-        return (CsrfToken) request.getAttribute("_csrf");
     }
 
-    @GetMapping("/api/login/google")
-    public void redirectToGoogleLogin(HttpServletResponse response) throws IOException {
-        System.out.println("Redirecting to Google login");
-        response.sendRedirect("/oauth2/authorization/google");
-    }
-
-    @GetMapping("/api/userinfo")
-    public ResponseEntity<Map<String, Object>> getUserInfo(HttpServletRequest request) {
-        System.out.println("Getting user info for Oauth2 user");
-        String token = jwtService.extractJwtFromCookies(request);
-        System.out.println("Token: " + token);
-        if (token != null) {
-            Claims claims = jwtService.getAllClaimsFromToken(token);
-            String username = claims.getSubject(); // Assuming the username is stored in the subject
-            System.out.println("Username: " + username);
-            Map<String, Object> responseBody = new HashMap<>();
-            responseBody.put("username", username);
-            return ResponseEntity.ok(responseBody);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-    }
-
-//    @GetMapping("/profile")
-//    public String profile(OAuth2AuthenticationToken token, Model model){
-//        model.addAttribute()
-//    }
-    @RequestMapping("/user")
-    public Principal user(Principal user){
-        return user;
-    }
 };

@@ -12,11 +12,14 @@ import java.util.*;
 public class GroupService {
 
     private final GroupRepository groupRepo;
+    private final UserService userService;
     public static final int MAX_USERS_IN_GROUP = 21; // Maksimal dopušteni broj korisnika u grupo
 
+
     @Autowired
-    public GroupService(GroupRepository repo) {
+    public GroupService(GroupRepository repo, UserService userService) {
         this.groupRepo = repo;
+        this.userService = userService;
     }
 
     public Group createGroup(Group group) {
@@ -25,7 +28,7 @@ public class GroupService {
             throw new RuntimeException("User with this UID already exists");
         }
         // Ako id nije zauzet, spremamo korisnika
-
+        group.addUser(userService.getUserById(group.getidPredstavnika()).get());
         return groupRepo.save(group);
     }
 
@@ -88,8 +91,8 @@ public class GroupService {
     }
 
 
-    public void putEvent(int id, Event event) {
-        Optional<Group> group = groupRepo.findById(id);
+    public void putEvent(int idGrupe, Event event) {
+        Optional<Group> group = groupRepo.findById(idGrupe);
         if(group.isPresent()) {
             Group group1 = group.get();
             Set<Event> currentEvents = group1.getEvents();
@@ -108,7 +111,7 @@ public class GroupService {
             group1.getEvents().add(event);
             groupRepo.save(group1);
         } else {
-            throw new NoSuchElementException("Group with ID " + id + " not found.");
+            throw new NoSuchElementException("Group with ID " + idGrupe + " not found.");
         }
     }
     public Group getGroupById(int groupId) {
