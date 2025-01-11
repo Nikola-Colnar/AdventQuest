@@ -10,6 +10,7 @@ import Header from "./components/Header.jsx";
 import CalendarComponent from "./Components/calendar/CalendarComponent.jsx";
 import { element } from "prop-types";
 import UserInfo from "./Components/form/UserInfo.jsx";
+import CreateGroupButton from "./Components/CreateGroupButton.jsx";
 
 
 function App() {
@@ -83,6 +84,7 @@ function App() {
 
             <Snowfall className="snowfall" />
             <Countdown targetDate="2025-12-25T00:00:00" />
+            <CreateGroupButton></CreateGroupButton>
           </>
         ),
       },

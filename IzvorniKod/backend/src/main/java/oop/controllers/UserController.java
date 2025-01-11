@@ -43,12 +43,21 @@ public class UserController {
     }
 
     // Kreiranje nove grupe
-    @PostMapping("/{userId}/createGroup")
-    public ResponseEntity<Group> createGroup(@RequestBody Group group, @PathVariable String userId) {
+    @PostMapping("/{username}/createGroup")
+    public ResponseEntity<Group> createGroup(@RequestBody Group group, @PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+
+        // Postavljamo idPredstavnika na id korisnika
+        group.setidPredstavnika(user.getId());  // Koristimo id korisnika umjesto username-a
+
+        // Kreiramo grupu
         Group createdGroup = groupService.createGroup(group);
-        User user = userService.getUserById(Integer.parseInt(userId)).get();
+
+        // Povezujemo korisnika s grupom
         user.getGroups().add(createdGroup);
         userService.saveUser(user);
+
+        // Vraćamo odgovor sa statusom 201 (Created) i novom grupom
         return ResponseEntity.status(HttpStatus.CREATED).body(createdGroup);
     }
 
