@@ -34,7 +34,7 @@ const SignOutButton = ({ onClick, onClose }) => {
       }
   
       // Resetiraj lokalno stanje i očisti localStorage
-      localStorage.removeItem("username");
+      localStorage.clear();
       onClick(); // Resetira stanje prijave (isLoggedIn -> false)
       onClose(); // Zatvori meni
     } catch (error) {
