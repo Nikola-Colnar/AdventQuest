@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-const UserInfo = () => {
+const UserInfo = ({ setIsLoggedIn, loadUsername }) => {
   const [username, setUsername] = useState(null);
   const navigate = useNavigate();
 
@@ -24,6 +24,11 @@ const UserInfo = () => {
         setUsername(userInfo.username);
         localStorage.setItem("username", userInfo.username);
         console.log("User info received and username saved to localStorage:", userInfo);
+        // pomocu propsa prikazujemo registriranu osobu na stranici
+        loadUsername(localStorage.getItem("username"));
+        setIsLoggedIn(true);
+        ///
+        // vracamo se nazad
         navigate("/");
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);

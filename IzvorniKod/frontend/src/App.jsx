@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { BrowserRouter as Router, useRoutes} from "react-router-dom";
 import "./styles/App.css";
@@ -81,13 +82,13 @@ function App() {
             {showCalendar && <CalendarComponent hideCalendar={handleCalendar} />}
 
             <Snowfall className="snowfall" />
-            <Countdown targetDate="2024-12-25T00:00:00" />
+            <Countdown targetDate="2025-12-25T00:00:00" />
           </>
         ),
       },
       {
         path: "/userinfo",
-        element: <UserInfo />
+        element: <UserInfo setIsLoggedIn={setIsLoggedIn} loadUsername={setUsername}/>
       }
     ];
     return useRoutes(routes);
