@@ -13,6 +13,7 @@ import UserInfo from "./Components/form/UserInfo.jsx";
 import CreateGroupButton from "./Components/CreateGroupButton.jsx";
 import AddUserToGroupButton from "./Components/AddUserToGroupButton.jsx";
 import SelectGroupForUserButton from "./Components/SelectGroupForUserButton.jsx";
+import DeleteUserFromGroup from "./Components/DeleteUserFromGroup.jsx";
 
 
 function App() {
@@ -89,6 +90,7 @@ function App() {
             <CreateGroupButton></CreateGroupButton>
             <AddUserToGroupButton></AddUserToGroupButton>
             <SelectGroupForUserButton></SelectGroupForUserButton>
+            <DeleteUserFromGroup></DeleteUserFromGroup>
           </>
         ),
       },

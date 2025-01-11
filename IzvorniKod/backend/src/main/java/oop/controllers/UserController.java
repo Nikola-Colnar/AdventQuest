@@ -113,5 +113,17 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
+    @DeleteMapping("/user/{username}/group/{groupId}")
+    public boolean deleteUserFromGroup(@PathVariable String username, @PathVariable int groupId) {
+        User user = userService.getUserByUsername(username);
+        if (user == null) {return false;}
+
+        Group group = groupService.getGroupById(groupId);
+        if (group == null) {return false;}
+
+        user.getGroups().remove(group);
+        userService.saveUser(user);
+        return true;
+    }
 
 };
