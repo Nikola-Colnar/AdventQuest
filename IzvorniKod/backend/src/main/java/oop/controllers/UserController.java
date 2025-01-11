@@ -23,10 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RestController  //Rad izmedu usera i grupe
 @CrossOrigin(origins = "http://localhost:5173")
@@ -61,14 +58,22 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdGroup);
     }
 
-    @GetMapping("/{userId}/groups") //Dohvaćanje svih grupa od korisnika (Vraća groupname vrlo lako može i vraćati group Id)
-    public ResponseEntity<List<String>> getGroupsByUserId(@PathVariable int userId) {
-        List<String> listaGroupNames = userService.getGroupsByUserId(userId);
-        if (listaGroupNames.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    @GetMapping("/{username}/groups") //Dohvaćanje svih grupa od korisnika (pomocu usernamea) (Vraća groupname vrlo lako može i vraćati group Id)
+    public ResponseEntity<List<Object>> getAllGroupsByUsername(@PathVariable String username) {
+        // Dohvati korisnika prema username-u
+        User user = userService.getUserByUsername(username);
+
+        // Dohvati grupe prema ID-u korisnika
+        List<Object> groupInfoList = userService.getGroupsByUserId(user.getId());
+
+        if (groupInfoList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
         }
-        return ResponseEntity.ok(listaGroupNames);
+
+        // Vraćamo listu objekata sa groupId i groupName
+        return ResponseEntity.ok(groupInfoList);
     }
+
 
     @GetMapping("/{groupId}/getUsers") //Dohvaćanje svih korisnika od grupe (Vraća username vrlo lako može i vraćati user Id)
     public ResponseEntity<List<String>> getAllUsersByGroupId(@PathVariable int groupId) {

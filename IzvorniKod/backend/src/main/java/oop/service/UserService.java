@@ -105,14 +105,23 @@ public class UserService {
         return "Error";
     }
 
-    public List<String> getGroupsByUserId(int userId) {
+    public List<Object> getGroupsByUserId(int userId) {
         Optional<User> user = userRepository.findById(userId);
-        if(user.isPresent()) {
-            List<String> listGroupId = new ArrayList<>();
-            user.get().getGroups().forEach(group -> listGroupId.add(group.getNazivGrupa()));
-            return listGroupId;
+        if (user.isPresent()) {
+            List<Object> responseList = new ArrayList<>();
+
+            // Prolazimo kroz sve grupe korisnika i dodajemo groupId i groupName u response listu
+            user.get().getGroups().forEach(group -> {
+                responseList.add(new Object() {
+                    public final int groupId = group.getIdGrupa();  // Koristimo groupId
+                    public final String groupName = group.getNazivGrupa(); // Koristimo groupName
+                });
+            });
+
+            return responseList;
+        } else {
+            throw new RuntimeException("User not found");
         }
-        throw new RuntimeException("User not found");
     }
 
     public User saveUser(User user) {
