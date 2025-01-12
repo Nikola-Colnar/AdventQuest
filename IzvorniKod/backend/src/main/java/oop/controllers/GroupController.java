@@ -2,9 +2,11 @@ package oop.controllers;
 
 import oop.model.Event;
 import oop.model.Group;
+import oop.model.Message;
 import oop.model.User;
 import oop.service.EventService;
 import oop.service.GroupService;
+import oop.service.MessageService;
 import oop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,15 +25,15 @@ public class GroupController {
     private final GroupService groupService;
     private final UserService userService;
     private final EventService eventService;
+    private final MessageService messageService;
 
     @Autowired
-    public GroupController(GroupService groupService, UserService userService, EventService eventService) {
+    public GroupController(GroupService groupService, UserService userService, EventService eventService, MessageService messageService) {
         this.groupService = groupService;
         this.userService = userService;
         this.eventService = eventService;
+        this.messageService = messageService;
     }
-
-
 
 
     @PostMapping("/{groupId}/events")
@@ -58,8 +59,6 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.CREATED).body(event);
         }
     }
-
-
 
     @GetMapping("/{groupId}/getEvents") //Dohvaćanje svih događaja od grupe
     public ResponseEntity<List<Event>> getEventsByGroupId(@PathVariable int groupId) {
@@ -93,5 +92,25 @@ public class GroupController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(group.getEvents());
     }
+
+    @PostMapping("/{groupId}/message")
+    public ResponseEntity<Message> createMessageForGroup(@PathVariable int groupId, @RequestBody Message message) {
+
+        Group group = groupService.getGroupById(groupId);
+        if (group == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+
+        message.setGroup(group);
+        Message savedMessage = messageService.createMessage(message);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedMessage);
+    }
+
+    @GetMapping("/{groupId}/getMessage")
+    public ResponseEntity<List<Message>> getMessagesByGroupId(@PathVariable int groupId) {
+        Group group = groupService.getGroupById(groupId);
+        if (group == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+        return ResponseEntity.status(HttpStatus.CREATED).body(group.getMessages());
+    }
+
 
 }
