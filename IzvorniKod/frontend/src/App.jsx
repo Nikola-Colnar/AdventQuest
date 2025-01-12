@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { BrowserRouter as Router, useRoutes} from "react-router-dom";
 import "./styles/App.css";
@@ -9,6 +10,10 @@ import Header from "./components/Header.jsx";
 import CalendarComponent from "./Components/calendar/CalendarComponent.jsx";
 import { element } from "prop-types";
 import UserInfo from "./Components/form/UserInfo.jsx";
+import CreateGroupButton from "./Components/CreateGroupButton.jsx";
+import AddUserToGroupButton from "./Components/AddUserToGroupButton.jsx";
+import SelectGroupForUserButton from "./Components/SelectGroupForUserButton.jsx";
+import DeleteUserFromGroup from "./Components/DeleteUserFromGroup.jsx";
 
 
 function App() {
@@ -81,13 +86,17 @@ function App() {
             {showCalendar && <CalendarComponent hideCalendar={handleCalendar} />}
 
             <Snowfall className="snowfall" />
-            <Countdown targetDate="2024-12-25T00:00:00" />
+            <Countdown targetDate="2025-12-25T00:00:00" />
+            <CreateGroupButton></CreateGroupButton>
+            <AddUserToGroupButton></AddUserToGroupButton>
+            <SelectGroupForUserButton></SelectGroupForUserButton>
+            <DeleteUserFromGroup></DeleteUserFromGroup>
           </>
         ),
       },
       {
         path: "/userinfo",
-        element: <UserInfo />
+        element: <UserInfo setIsLoggedIn={setIsLoggedIn} loadUsername={setUsername}/>
       }
     ];
     return useRoutes(routes);

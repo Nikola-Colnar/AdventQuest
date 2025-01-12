@@ -72,18 +72,21 @@ public class GroupService {
         }
     }
 
-    public void DeleteUser(int id, User user){ // brisanje usera iz grupe
+    public boolean DeleteUser(int id, User user){ // brisanje usera iz grupe
         Optional<Group> group = groupRepo.findById(id);
         if(group.isPresent()){
             Group group1 = group.get();
             Set<User> trenutniUseri =  group1.getUsers();
-            trenutniUseri.forEach(korisnik -> { // provjera postoji li user u toj grupi
-                if(korisnik.getId() == user.getId()){
-                    group1.getUsers().remove(user);
-                    groupRepo.save(group1);
-                }
-            });
-            throw new NoSuchElementException("User with id " + user.getId() + " not found.");
+            // Provjeri postoji li korisnik u grupi
+            boolean userExists = trenutniUseri.removeIf(korisnik -> korisnik.getId() == user.getId());
+
+            if (userExists) {
+                groupRepo.save(group1); // Spremi promjene nakon uklanjanja
+                return true; // Korisnik uspješno uklonjen
+            } else {
+                // Ako korisnik ne postoji u grupi, vrati false
+                return false;
+            }
         }
         else{
             throw new NoSuchElementException("Group with ID " + id + " not found.");
