@@ -1,28 +1,13 @@
 package oop.controllers;
 
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import oop.model.Group;
 import oop.model.User;
 import oop.service.GroupService;
-import oop.service.JWTService;
 import oop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.security.Principal;
 import java.util.*;
 
 @RestController  //Rad izmedu usera i grupe
@@ -125,5 +110,4 @@ public class UserController {
         userService.saveUser(user);
         return true;
     }
-
 };

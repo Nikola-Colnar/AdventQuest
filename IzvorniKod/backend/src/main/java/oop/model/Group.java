@@ -14,6 +14,7 @@ import java.util.*;
 public class Group {
 
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idGrupa;
@@ -64,6 +65,7 @@ public class Group {
     public Set<User> getUsers() {
         return users;
     }
+
 
     public Set<Event> getEvents() {
         return events;

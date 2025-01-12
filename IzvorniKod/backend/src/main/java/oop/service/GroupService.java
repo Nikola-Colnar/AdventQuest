@@ -36,7 +36,7 @@ public class GroupService {
         return groupRepo.findById(id).isEmpty() ? Optional.empty() : Optional.of(groupRepo.findById(id).get());
     }
 
-    public void deleteGroup(int id) {
+    public void deleteGroupById(int id) {
         groupRepo.deleteById(id);
     }
 
@@ -146,5 +146,20 @@ public class GroupService {
 
     public Group saveGroup(Group group) {
         return groupRepo.save(group);
+    }
+
+    public User getRandUser(int groupId) {
+
+        List<User> userList = new ArrayList<>(groupRepo.findById(groupId).get().getUsers());
+
+        // Odaberi slučajnog korisnika
+        Random random = new Random();
+        int randomIndex = random.nextInt(userList.size());
+
+        //user mora biti različit od trenutkog predstavnika kojeg želimo obrisati
+        if(userList.get(randomIndex).getId() != groupRepo.findById(groupId).get().getidPredstavnika()){
+            return userList.get(randomIndex);
+        }
+        return getRandUser(groupId); // malo rekurzije
     }
 }

@@ -3,6 +3,7 @@ package oop.controllers;
 import oop.model.Event;
 import oop.model.Group;
 import oop.model.User;
+import oop.service.EventService;
 import oop.service.GroupService;
 import oop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,45 +12,51 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController //Rad izmedu grupa i događaja
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/groups")
 public class GroupController {
 
     private final GroupService groupService;
     private final UserService userService;
+    private final EventService eventService;
 
     @Autowired
-    public GroupController(GroupService groupService, UserService userService) {
+    public GroupController(GroupService groupService, UserService userService, EventService eventService) {
         this.groupService = groupService;
         this.userService = userService;
+        this.eventService = eventService;
     }
 
 
 
 
-    @PostMapping("/{groupId}/addEvent") //Dodavanje događaja u grupu
-    public ResponseEntity<Event> createEventForGroup(@PathVariable int groupId, @RequestBody Event event, @RequestHeader("idUser") String idUser) {
-        System.out.println("Received ID USER: " + idUser);
+    @PostMapping("/{groupId}/events")
+    public ResponseEntity<Event> createEventForGroup(@PathVariable int groupId, @RequestBody Event event,
+                                                     @RequestHeader("uid") String uid) {
+        System.out.println("Received UID: " + uid);
 
-        //Provjera postoji li grupa
-        Group group = groupService.getGroupById(groupId);
-        if (group == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+        // Postoji li grupa
+        Optional<Group> group = groupService.findById(groupId);
+        if (group.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } else {
+            Group g1 = group.get();
 
-        //provjera postoji li user
-        Optional<User> user = userService.getUserById(Integer.parseInt(idUser));
-        if(user.isEmpty()){return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+            /*// Samo predstavnik može dodati događaj
+            if (g1.getidPredstavnika() != Integer.parseInt(uid)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(null);
+            }*/
 
-        //provjera je li user predstavnik
-        if(user.get().getId() != group.getidPredstavnika()){return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);}
-
-
-        group.addEvent(event);
-        groupService.saveGroup(group);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(event);
+            event.setGroup(g1);
+            eventService.save(event);
+            return ResponseEntity.status(HttpStatus.CREATED).body(event);
+        }
     }
 
 
@@ -67,7 +74,8 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.OK).body(events);
     }
 
-    public ResponseEntity<Event> deleteEventForGroup(@PathVariable int groupId, @RequestParam int eventId, @RequestHeader("idUser") String idUser){
+    @GetMapping("/{groupId}/deleteEvent")
+    public ResponseEntity<Set<Event>> deleteEventForGroup(@PathVariable int groupId, @RequestParam int eventId, @RequestHeader("idUser") String idUser){
 
         //Provjera postoji li grupa
         Group group = groupService.getGroupById(groupId);
@@ -80,10 +88,10 @@ public class GroupController {
         //provjera je li user predstavnik
         if(user.get().getId() != group.getidPredstavnika()){return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);}
 
-        group.deleteEventById(eventId);
+        eventService.deleteEventById(eventId);
         groupService.saveGroup(group);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(group.getEventById(eventId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(group.getEvents());
     }
 
 }

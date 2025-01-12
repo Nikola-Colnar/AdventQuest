@@ -12,8 +12,8 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idEvent;
 
-    private Date StartDate;
-    private Date EndDate;
+    private String StartDate;
+    private String EndDate;
     private String eventName;
     private String color = "green";
     private String description;
@@ -22,11 +22,11 @@ public class Event {
     @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
     private Group group;
 
-    public Event(String eventName, Date startDate, Date endDate, String description) {
+    public Event(String eventName, String startDate, String endDate, String description) {
         this(eventName, startDate, endDate, description,"green");
     }
 
-    public Event(String eventName, Date startDate, Date endDate,String description, String color) {
+    public Event(String eventName, String startDate, String endDate,String description, String color) {
         this.StartDate = startDate;
         this.EndDate = endDate;
         this.eventName = eventName;
@@ -45,19 +45,19 @@ public class Event {
         this.idEvent = idEvent;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return StartDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         StartDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return EndDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         EndDate = endDate;
     }
 
