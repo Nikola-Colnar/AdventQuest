@@ -19,7 +19,7 @@ public class Event {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "idGrupa")  // FK ka tabeli 'SGroup'
+    @JoinColumn(name = "idGrupa")  // FK u SGroup
     private Group group;
 
     public Event(String eventName, String startDate, String endDate, String description) {

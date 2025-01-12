@@ -36,25 +36,15 @@ public class GroupController {
     }
 
 
-    @PostMapping("/{groupId}/events")
+    @PostMapping("/{groupId}/events") // stvaranje eventa u grupi
     public ResponseEntity<Event> createEventForGroup(@PathVariable int groupId, @RequestBody Event event,
                                                      @RequestHeader("uid") String uid) {
-        System.out.println("Received UID: " + uid);
-
         // Postoji li grupa
         Optional<Group> group = groupService.findById(groupId);
         if (group.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } else {
-            Group g1 = group.get();
-
-            /*// Samo predstavnik može dodati događaj
-            if (g1.getidPredstavnika() != Integer.parseInt(uid)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(null);
-            }*/
-
-            event.setGroup(g1);
+            event.setGroup(group.get());
             eventService.save(event);
             return ResponseEntity.status(HttpStatus.CREATED).body(event);
         }
@@ -73,16 +63,13 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.OK).body(events);
     }
 
-    @GetMapping("/{groupId}/deleteEvent")
+    @GetMapping("/{groupId}/deleteEvent") // brisanje eventa iz grupe
     public ResponseEntity<Set<Event>> deleteEventForGroup(@PathVariable int groupId, @RequestParam int eventId, @RequestHeader("idUser") String idUser){
 
-        //Provjera postoji li grupa
+        //Provjera postoji li grupa i user
         Group group = groupService.getGroupById(groupId);
-        if (group == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
-
-        //provjera postoji li user
         Optional<User> user = userService.getUserById(Integer.parseInt(idUser));
-        if(user.isEmpty()){return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+        if (group == null || user.isEmpty()) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
 
         //provjera je li user predstavnik
         if(user.get().getId() != group.getidPredstavnika()){return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);}
@@ -93,7 +80,7 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.CREATED).body(group.getEvents());
     }
 
-    @PostMapping("/{groupId}/message")
+    @PostMapping("/{groupId}/message") // dodavanje nove poruke
     public ResponseEntity<Message> createMessageForGroup(@PathVariable int groupId, @RequestBody Message message) {
 
         Group group = groupService.getGroupById(groupId);
@@ -105,7 +92,7 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedMessage);
     }
 
-    @GetMapping("/{groupId}/getMessage")
+    @GetMapping("/{groupId}/getMessage") // dohvat nove poruke
     public ResponseEntity<List<Message>> getMessagesByGroupId(@PathVariable int groupId) {
         Group group = groupService.getGroupById(groupId);
         if (group == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}

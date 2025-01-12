@@ -69,7 +69,7 @@ public class UserController {
         return ResponseEntity.ok(listaUserNames);
     }
 
-    @PostMapping("/{groupId}/addUser")
+    @PostMapping("/{groupId}/addUser") // dodavanje novih usera u grupu
     public ResponseEntity<?> addUserToGroup(@PathVariable int groupId, @RequestBody Map<String, String> request) {
         try {
             // Extracting username from request
@@ -77,18 +77,15 @@ public class UserController {
             if (userName == null || userName.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username is required");
             }
-
             // Fetching group and user
             Group group = groupService.getGroupById(groupId);
             if (group == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Group not found");
             }
-
             User user = userService.getUserByUsername(userName);
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
-
             // Adding group to the user's groups (owning side)
             user.getGroups().add(group);
             userService.saveUser(user);
@@ -98,6 +95,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
+
     @DeleteMapping("/user/{username}/group/{groupId}")
     public boolean deleteUserFromGroup(@PathVariable String username, @PathVariable int groupId) {
         User user = userService.getUserByUsername(username);

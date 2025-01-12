@@ -61,11 +61,9 @@ public class Group {
         this.idPredstavnika = uidPredstavnika;
     }
 
-
     public Set<User> getUsers() {
         return users;
     }
-
 
     public Set<Event> getEvents() {
         return events;
