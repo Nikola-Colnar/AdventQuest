@@ -1,5 +1,6 @@
 package oop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -19,7 +20,7 @@ public class Event {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "idGrupa")  // FK u SGroup
+    @JoinColumn(name = "idGrupa")
     private Group group;
 
     public Event(String eventName, String startDate, String endDate, String description) {
@@ -69,10 +70,6 @@ public class Event {
         this.eventName = eventName;
     }
 
-    public Group getGroup() {
-        return group;
-    }
-
     @Override
     public String toString() {
         return "Event{" +
@@ -80,11 +77,28 @@ public class Event {
                 ", StartDate=" + StartDate +
                 ", EndDate=" + EndDate +
                 ", eventName='" + eventName + '\'' +
-                ", group=" + group +
+                ", groupId=" + group.getIdGrupa() +
+                ", groupName=" + group.getNazivGrupa() +
                 '}';
     }
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

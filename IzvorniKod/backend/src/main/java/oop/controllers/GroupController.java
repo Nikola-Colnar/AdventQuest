@@ -1,9 +1,6 @@
 package oop.controllers;
 
-import oop.model.Event;
-import oop.model.Group;
-import oop.model.Message;
-import oop.model.User;
+import oop.model.*;
 import oop.service.EventService;
 import oop.service.GroupService;
 import oop.service.MessageService;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController //Rad izmedu grupa i događaja
 @CrossOrigin(origins = "http://localhost:5173")
@@ -50,21 +48,24 @@ public class GroupController {
         }
     }
 
-    @GetMapping("/{groupId}/getEvents") //Dohvaćanje svih događaja od grupe
-    public ResponseEntity<List<Event>> getEventsByGroupId(@PathVariable int groupId) {
-
-        //Provjera postoji li grupa
+    @GetMapping("/{groupId}/getEvents")
+    public ResponseEntity<List<EventDTO>> getEventsByGroupId(@PathVariable int groupId) {
         Group group = groupService.getGroupById(groupId);
-        if (group == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+        if (group == null) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
 
-        List<Event> events = groupService.getEventsByGroupId(groupId);
-        if (events.isEmpty()) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+        List<EventDTO> events = group.getEvents().stream()
+                .map(EventDTO::new) // Mapira svaki `Event` u `EventDTO`
+                .collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body(events);
+        if (events.isEmpty()) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+
+        return ResponseEntity.ok(events);
     }
 
-    @GetMapping("/{groupId}/deleteEvent") // brisanje eventa iz grupe
-    public ResponseEntity<Set<Event>> deleteEventForGroup(@PathVariable int groupId, @RequestParam int eventId, @RequestHeader("idUser") String idUser){
+
+    @PostMapping("/{groupId}/deleteEvent") // brisanje eventa iz grupe
+    public ResponseEntity<Set<Event>> deleteEventForGroup(@PathVariable int groupId, @RequestParam int eventId,
+                                                          @RequestHeader("idUser") String idUser){
 
         //Provjera postoji li grupa i user
         Group group = groupService.getGroupById(groupId);

@@ -48,7 +48,7 @@ public class EventController {
             event.setEventName(eventDetails.getEventName());
             event.setStartDate(eventDetails.getStartDate());
             event.setEndDate(eventDetails.getEndDate());
-            event.setGroup(eventDetails.getGroup());
+            //event.setGroup(eventDetails.getGroup());
 
             Event updatedEvent = eventService.saveEvent(event);
             return ResponseEntity.ok(updatedEvent);
