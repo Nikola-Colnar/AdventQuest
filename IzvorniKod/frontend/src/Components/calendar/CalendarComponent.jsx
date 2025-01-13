@@ -97,7 +97,7 @@ const CalendarComponent = ({ hideCalendar }) => {
     e.preventDefault();
 
     // Pretpostavljam da imaš ID grupe, na primjer kroz props ili state
-    const groupId = 5; // Zamijeni sa stvarnim ID-om grupe
+    const groupId = 4; // Zamijeni sa stvarnim ID-om grupe
 
     const newEvent = {
       eventName: eventDetails.title,
@@ -109,7 +109,7 @@ const CalendarComponent = ({ hideCalendar }) => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/api/groups/5/events`, {
+      const response = await fetch(`http://localhost:8080/api/groups/7/addEvent`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

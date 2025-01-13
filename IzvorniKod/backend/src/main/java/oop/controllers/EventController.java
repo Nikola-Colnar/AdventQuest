@@ -34,6 +34,7 @@ public class EventController {
     // Kreiranje novog događaja
     @PostMapping
     public ResponseEntity<Event> createEvent(@RequestBody Event event) {
+        System.out.println("Received Event: " + event);
         Event savedEvent = eventService.saveEvent(event);
         return ResponseEntity.ok(savedEvent);
     }
