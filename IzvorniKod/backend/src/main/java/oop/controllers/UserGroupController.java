@@ -90,7 +90,8 @@ public class UserGroupController {
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
-            if(user.getId() != group.getidPredstavnika()){
+            //Ovo ne provjerava dobro je li user koji salje request predstavnik ili ne
+            if(user.getId() == group.getidPredstavnika()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not a representative of the group");
             }
             // Adding group to the user's groups (owning side)
