@@ -46,6 +46,14 @@ public class GroupEventController {
 //            return ResponseEntity.status(HttpStatus.CREATED).body(event);
 //        }
 //    }
+    @GetMapping("/{groupId}/getIdPredstavnik") //Dohvaćanje ID Predstavnika grupe
+        public ResponseEntity<Integer> getPredstavniksIdByGroupId(@PathVariable int groupId){
+        Group group = groupService.getGroupById(groupId);
+        if (group == null) { ResponseEntity.status(HttpStatus.NOT_FOUND).body("Group not found");}
+
+        return ResponseEntity.ok(group.getidPredstavnika()); // zanemari žuto, sve radi
+    }
+
 
     @PostMapping("/{groupid}/addEvent")
     public ResponseEntity<Event> createEvent(@PathVariable int groupid, @RequestBody Event event) {
