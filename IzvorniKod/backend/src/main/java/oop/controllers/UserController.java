@@ -86,6 +86,9 @@ public class UserController {
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
+            if(user.getId() != group.getidPredstavnika()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is already a representative of the group");
+            }
             // Adding group to the user's groups (owning side)
             user.getGroups().add(group);
             userService.saveUser(user);
