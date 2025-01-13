@@ -1,9 +1,7 @@
 package oop.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-
-import java.util.Date;
 
 @Entity
 @Table(name = "Event")
@@ -13,8 +11,12 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idEvent;
 
-    private String StartDate;
-    private String EndDate;
+    @JsonProperty("StartDate")
+    private String startDate;
+
+    @JsonProperty("EndDate")
+    private String endDate;
+
     private String eventName;
     private String color = "green";
     private String description;
@@ -23,20 +25,21 @@ public class Event {
     @JoinColumn(name = "idGrupa")
     private Group group;
 
+    public Event() {}
+
     public Event(String eventName, String startDate, String endDate, String description) {
-        this(eventName, startDate, endDate, description,"green");
+        this(eventName, startDate, endDate, description, "green");
     }
 
-    public Event(String eventName, String startDate, String endDate,String description, String color) {
-        this.StartDate = startDate;
-        this.EndDate = endDate;
+    public Event(String eventName, String startDate, String endDate, String description, String color) {
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.eventName = eventName;
         this.description = description;
         this.color = color;
-
     }
 
-    public Event() {}
+    // Getters and setters
 
     public int getIdEvent() {
         return idEvent;
@@ -47,19 +50,19 @@ public class Event {
     }
 
     public String getStartDate() {
-        return StartDate;
+        return startDate;
     }
 
     public void setStartDate(String startDate) {
-        StartDate = startDate;
+        this.startDate = startDate;
     }
 
     public String getEndDate() {
-        return EndDate;
+        return endDate;
     }
 
     public void setEndDate(String endDate) {
-        EndDate = endDate;
+        this.endDate = endDate;
     }
 
     public String getEventName() {
@@ -68,22 +71,6 @@ public class Event {
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
-    }
-
-    @Override
-    public String toString() {
-        return "Event{" +
-                "idEvent=" + idEvent +
-                ", StartDate=" + StartDate +
-                ", EndDate=" + EndDate +
-                ", eventName='" + eventName + '\'' +
-                ", groupId=" + group.getIdGrupa() +
-                ", groupName=" + group.getNazivGrupa() +
-                '}';
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
     }
 
     public String getColor() {
@@ -100,5 +87,21 @@ public class Event {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "idEvent=" + idEvent +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", eventName='" + eventName + '\'' +
+                ", groupId=" + group.getIdGrupa() +
+                ", groupName=" + group.getNazivGrupa() +
+                '}';
     }
 }

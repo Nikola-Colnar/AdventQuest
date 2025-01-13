@@ -12,14 +12,14 @@ import java.util.*;
 
 @RestController  //Rad izmedu usera i grupe
 @CrossOrigin(origins = "http://localhost:5173")
-public class UserController {
+public class UserGroupController {
 
     private final UserService userService;
     private final GroupService groupService;
 
     @Autowired
 
-    public UserController(UserService userService, GroupService groupService) {
+    public UserGroupController(UserService userService, GroupService groupService) {
         this.userService = userService;
         this.groupService = groupService;
     }
@@ -37,13 +37,17 @@ public class UserController {
 
         // Povezujemo korisnika s grupom
         user.getGroups().add(createdGroup);
-        userService.saveUser(user);
+        userService.saveUser(user);  // Save the user with the new group
+
+        // Dodajemo korisnika u grupu
+        createdGroup.getUsers().add(user);
+        groupService.saveGroup(createdGroup);  // Save the group with the new user
 
         // Vraćamo odgovor sa statusom 201 (Created) i novom grupom
         return ResponseEntity.status(HttpStatus.CREATED).body(createdGroup);
     }
 
-    @GetMapping("/{username}/groups") //Dohvaćanje svih grupa od korisnika (pomocu usernamea) (Vraća groupname vrlo lako može i vraćati group Id)
+    @GetMapping("/{username}/getGroups") //Dohvaćanje svih grupa od korisnika (pomocu usernamea) (Vraća groupname vrlo lako može i vraćati group Id)
     public ResponseEntity<List<Object>> getAllGroupsByUsername(@PathVariable String username) {
         // Dohvati korisnika prema username-u
         User user = userService.getUserByUsername(username);
@@ -61,7 +65,7 @@ public class UserController {
 
 
     @GetMapping("/{groupId}/getUsers") //Dohvaćanje svih korisnika od grupe (Vraća username vrlo lako može i vraćati user Id)
-    public ResponseEntity<List<String>> getAllUsersByGroupId(@PathVariable int groupId) {
+    public ResponseEntity<List<String>> getAllUsersByGroupId(@PathVariable int groupId) {  //ovo moze sa tokenima kasnije
         List<String> listaUserNames = userService.getAllUsersByGroupId(groupId);
         if (listaUserNames.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -70,7 +74,7 @@ public class UserController {
     }
 
     @PostMapping("/{groupId}/addUser") // dodavanje novih usera u grupu
-    public ResponseEntity<?> addUserToGroup(@PathVariable int groupId, @RequestBody Map<String, String> request) {
+    public ResponseEntity<?> addUserToGroup(@PathVariable int groupId, @RequestBody Map<String, String> request) { //ovo moze sa tokenima kasnije
         try {
             // Extracting username from request
             String userName = request.get("username");
@@ -87,7 +91,7 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
             if(user.getId() != group.getidPredstavnika()){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is already a representative of the group");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not a representative of the group");
             }
             // Adding group to the user's groups (owning side)
             user.getGroups().add(group);
@@ -99,7 +103,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/user/{username}/group/{groupId}")
+    @DeleteMapping("/user/{username}/group/{groupId}")    // Brisanje korisnika iz grupe
     public boolean deleteUserFromGroup(@PathVariable String username, @PathVariable int groupId) {
         User user = userService.getUserByUsername(username);
         if (user == null) {return false;}

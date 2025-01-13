@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RestController //Rad izmedu grupa i događaja
 @CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/groups")
-public class GroupController {
+public class GroupEventController {
 
     private final GroupService groupService;
     private final UserService userService;
@@ -26,7 +26,7 @@ public class GroupController {
     private final MessageService messageService;
 
     @Autowired
-    public GroupController(GroupService groupService, UserService userService, EventService eventService, MessageService messageService) {
+    public GroupEventController(GroupService groupService, UserService userService, EventService eventService, MessageService messageService) {
         this.groupService = groupService;
         this.userService = userService;
         this.eventService = eventService;
@@ -34,17 +34,29 @@ public class GroupController {
     }
 
 
-    @PostMapping("/{groupId}/events") // stvaranje eventa u grupi
-    public ResponseEntity<Event> createEventForGroup(@PathVariable int groupId, @RequestBody Event event,
-                                                     @RequestHeader("uid") String uid) {
-        // Postoji li grupa
-        Optional<Group> group = groupService.findById(groupId);
-        if (group.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } else {
+//    @PostMapping("/{groupId}/addEvent") // stvaranje eventa u grupi
+//    public ResponseEntity<Event> createEventForGroup(@PathVariable int groupId, @RequestBody Event event) {
+//        // Postoji li grupa
+//        Optional<Group> group = groupService.findById(groupId);
+//        if (group.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        } else {
+//            event.setGroup(group.get());
+//            eventService.save(event);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(event);
+//        }
+//    }
+
+    @PostMapping("/{groupid}/addEvent")
+    public ResponseEntity<Event> createEvent(@PathVariable int groupid, @RequestBody Event event) {
+        Optional<Group> group = Optional.ofNullable(groupService.getGroupById(groupid));
+
+        if (group.isPresent()) {
             event.setGroup(group.get());
-            eventService.save(event);
-            return ResponseEntity.status(HttpStatus.CREATED).body(event);
+            Event savedEvent = eventService.saveEvent(event);
+            return ResponseEntity.ok(savedEvent);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -81,7 +93,7 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.CREATED).body(group.getEvents());
     }
 
-    @PostMapping("/{groupId}/message") // dodavanje nove poruke
+    @PostMapping("/{groupId}/addMessage") // dodavanje nove poruke
     public ResponseEntity<Message> createMessageForGroup(@PathVariable int groupId, @RequestBody Message message) {
 
         Group group = groupService.getGroupById(groupId);
@@ -93,7 +105,7 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedMessage);
     }
 
-    @GetMapping("/{groupId}/getMessage") // dohvat nove poruke
+    @GetMapping("/{groupId}/getMessages") // dohvat nove poruka
     public ResponseEntity<List<Message>> getMessagesByGroupId(@PathVariable int groupId) {
         Group group = groupService.getGroupById(groupId);
         if (group == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}

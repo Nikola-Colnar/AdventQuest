@@ -51,8 +51,8 @@ public class GroupService {
         }
     }
 
-    public Group getGroupById(int groupId) {
-        return groupRepo.findById(groupId).orElse(null); // Vraća null ako grupa nije pronađena
+    public Group getGroupById(int id) {
+        return groupRepo.findById(id).orElse(null); // Vraća null ako grupa nije pronađena
     }
 
     //dohvacaevente
