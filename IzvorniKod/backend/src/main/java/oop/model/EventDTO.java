@@ -1,7 +1,7 @@
 package oop.model;
 
 public class EventDTO {
-    private int eventId;
+    private final int eventId;
     private String eventName;
     private String startDate;
     private String endDate;

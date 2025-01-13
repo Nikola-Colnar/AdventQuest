@@ -15,6 +15,7 @@ import AddUserToGroupButton from "./Components/AddUserToGroupButton.jsx";
 import SelectGroupForUserButton from "./Components/SelectGroupForUserButton.jsx";
 import DeleteUserFromGroup from "./Components/DeleteUserFromGroup.jsx";
 import ShowAllUsersFromGroup from "./Components/ShowAllUsersFromGroup.jsx";
+import CalendarLeader from "./Components/calendar/CalendarLeader.jsx";
 
 
 function App() {
@@ -93,6 +94,7 @@ function App() {
             <SelectGroupForUserButton></SelectGroupForUserButton>
             <DeleteUserFromGroup></DeleteUserFromGroup>
             <ShowAllUsersFromGroup></ShowAllUsersFromGroup>
+            <CalendarLeader></CalendarLeader>
           </>
         ),
       },

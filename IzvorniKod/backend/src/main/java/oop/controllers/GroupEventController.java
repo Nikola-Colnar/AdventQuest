@@ -83,17 +83,18 @@ public class GroupEventController {
     }
 
 
-    @PostMapping("/{groupId}/deleteEvent") // brisanje eventa iz grupe
-    public ResponseEntity<Set<Event>> deleteEventForGroup(@PathVariable int groupId, @RequestParam int eventId,
-                                                          @RequestHeader("idUser") String idUser){
-
+    @DeleteMapping("/{groupId}/deleteEvent/{eventId}") // brisanje eventa iz grupe
+    public ResponseEntity<Set<Event>> deleteEventForGroup(@PathVariable int groupId, @PathVariable int eventId){
+        //DODAJ AUTENTIFIKACIJU DA JE ZAHTJEV POSLAO PREDSTAVNIK TOKEN!!!
+        //ZAKOMENTIRAN kod je stara logika treba se zamjeniti s sadasnjom autentifikacijom da radi isto!!
+        //////////////////////////////////////////////////////
         //Provjera postoji li grupa i user
         Group group = groupService.getGroupById(groupId);
-        Optional<User> user = userService.getUserById(Integer.parseInt(idUser));
-        if (group == null || user.isEmpty()) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+        //Optional<User> user = userService.getUserById(Integer.parseInt(idUser));
+        //if (group == null || user.isEmpty()) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
 
         //provjera je li user predstavnik
-        if(user.get().getId() != group.getidPredstavnika()){return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);}
+        //if(user.get().getId() != group.getidPredstavnika()){return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);}
 
         eventService.deleteEventById(eventId);
         groupService.saveGroup(group);
