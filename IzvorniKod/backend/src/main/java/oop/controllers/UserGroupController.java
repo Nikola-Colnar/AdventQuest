@@ -1,5 +1,6 @@
 package oop.controllers;
 
+import oop.dto.GroupDTO;
 import oop.model.Group;
 import oop.model.User;
 import oop.service.GroupService;
@@ -26,7 +27,7 @@ public class UserGroupController {
 
     // Kreiranje nove grupe
     @PostMapping("/{username}/createGroup")
-    public ResponseEntity<Group> createGroup(@RequestBody Group group, @PathVariable String username) {
+    public ResponseEntity<GroupDTO> createGroup(@RequestBody Group group, @PathVariable String username) {
         User user = userService.getUserByUsername(username);
 
         // Postavljamo idPredstavnika na id korisnika
@@ -42,9 +43,10 @@ public class UserGroupController {
         // Dodajemo korisnika u grupu
         createdGroup.getUsers().add(user);
         groupService.saveGroup(createdGroup);  // Save the group with the new user
+        GroupDTO groupDTO = new GroupDTO(createdGroup.getIdGrupa(), createdGroup.getNazivGrupa());
 
         // Vraćamo odgovor sa statusom 201 (Created) i novom grupom
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdGroup);
+        return ResponseEntity.status(HttpStatus.CREATED).body(groupDTO);
     }
 
     @GetMapping("/{username}/getGroups") //Dohvaćanje svih grupa od korisnika (pomocu usernamea) (Vraća groupname vrlo lako može i vraćati group Id)

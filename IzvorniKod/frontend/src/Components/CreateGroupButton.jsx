@@ -13,6 +13,7 @@ const CreateGroupButton = () => {
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
 
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -41,8 +42,12 @@ const CreateGroupButton = () => {
 
       if (response.ok) {
         console.log("Group created successfully");
+        const createdGroup = await response.json();
         setOpen(false);
         setGroupName("");
+        console.log(createdGroup);
+        localStorage.setItem("myGroupName", createdGroup.nazivGrupa);
+        localStorage.setItem("myGroupId", createdGroup.idGrupa);
       } else {
         console.error("Failed to create group");
       }
