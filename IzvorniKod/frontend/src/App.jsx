@@ -70,28 +70,32 @@ function App() {
       {
         path: "/",
         element: (
-          <>
-            <Header
-              className="header"
-              isLoggedIn={isLoggedIn}
-              handlelogin={handlelogin}
-              username={username}
-              onLoginClick={handleLoginClick}
-              onSignupClick={handleSignupClick}
-              calendarVisible={handleCalendar}
-            />
+            <>
+              <Header
+                  className="header"
+                  isLoggedIn={isLoggedIn}
+                  handlelogin={handlelogin}
+                  username={username}
+                  onLoginClick={handleLoginClick}
+                  onSignupClick={handleSignupClick}
+                  calendarVisible={handleCalendar}
+              />
 
-            {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange} />}
-            {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange} />}
-            {showCalendar && <CalendarComponent hideCalendar={handleCalendar} />}
+              {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange}/>}
+              {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange}/>}
+              {showCalendar && <CalendarComponent hideCalendar={handleCalendar}/>}
 
-            <Snowfall className="snowfall" />
-            <Countdown targetDate="2025-12-25T00:00:00" />
-            <CreateGroupButton></CreateGroupButton>
-            <AddUserToGroupButton></AddUserToGroupButton>
-            <SelectGroupForUserButton></SelectGroupForUserButton>
-            <DeleteUserFromGroup></DeleteUserFromGroup>
-          </>
+              <div className="button-container">
+                <CreateGroupButton/>
+                <AddUserToGroupButton/>
+                <SelectGroupForUserButton/>
+                <DeleteUserFromGroup/>
+              </div>
+
+              <Snowfall className="snowfall"/>
+              <Countdown targetDate="2025-12-25T00:00:00"/>
+
+            </>
         ),
       },
       {
@@ -103,7 +107,7 @@ function App() {
   };
 
   return (
-    <Router>
+      <Router>
       <AppRoutes />
     </Router>
   );

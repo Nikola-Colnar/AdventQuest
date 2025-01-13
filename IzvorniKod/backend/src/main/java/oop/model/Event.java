@@ -45,6 +45,10 @@ public class Event {
         return idEvent;
     }
 
+    public Group getGroup() {
+        return group;
+    }
+
     public void setIdEvent(int idEvent) {
         this.idEvent = idEvent;
     }
