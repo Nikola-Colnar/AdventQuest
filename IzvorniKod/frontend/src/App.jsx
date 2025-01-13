@@ -14,6 +14,7 @@ import CreateGroupButton from "./Components/CreateGroupButton.jsx";
 import AddUserToGroupButton from "./Components/AddUserToGroupButton.jsx";
 import SelectGroupForUserButton from "./Components/SelectGroupForUserButton.jsx";
 import DeleteUserFromGroup from "./Components/DeleteUserFromGroup.jsx";
+import ShowAllUsersFromGroup from "./Components/ShowAllUsersFromGroup.jsx";
 
 
 function App() {
@@ -91,6 +92,7 @@ function App() {
             <AddUserToGroupButton></AddUserToGroupButton>
             <SelectGroupForUserButton></SelectGroupForUserButton>
             <DeleteUserFromGroup></DeleteUserFromGroup>
+            <ShowAllUsersFromGroup></ShowAllUsersFromGroup>
           </>
         ),
       },

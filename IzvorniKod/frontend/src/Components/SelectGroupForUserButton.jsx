@@ -66,7 +66,7 @@ const SelectGroupForUserButton = () => {
   return (
     <Box>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        Select Group for User
+        Select Group
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Select Group</DialogTitle>

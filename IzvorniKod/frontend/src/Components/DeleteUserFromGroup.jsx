@@ -81,7 +81,7 @@ const DeleteUserFromGroup = () => {
   return (
     <Box>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        Show Users from Group
+        Delete users from group
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Users in Group</DialogTitle>
