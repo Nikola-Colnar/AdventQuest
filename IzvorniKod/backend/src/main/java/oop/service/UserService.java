@@ -30,8 +30,6 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
-
     // Metoda za dohvaćanje svih korisnika
     public List<User> getAllUsers() {
         return userRepository.findAll();

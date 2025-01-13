@@ -6,7 +6,6 @@ import listPlugin from "@fullcalendar/list";
 import "./CalendarComponent.css";
 import PropTypes from "prop-types";
 
-
 const CalendarComponent = ({ hideCalendar }) => {
   const calendarRef = useRef(null);
   const calendarInstance = useRef(null); // Referenca na instancu kalendara
@@ -19,13 +18,19 @@ const CalendarComponent = ({ hideCalendar }) => {
     end: "",
     color: "#a31515",
   });
+
   // fetchanje s backenda
   const fetchEvents = useCallback(async () => {
+    const groupId = localStorage.getItem("myGroupId");
+    if (!groupId) {
+      console.error("Group ID not found in local storage");
+      return;
+    }
+  
     try {
-      const response = await fetch("http://localhost:8080/api/groups/5/events", {
+      const response = await fetch(`http://localhost:8080/api/groups/${groupId}/getEvents`, {
         headers: {
           "Content-Type": "application/json",
-          "uid": "0FIglHrt7CT33FZAsOlFPn7j78q2",
         },
       });
       if (response.ok) {
@@ -37,8 +42,8 @@ const CalendarComponent = ({ hideCalendar }) => {
           description: event.description,
         }));
         setEvents(formattedEvents);
-
-        // azuriranje s novim dogadanjima
+  
+        // Updating the calendar with new events
         if (calendarInstance.current) {
           calendarInstance.current.setOption('events', formattedEvents);
         }
@@ -50,6 +55,39 @@ const CalendarComponent = ({ hideCalendar }) => {
     }
   }, []);
 
+  const saveEvent = async () => {
+    const groupId = localStorage.getItem("myGroupId");
+    if (!groupId) {
+      console.error("Group ID not found in local storage");
+      return;
+    }
+
+    const newEvent = {
+      StartDate: eventDetails.start,
+      EndDate: eventDetails.end,
+      eventName: eventDetails.title,
+      description: eventDetails.description,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/groups/${groupId}/addEvent`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newEvent),
+      });
+
+      if (response.ok) {
+        console.log("Event saved successfully");
+        fetchEvents(); // Refresh events after saving
+      } else {
+        console.error("Failed to save event");
+      }
+    } catch (error) {
+      console.error("Error saving event:", error);
+    }
+  };
 
   // Inicijalizacija kalendara (jednom)
   useEffect(() => {
@@ -210,7 +248,7 @@ const CalendarComponent = ({ hideCalendar }) => {
                   }}
                 />
               </label>
-              <button type="submit">Save Event</button>
+              <button onClick={saveEvent}>Save Event</button>
             </form>
             <button className="cancel-btn" onClick={() => setShowEventForm(false)}>
               Cancel

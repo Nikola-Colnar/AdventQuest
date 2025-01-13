@@ -29,9 +29,9 @@ const DeleteUserFromGroup = () => {
       if (response.ok) {
         const data = await response.json();
         //console.log(data);
-        const filteredUsers = data.filter(username => username !== loggedInUsername); //filtrirano da se predjednik ne prikazuje na spisku
+        // const filteredUsers = data.filter(username => username !== loggedInUsername); //filtrirano da se taj korisnik ne prikazuje na spisku
         //console.log(filteredUsers); filtrirano
-        setUsers(filteredUsers); 
+        setUsers(data); 
       } else {
         console.error("Failed to fetch users by group");
       }

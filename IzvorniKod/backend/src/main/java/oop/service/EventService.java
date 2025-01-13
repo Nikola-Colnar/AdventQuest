@@ -46,11 +46,9 @@ public class EventService {
         }
     }
 
-    // Kreiraj događaj s provjerom dupliciranja
-    public Event createEvent(Event event) {
-        if (event.getIdEvent() != 0 && eventRepository.existsById(event.getIdEvent())) {
-            throw new RuntimeException("Event with this ID already exists");
-        }
-        return eventRepository.save(event);
+    public void deleteEventById(int id) {
+        eventRepository.deleteById(id);
     }
+
+    public void save(Event event) { eventRepository.save(event);}
 }

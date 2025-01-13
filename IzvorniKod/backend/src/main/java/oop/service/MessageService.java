@@ -32,11 +32,10 @@ public class MessageService {
     }
 
     public Message createMessage(Message message) {
-
-        messageRepository.save(message);
-        // Ako id nije zauzet, spremamo korisnika
         return messageRepository.save(message);
     }
 
     public void deleteMessage(int id) {};
+
+
 }
