@@ -95,8 +95,7 @@ const CalendarLeader = () => {
 
   return (
     <div>
-      {/* Dugme van kalendara koje otvara cijeli calendar-wrapper */}
-      <button className="open-btn" onClick={handleOpenButtonClick}>Open Calendar</button>
+      <button className="open-btn" onClick={handleOpenButtonClick}>User Calendar</button>
 
       {/* Cijeli calendar-wrapper sakriven dok isCalendarVisible nije true */}
       {isCalendarVisible && (
