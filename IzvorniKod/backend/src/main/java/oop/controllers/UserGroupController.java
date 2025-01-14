@@ -1,8 +1,10 @@
 package oop.controllers;
 
-import oop.dto.GroupDTO;
+import oop.model.Event;
 import oop.model.Group;
 import oop.model.User;
+import oop.repository.EventRepository;
+import oop.service.EventService;
 import oop.service.GroupService;
 import oop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
+import oop.dto.*;
 
 @RestController  //Rad izmedu usera i grupe
 @CrossOrigin(origins = "http://localhost:5173")
@@ -17,12 +20,16 @@ public class UserGroupController {
 
     private final UserService userService;
     private final GroupService groupService;
+    private final EventRepository eventRepository;
+    private final EventService eventService;
 
     @Autowired
 
-    public UserGroupController(UserService userService, GroupService groupService) {
+    public UserGroupController(UserService userService, GroupService groupService, EventRepository eventRepository, EventService eventService) {
         this.userService = userService;
         this.groupService = groupService;
+        this.eventRepository = eventRepository;
+        this.eventService = eventService;
     }
 
     // Kreiranje nove grupe
@@ -75,47 +82,44 @@ public class UserGroupController {
         return ResponseEntity.ok(listaUserNames);
     }
 
-    @PostMapping("/{groupId}/addUser") // dodavanje novih usera u grupu
-    public ResponseEntity<?> addUserToGroup(@PathVariable int groupId, @RequestBody Map<String, String> request) { //ovo moze sa tokenima kasnije
+    @PostMapping("/{groupId}/addUser")
+    public ResponseEntity<GroupDTO> addUserToGroup(@PathVariable int groupId, @RequestBody Map<String, String> request) {
         try {
-            // Extracting username from request
-            String userName = request.get("username");
-            if (userName == null || userName.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username is required");
-            }
-            // Fetching group and user
-            Group group = groupService.getGroupById(groupId);
-            if (group == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Group not found");
-            }
-            User user = userService.getUserByUsername(userName);
-            if (user == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-            }
-            //Ovo ne provjerava dobro je li user koji salje request predstavnik ili ne
-            if(user.getId() == group.getidPredstavnika()){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not a representative of the group");
-            }
-            // Adding group to the user's groups (owning side)
-            user.getGroups().add(group);
+            String username = request.get("username");
+            if (username == null || username.isEmpty()) {return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);}
+
+            Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+
+            User user = userService.getUserByUsername(username);
+            if (user == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+
+            user.addGroup(group);
             userService.saveUser(user);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+            GroupDTO groupDTO = new GroupDTO(group.getIdGrupa(), group.getNazivGrupa());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(groupDTO);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
+
     @DeleteMapping("/user/{username}/group/{groupId}")    // Brisanje korisnika iz grupe
     public boolean deleteUserFromGroup(@PathVariable String username, @PathVariable int groupId) {
+
         User user = userService.getUserByUsername(username);
         if (user == null) {return false;}
 
-        Group group = groupService.getGroupById(groupId);
-        if (group == null) {return false;}
+        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
 
         user.getGroups().remove(group);
         userService.saveUser(user);
         return true;
     }
-};
+
+
+}

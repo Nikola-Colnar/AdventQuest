@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import oop.dto.*;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,31 +48,25 @@ public class GroupEventController {
 //        }
 //    }
     @GetMapping("/{groupId}/getIdPredstavnik") //Dohvaćanje ID Predstavnika grupe
-        public ResponseEntity<Integer> getPredstavniksIdByGroupId(@PathVariable int groupId){
-        Group group = groupService.getGroupById(groupId);
-        if (group == null) { ResponseEntity.status(HttpStatus.NOT_FOUND).body("Group not found");}
+    public ResponseEntity<Integer> getPredstavniksIdByGroupId(@PathVariable int groupId){
 
+        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
         return ResponseEntity.ok(group.getidPredstavnika()); // zanemari žuto, sve radi
     }
 
-
     @PostMapping("/{groupid}/addEvent")
     public ResponseEntity<Event> createEvent(@PathVariable int groupid, @RequestBody Event event) {
-        Optional<Group> group = Optional.ofNullable(groupService.getGroupById(groupid));
 
-        if (group.isPresent()) {
-            event.setGroup(group.get());
-            Event savedEvent = eventService.saveEvent(event);
-            return ResponseEntity.ok(savedEvent);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Group group = groupService.findById(groupid).orElseThrow(() -> new RuntimeException("Group not found"));
+        event.setGroup(group);
+        Event savedEvent = eventService.saveEvent(event);
+        return ResponseEntity.ok(savedEvent);
     }
 
     @GetMapping("/{groupId}/getEvents")
     public ResponseEntity<List<EventDTO>> getEventsByGroupId(@PathVariable int groupId) {
-        Group group = groupService.getGroupById(groupId);
-        if (group == null) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+
+        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
 
         List<EventDTO> events = group.getEvents().stream()
                 .map(EventDTO::new) // Mapira svaki `Event` u `EventDTO`
@@ -82,14 +77,13 @@ public class GroupEventController {
         return ResponseEntity.ok(events);
     }
 
-
     @DeleteMapping("/{groupId}/deleteEvent/{eventId}") // brisanje eventa iz grupe
     public ResponseEntity<Set<Event>> deleteEventForGroup(@PathVariable int groupId, @PathVariable int eventId){
         //DODAJ AUTENTIFIKACIJU DA JE ZAHTJEV POSLAO PREDSTAVNIK TOKEN!!!
         //ZAKOMENTIRAN kod je stara logika treba se zamjeniti s sadasnjom autentifikacijom da radi isto!!
         //////////////////////////////////////////////////////
         //Provjera postoji li grupa i user
-        Group group = groupService.getGroupById(groupId);
+        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
         //Optional<User> user = userService.getUserById(Integer.parseInt(idUser));
         //if (group == null || user.isEmpty()) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
 
@@ -105,8 +99,7 @@ public class GroupEventController {
     @PostMapping("/{groupId}/addMessage") // dodavanje nove poruke
     public ResponseEntity<Message> createMessageForGroup(@PathVariable int groupId, @RequestBody Message message) {
 
-        Group group = groupService.getGroupById(groupId);
-        if (group == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
 
         message.setGroup(group);
         Message savedMessage = messageService.createMessage(message);
@@ -116,10 +109,33 @@ public class GroupEventController {
 
     @GetMapping("/{groupId}/getMessages") // dohvat nove poruka
     public ResponseEntity<List<Message>> getMessagesByGroupId(@PathVariable int groupId) {
-        Group group = groupService.getGroupById(groupId);
-        if (group == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
-        return ResponseEntity.status(HttpStatus.CREATED).body(group.getMessages());
+
+        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+        return ResponseEntity.ok(group.getMessages());
     }
 
+    @PostMapping("/{username}/reviewEvent/{eventId}") // dodavanje nove ocijene eventa
+    public ResponseEntity<Boolean> reviewEvent(@PathVariable String username, @PathVariable int eventId, @RequestParam String review) {
+        User user = userService.getUserByUsername(username);
+        Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
+        //jeli user u istoj grupi kao i event provjera dodatu
+        groupService.addRatedEvent(user.getId(), event.getIdEvent(), review);
+        return ResponseEntity.status(HttpStatus.CREATED).body(true);
+    }
 
+    @GetMapping("/{username}/getUserReviews") // dohvaća sve eventove koje je user ocijenio
+    public ResponseEntity<List<Event>> getUserReviews(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+        return ResponseEntity.ok(groupService.getUserReviews(user.getId()));
+    }
+
+   @GetMapping("/{eventId}/getEventReviews") // lista usera koji su ocijenili neki event
+    public ResponseEntity<List<UserDTO>> getEventReviews(@PathVariable int eventId) {
+        Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
+        List<UserDTO> usersDTO = new LinkedList<>();
+        for(User user : groupService.getEventReviews(event.getIdEvent())){
+            usersDTO.add(new UserDTO(user.getId(), user.getUsername(), user.getEmail()));
+        }
+        return ResponseEntity.ok(usersDTO);
+    }
 }

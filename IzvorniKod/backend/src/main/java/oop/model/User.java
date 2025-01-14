@@ -25,9 +25,6 @@ public class User {
     @NotEmpty(message = "email is required")
     private  String email;
 
-
-
-
     @ManyToMany
     @JoinTable(
             name = "group_user",
@@ -35,7 +32,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "idgrupa")
     )
     private Set<Group> groups = new HashSet<>();
-    
+
     // Default constructor
     public User() {
     }
@@ -102,4 +99,5 @@ public class User {
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
     }
+
 }

@@ -1,10 +1,13 @@
 package oop.service;
 
 import oop.model.*;
+import oop.repository.EventRepository;
 import oop.repository.GroupRepository;
+import oop.repository.RatedEventRepository;
+import oop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import oop.dto.*;
 
 import java.util.*;
 
@@ -13,13 +16,18 @@ public class GroupService {
 
     private final GroupRepository groupRepo;
     private final UserService userService;
-    public static final int MAX_USERS_IN_GROUP = 21; // Maksimal dopušteni broj korisnika u grupo
+    private final RatedEventRepository ratedEventRepo;
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
 
     @Autowired
-    public GroupService(GroupRepository repo, UserService userService) {
+    public GroupService(GroupRepository repo, UserService userService, RatedEventRepository ratedEventRepo, UserRepository userRepository, EventRepository eventRepository) {
         this.groupRepo = repo;
         this.userService = userService;
+        this.ratedEventRepo = ratedEventRepo;
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
     }
 
     public Group createGroup(Group group) {
@@ -79,5 +87,32 @@ public class GroupService {
             return userList.get(randomIndex);
         }
         return getRandUser(groupId); // malo rekurzije
+    }
+
+    public RatedEvent addRatedEvent(int userId, int eventId, String description) {
+        return ratedEventRepo.save(new RatedEvent(userId, eventId, description));
+    }
+
+    public List<Event> getUserReviews(int id) {
+        List<Event> events = new LinkedList<>();
+        List<RatedEvent> ratedEvents = new ArrayList<>(ratedEventRepo.findAll());
+        for(RatedEvent ratedEvent : ratedEvents){
+            if(ratedEvent.getUserId() == id){
+                events.add(eventRepository.findById(ratedEvent.getEventId()).get());
+            }
+        }
+
+        return events;
+    }
+
+    public List<User> getEventReviews(int idEvent) {
+        List<User> users = new LinkedList<>();
+        List<RatedEvent> ratedEvents = new ArrayList<>(ratedEventRepo.findAll());
+        for(RatedEvent ratedEvent : ratedEvents){
+            if(ratedEvent.getEventId() == idEvent){
+                users.add(userRepository.findById(ratedEvent.getUserId()).get());
+            }
+        }
+        return users;
     }
 }

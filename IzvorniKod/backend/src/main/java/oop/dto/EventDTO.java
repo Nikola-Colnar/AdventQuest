@@ -1,4 +1,6 @@
-package oop.model;
+package oop.dto;
+
+import oop.model.Event;
 
 public class EventDTO {
     private final int eventId;
@@ -62,6 +64,5 @@ public class EventDTO {
         this.color = color;
     }
 
-    // Getteri i setteri
 }
 

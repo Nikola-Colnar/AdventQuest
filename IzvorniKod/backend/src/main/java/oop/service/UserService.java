@@ -1,7 +1,9 @@
 package oop.service;
 
+import oop.model.Event;
 import oop.model.Group;
 import oop.model.User;
+import oop.repository.EventRepository;
 import oop.repository.GroupRepository;
 import oop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.util.*;
 public class UserService {
     private final UserRepository userRepository;
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
+    private final EventRepository eventRepository;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -26,8 +29,9 @@ public class UserService {
     private GroupRepository groupRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EventRepository eventRepository) {
         this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
     }
 
     // Metoda za dohvaćanje svih korisnika
@@ -135,4 +139,7 @@ public class UserService {
         }
         throw new RuntimeException("User not found");
     }
+
+
+
 }

@@ -1,22 +1,24 @@
 package oop.dto;
 
 public class GroupDTO {
-    private int idGrupa;
+    private int idgroup;
     private String nazivGrupa;
 
     // Konstruktor
-    public GroupDTO(int idGrupa, String nazivGrupa) {
-        this.idGrupa = idGrupa;
+    public GroupDTO(int idgroup, String nazivGrupa) {
+        this.idgroup = idgroup;
         this.nazivGrupa = nazivGrupa;
     }
 
+    public GroupDTO() {}
+
     // Getteri i setteri
-    public int getIdGrupa() {
-        return idGrupa;
+    public int getIdgroup() {
+        return idgroup;
     }
 
-    public void setIdGrupa(int idGrupa) {
-        this.idGrupa = idGrupa;
+    public void setIdgroup(int idgroup) {
+        this.idgroup = idgroup;
     }
 
     public String getNazivGrupa() {
@@ -25,5 +27,13 @@ public class GroupDTO {
 
     public void setNazivGrupa(String nazivGrupa) {
         this.nazivGrupa = nazivGrupa;
+    }
+
+    @Override
+    public String toString() {
+        return "GroupDTO{" +
+                "idGrupa=" + idgroup +
+                ", nazivGrupa='" + nazivGrupa + '\'' +
+                '}';
     }
 }

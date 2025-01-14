@@ -97,11 +97,12 @@ public class Event {
     public String toString() {
         return "Event{" +
                 "idEvent=" + idEvent +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
                 ", eventName='" + eventName + '\'' +
-                ", groupId=" + group.getIdGrupa() +
-                ", groupName=" + group.getNazivGrupa() +
+                ", color='" + color + '\'' +
+                ", description='" + description + '\'' +
+                ", group=" + group +
                 '}';
     }
 }

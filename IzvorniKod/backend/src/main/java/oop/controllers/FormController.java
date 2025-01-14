@@ -114,6 +114,7 @@ public class FormController {
         errorResponse.put("message", "Invalid credentials or error occurred");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
+
     @GetMapping("/csrf_token")
     public CsrfToken getToken(HttpServletRequest request){
         return (CsrfToken) request.getAttribute("_csrf");
