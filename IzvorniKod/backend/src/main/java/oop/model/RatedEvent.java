@@ -11,6 +11,7 @@ public class RatedEvent {
     private int ratedEventid;
 
     private String review; // like or dislike
+    private String description;
 
     @ManyToOne
     private User user;
@@ -18,8 +19,9 @@ public class RatedEvent {
     @ManyToOne
     private Event event;
 
-    public RatedEvent(User user, Event event, String review) {
+    public RatedEvent(User user, Event event, String review, String description) {
         this.review = review;
+        this.description = description;
     }
 
     public RatedEvent() {}
@@ -38,13 +40,10 @@ public class RatedEvent {
 
     public void setReview(String review) {this.review = review;}
 
-    @Override
-    public String toString() {
-        return "RatedEvent{" +
-                "ratedEventid=" + ratedEventid +
-                ", review='" + review + '\'' +
-                ", username=" + user.getUsername() +
-                ", even name=" + event.getEventName() +
-                '}';
-    }
+    public String getDescription() {return description;}
+
+    public void setDescription(String description) {
+        this.description = description;}
+
+    public String getRatedEventname(){return event.getEventName();}
 }

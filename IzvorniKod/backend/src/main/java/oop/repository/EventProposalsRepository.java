@@ -1,9 +1,9 @@
 package oop.repository;
 
-import oop.model.RatedEvent;
+import oop.model.EventProposals;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RatedEventRepository extends JpaRepository<RatedEvent, Integer> {
+public interface EventProposalsRepository extends JpaRepository<EventProposals, Integer> {
 }
