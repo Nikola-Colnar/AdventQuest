@@ -1,6 +1,7 @@
 package oop.dto;
 
 
+import oop.model.User;
 
 public class UserDTO {
 
@@ -12,6 +13,12 @@ public class UserDTO {
         this.id = id;
         this.username = username;
         this.email = email;
+    }
+
+    public UserDTO(User user) {
+       this.id = user.getId();
+       this.username = user.getUsername();
+       this.email = user.getEmail();
     }
 
     public int getId() {

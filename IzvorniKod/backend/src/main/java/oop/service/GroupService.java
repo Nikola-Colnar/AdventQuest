@@ -89,30 +89,4 @@ public class GroupService {
         return getRandUser(groupId); // malo rekurzije
     }
 
-    public RatedEvent addRatedEvent(int userId, int eventId, String description) {
-        return ratedEventRepo.save(new RatedEvent(userId, eventId, description));
-    }
-
-    public List<Event> getUserReviews(int id) {
-        List<Event> events = new LinkedList<>();
-        List<RatedEvent> ratedEvents = new ArrayList<>(ratedEventRepo.findAll());
-        for(RatedEvent ratedEvent : ratedEvents){
-            if(ratedEvent.getUserId() == id){
-                events.add(eventRepository.findById(ratedEvent.getEventId()).get());
-            }
-        }
-
-        return events;
-    }
-
-    public List<User> getEventReviews(int idEvent) {
-        List<User> users = new LinkedList<>();
-        List<RatedEvent> ratedEvents = new ArrayList<>(ratedEventRepo.findAll());
-        for(RatedEvent ratedEvent : ratedEvents){
-            if(ratedEvent.getEventId() == idEvent){
-                users.add(userRepository.findById(ratedEvent.getUserId()).get());
-            }
-        }
-        return users;
-    }
 }

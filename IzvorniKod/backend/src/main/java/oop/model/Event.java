@@ -3,6 +3,9 @@ package oop.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "Event")
 public class Event {
@@ -24,6 +27,9 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "idGrupa")
     private Group group;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RatedEvent> ratedEvents = new HashSet<>();
 
     public Event() {}
 
@@ -91,6 +97,18 @@ public class Event {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public Set<RatedEvent> getRatedEvents() {return ratedEvents;}
+
+    public void addRatedEvent(RatedEvent ratedEvent) {
+        ratedEvents.add(ratedEvent);
+        ratedEvent.setEvent(this);
+    }
+
+    public void removeRatedEvent(RatedEvent ratedEvent) {
+        ratedEvents.remove(ratedEvent);
+        ratedEvent.setEvent(null);
     }
 
     @Override

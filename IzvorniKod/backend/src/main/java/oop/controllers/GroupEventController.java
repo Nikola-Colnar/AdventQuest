@@ -1,6 +1,7 @@
 package oop.controllers;
 
 import oop.model.*;
+import oop.repository.RatedEventRepository;
 import oop.service.EventService;
 import oop.service.GroupService;
 import oop.service.MessageService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import oop.dto.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -25,13 +27,15 @@ public class GroupEventController {
     private final UserService userService;
     private final EventService eventService;
     private final MessageService messageService;
+    private final RatedEventRepository ratedEventRepository;
 
     @Autowired
-    public GroupEventController(GroupService groupService, UserService userService, EventService eventService, MessageService messageService) {
+    public GroupEventController(GroupService groupService, UserService userService, EventService eventService, MessageService messageService, RatedEventRepository ratedEventRepository) {
         this.groupService = groupService;
         this.userService = userService;
         this.eventService = eventService;
         this.messageService = messageService;
+        this.ratedEventRepository = ratedEventRepository;
     }
 
 
@@ -115,27 +119,46 @@ public class GroupEventController {
     }
 
     @PostMapping("/{username}/reviewEvent/{eventId}") // dodavanje nove ocijene eventa
-    public ResponseEntity<Boolean> reviewEvent(@PathVariable String username, @PathVariable int eventId, @RequestParam String review) {
+    public ResponseEntity<RatedEventDTO> reviewEvent(@PathVariable String username, @PathVariable int eventId, @RequestParam String review) {
+
         User user = userService.getUserByUsername(username);
         Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
-        //jeli user u istoj grupi kao i event provjera dodatu
-        groupService.addRatedEvent(user.getId(), event.getIdEvent(), review);
-        return ResponseEntity.status(HttpStatus.CREATED).body(true);
+
+        RatedEvent ratedEvent = new RatedEvent(user, event, review);
+        ratedEventRepository.save(ratedEvent);
+        user.addRatedEvent(ratedEvent);
+        event.addRatedEvent(ratedEvent);
+        eventService.saveEvent(event);
+        userService.saveUser(user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new RatedEventDTO(ratedEvent.getRatedEventid(), user.getUsername(), event.getEventName(), review));
     }
 
     @GetMapping("/{username}/getUserReviews") // dohvaća sve eventove koje je user ocijenio
-    public ResponseEntity<List<Event>> getUserReviews(@PathVariable String username) {
+    public ResponseEntity<List<RatedEventDTO>> getUserReviews(@PathVariable String username) {
+
         User user = userService.getUserByUsername(username);
-        return ResponseEntity.ok(groupService.getUserReviews(user.getId()));
+        List<RatedEventDTO> ratedEventsDTO = new ArrayList<>();
+
+        for(RatedEvent ratedEvent : user.getRatedEvents()) { // pretvorba u DTO nez jel ima brži i bolji način
+            ratedEventsDTO.add(new RatedEventDTO(ratedEvent.getRatedEventid(), ratedEvent.getUser().getUsername(),
+                    ratedEvent.getEvent().getEventName(), ratedEvent.getReview()));
+        }
+
+        return ResponseEntity.ok(ratedEventsDTO);
     }
 
    @GetMapping("/{eventId}/getEventReviews") // lista usera koji su ocijenili neki event
     public ResponseEntity<List<UserDTO>> getEventReviews(@PathVariable int eventId) {
+
         Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
-        List<UserDTO> usersDTO = new LinkedList<>();
-        for(User user : groupService.getEventReviews(event.getIdEvent())){
-            usersDTO.add(new UserDTO(user.getId(), user.getUsername(), user.getEmail()));
+        List<UserDTO> userDTOs= new ArrayList<>();
+
+        for(RatedEvent ratedEvent : event.getRatedEvents()) {
+            userDTOs.add(new UserDTO(ratedEvent.getUser()));
         }
-        return ResponseEntity.ok(usersDTO);
+
+        return ResponseEntity.ok(userDTOs);
     }
 }

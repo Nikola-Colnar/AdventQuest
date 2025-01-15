@@ -8,41 +8,43 @@ public class RatedEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ratedEventid;
+    private int ratedEventid;
 
-    private int userId;
-    private int eventId;
-    private String rewiev; // like or dislike
+    private String review; // like or dislike
 
-    public RatedEvent(int userId, int eventId, String rewiev) {
-        this.userId = userId;
-        this.eventId = eventId;
-        this.rewiev = rewiev;
+    @ManyToOne
+    private User user;
+
+    @ManyToOne
+    private Event event;
+
+    public RatedEvent(User user, Event event, String review) {
+        this.review = review;
     }
 
     public RatedEvent() {}
 
-    public Long getRatedEventid() {return ratedEventid;}
+    public int getRatedEventid() {return ratedEventid;}
 
-    public int getUserId() {return userId;}
+    public User getUser() {return user;}
 
-    public void setUserId(int userId) {this.userId = userId;}
+    public void setUser(User user) {this.user = user;}
 
-    public int getEventId() {return eventId;}
+    public Event getEvent() {return event;}
 
-    public void setEventId(int eventId) {this.eventId = eventId;}
+    public void setEvent(Event event) {this.event = event;}
 
-    public String getRewiev() {return rewiev;}
+    public String getReview() {return review;}
 
-    public void setRewiev(String rewiev) {this.rewiev = rewiev;}
+    public void setReview(String review) {this.review = review;}
 
     @Override
     public String toString() {
         return "RatedEvent{" +
                 "ratedEventid=" + ratedEventid +
-                ", userId=" + userId +
-                ", eventId=" + eventId +
-                ", rewiev='" + rewiev + '\'' +
+                ", review='" + review + '\'' +
+                ", username=" + user.getUsername() +
+                ", even name=" + event.getEventName() +
                 '}';
     }
 }

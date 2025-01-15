@@ -33,7 +33,10 @@ public class User {
     )
     private Set<Group> groups = new HashSet<>();
 
-    // Default constructor
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RatedEvent> ratedEvents = new HashSet<>();
+
+
     public User() {
     }
 
@@ -76,6 +79,17 @@ public class User {
         this.username = username;
     }
 
+    public Set<RatedEvent> getRatedEvents() {return ratedEvents;}
+
+    public void addRatedEvent(RatedEvent ratedEvent) {
+        ratedEvents.add(ratedEvent);
+        ratedEvent.setUser(this);
+    }
+
+    public void removeRatedEvent(RatedEvent ratedEvent) {
+        ratedEvents.remove(ratedEvent);
+        ratedEvent.setUser(null);
+    }
 
     @Override
     public String toString() {
@@ -84,12 +98,12 @@ public class User {
 
     public void addGroup(Group group) {
         groups.add(group);
-        group.getUsers().add(this); // dodavanje korisnika u grupu
+        group.getUsers().add(this);
     }
 
     public void removeGroup(Group group) {
         groups.remove(group);
-        group.getUsers().remove(this); // Sinhronizacija relacije
+        group.getUsers().remove(this);
     }
 
     public Set<Group> getGroups() {
