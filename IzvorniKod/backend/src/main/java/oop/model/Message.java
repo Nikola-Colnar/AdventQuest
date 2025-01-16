@@ -27,6 +27,12 @@ public class Message {
         this.date = date;
         this.poruka = poruka;
     }
+    
+    public Message(String uid_sender, String poruka) {
+        this.idSender = uid_sender;
+        this.date = new Date(); // vrijeme stvaranja Message objekta 
+        this.poruka = poruka;
+    }
 
     public int getMessageID() {
         return messageID;
