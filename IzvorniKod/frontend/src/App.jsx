@@ -17,6 +17,8 @@ import DeleteUserFromGroup from "./Components/DeleteUserFromGroup.jsx";
 import ShowAllUsersFromGroup from "./Components/ShowAllUsersFromGroup.jsx";
 import CalendarLeader from "./Components/calendar/CalendarLeader.jsx";
 import CalendarUser from "./Components/calendar/CalendarUser.jsx";
+import ShowAllEventsFromGroup from "./Components/ShowAllEventsFromGroup.jsx";
+import AddEvent from "./Components/AddEvent.jsx";
 
 
 function App() {
@@ -97,6 +99,8 @@ function App() {
             <ShowAllUsersFromGroup></ShowAllUsersFromGroup>
             <CalendarLeader></CalendarLeader>
             <CalendarUser></CalendarUser>
+            <ShowAllEventsFromGroup></ShowAllEventsFromGroup>
+            <AddEvent></AddEvent>
 
           </>
         ),
