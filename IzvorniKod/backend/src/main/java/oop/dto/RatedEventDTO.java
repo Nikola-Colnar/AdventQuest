@@ -1,40 +1,60 @@
 package oop.dto;
 
+import oop.model.RatedEvent;
+
 public class RatedEventDTO {
 
-    private int RatedEventId;
     private String username;
-    private String eventname;
+    private RatedEvent ratedEvent;
     private String review;
+    private String description;
+    private String eventName;
 
-    public RatedEventDTO(int ratedEventId, String username, String eventname, String review) {
-        RatedEventId = ratedEventId;
+    public RatedEventDTO(String username, RatedEvent ratedEvent, String review, String description) {
         this.username = username;
-        this.eventname = eventname;
+        this.ratedEvent = ratedEvent;
+        this.review = review;
+        this.description = description;
+    }
+
+    public RatedEventDTO(String username, String eventName, String review, String description) {
+        this.username = username;
+        this.eventName = eventName;
+        this.description = description;
         this.review = review;
     }
 
-    public int getRatedEventId() {return RatedEventId;}
+    public String getUsername() {
+        return username;
+    }
 
-    public String getUsername() {return username;}
+    public RatedEvent getRatedEvent() {
+        return ratedEvent;
+    }
 
-    public void setUsername(String username) {this.username = username;}
+    public String getReview() {
+        return review;
+    }
 
-    public String getEventname() {return eventname;}
+    public String getDescription() {
+        return description;
+    }
 
-    public void setEventname(String eventname) {this.eventname = eventname;}
+    public String getEventName() {
+        return eventName;
+    }
 
-    public String getReview() {return review;}
-
-    public void setReview(String review) {this.review = review;}
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
 
     @Override
     public String toString() {
-        return "RatedEvenDTO{" +
-                "RatedEventId=" + RatedEventId +
-                ", username='" + username + '\'' +
-                ", eventname='" + eventname + '\'' +
+        return "RatedEventDTO{" +
+                "username='" + username + '\'' +
+                ", ratedEvent=" + ratedEvent +
                 ", review='" + review + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

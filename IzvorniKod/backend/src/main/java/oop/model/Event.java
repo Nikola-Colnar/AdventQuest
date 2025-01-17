@@ -3,6 +3,7 @@ package oop.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,11 +15,8 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idEvent;
 
-    @JsonProperty("StartDate")
-    private String startDate;
-
-    @JsonProperty("EndDate")
-    private String endDate;
+    @JsonProperty("date")
+    private LocalDate date;
 
     private String eventName;
     private String color = "green";
@@ -33,13 +31,12 @@ public class Event {
 
     public Event() {}
 
-    public Event(String eventName, String startDate, String endDate, String description) {
-        this(eventName, startDate, endDate, description, "green");
+    public Event(String eventName, LocalDate date, String description) {
+        this(eventName, date, description, "green");
     }
 
-    public Event(String eventName, String startDate, String endDate, String description, String color) {
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public Event(String eventName, LocalDate date, String description, String color) {
+        this.date = date;
         this.eventName = eventName;
         this.description = description;
         this.color = color;
@@ -55,20 +52,12 @@ public class Event {
         this.idEvent = idEvent;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public void setDate(LocalDate startDate) {
+        this.date = startDate;
     }
 
     public String getEventName() {
@@ -115,8 +104,7 @@ public class Event {
     public String toString() {
         return "Event{" +
                 "idEvent=" + idEvent +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
+                ", startDate='" + date + '\'' +
                 ", eventName='" + eventName + '\'' +
                 ", color='" + color + '\'' +
                 ", description='" + description + '\'' +

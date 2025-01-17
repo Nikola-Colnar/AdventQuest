@@ -2,20 +2,21 @@ package oop.dto;
 
 import oop.model.Event;
 
+import java.time.LocalDate;
+
 public class EventDTO {
     private final int eventId;
     private String eventName;
-    private String startDate;
-    private String endDate;
+    private LocalDate date;
     private String description;
     private String color;
+
 
     // Konstruktor za popunjavanje DTO-a
     public EventDTO(Event event) {
         this.eventId = event.getIdEvent();
         this.eventName = event.getEventName();
-        this.startDate = event.getStartDate();
-        this.endDate = event.getEndDate();
+        this.date = event.getDate();
         this.description = event.getDescription();
         this.color = event.getColor();
     }
@@ -32,20 +33,12 @@ public class EventDTO {
         this.eventName = eventName;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public String getDescription() {
