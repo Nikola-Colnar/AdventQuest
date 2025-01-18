@@ -19,6 +19,7 @@ import CalendarLeader from "./Components/calendar/CalendarLeader.jsx";
 import CalendarUser from "./Components/calendar/CalendarUser.jsx";
 import ShowAllEventsFromGroup from "./Components/ShowAllEventsFromGroup.jsx";
 import AddEvent from "./Components/AddEvent.jsx";
+import EventProposals from "./Components/EventProposals.jsx";
 
 
 function App() {
@@ -101,6 +102,7 @@ function App() {
             <CalendarUser></CalendarUser>
             <ShowAllEventsFromGroup></ShowAllEventsFromGroup>
             <AddEvent></AddEvent>
+            <EventProposals></EventProposals>
 
           </>
         ),

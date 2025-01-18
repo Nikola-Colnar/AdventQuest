@@ -143,7 +143,7 @@ public class GroupEventController {
 
     @PostMapping("/{username}/reviewEvent/{eventId}") // dodavanje nove ocijene eventa
     public ResponseEntity<RatedEventDTO> reviewEvent(@PathVariable String username, @PathVariable int eventId,
-                                                     @RequestHeader String review,  @RequestHeader String description) {
+                                                     @RequestBody String review,  @RequestBody String description) {
 
         User user = userService.getUserByUsername(username);
         Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
