@@ -71,17 +71,17 @@ const AddEvent = () => {
         onClick={() => setOpen(true)}
         style={{ marginTop: "20px" }}
       >
-        Add Event
+        Add Activity
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm" >
-        <DialogTitle align="center">Add New Event</DialogTitle>
+        <DialogTitle align="center">Add New Activity</DialogTitle>
         <DialogContent>
           <Grid container spacing={3} justifyContent="center" style={{ marginTop: "16px" }}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Event Title"
+                label="Activity Title"
                 name="title"
                 value={eventDetails.title}
                 onChange={handleInputChange}
@@ -93,7 +93,7 @@ const AddEvent = () => {
                 fullWidth
                 multiline
                 rows={3}
-                label="Event Description"
+                label="Activity details"
                 name="description"
                 value={eventDetails.description}
                 onChange={handleInputChange}
@@ -114,7 +114,7 @@ const AddEvent = () => {
 */}
             <Grid item xs={12}>
               <Typography align="center" gutterBottom>
-                Event Color
+                Activity Color
               </Typography>
               <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
                     <input
@@ -138,8 +138,8 @@ const AddEvent = () => {
           <Button onClick={() => setOpen(false)} color="secondary">
             Cancel
           </Button>
-          <Button onClick={handleSubmit} color="primary" variant="contained">
-            Save Event
+          <Button onClick={handleSubmit} color="primary" variant="contained" disabled={!eventDetails.title}>
+            Save Activity
           </Button>
         </DialogActions>
       </Dialog>

@@ -9,6 +9,7 @@ import {
   Grid,
   Card,
   CardContent,
+  TextField,
 } from "@mui/material";
 import { styled } from "@mui/system";
 
@@ -24,22 +25,12 @@ const StyledCard = styled(Card)({
   },
 });
 
-/*
-const DetailCard = styled(Card)({
-  width: "100%",
-  maxWidth: "500px",
-  margin: "auto",
-  padding: "2rem",
-  textAlign: "center",
-  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-  backgroundColor: "#fff",
-});*/
-
 const ShowAllEventsFromGroup = () => {
   const [open, setOpen] = useState(false);
-  const [openDetailDialog, setOpenDetailDialog] = useState(false);  // State za otvaranje detaljnog dijaloga
+  const [openDetailDialog, setOpenDetailDialog] = useState(false);
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const fetchEventsByGroup = async () => {
     const groupId = localStorage.getItem("myGroupId");
@@ -67,7 +58,7 @@ const ShowAllEventsFromGroup = () => {
     setOpen(false);
     setTimeout(() => {
       setSelectedEvent(null);
-    }, 300); //timeout 0.3s za tranziciju
+    }, 300); // timeout 0.3s za tranziciju
   };
 
   const handleCardClick = (event) => {
@@ -77,6 +68,46 @@ const ShowAllEventsFromGroup = () => {
 
   const handleDetailDialogClose = () => {
     setOpenDetailDialog(false);
+    setSelectedEvent(null); // Resetiranje odabranog događaja kad se dijalog zatvori
+  };
+
+  const handleEditDetails = () => {
+    setIsEditing(true);
+  };
+
+  const handleBackToDetails = () => {
+    setIsEditing(false); // Vraćanje na detalje
+  };
+
+  const handleSaveChanges = async () => {
+    const groupId = localStorage.getItem("myGroupId");
+    const updatedEvent = {
+      ...selectedEvent,
+      eventName: selectedEvent.eventName,
+      description: selectedEvent.description,
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/groups/${groupId}/updateEvent/${selectedEvent.eventId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedEvent),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Event updated successfully");
+        setIsEditing(false);
+      } else {
+        console.error("Failed to update event");
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+    }
   };
 
   return (
@@ -92,7 +123,7 @@ const ShowAllEventsFromGroup = () => {
             fontSize: "1rem",
           }}
         >
-          Events in Group
+          Holiday Activity
         </DialogTitle>
         <DialogContent
           sx={{
@@ -114,8 +145,10 @@ const ShowAllEventsFromGroup = () => {
                     <CardContent>
                       <Typography
                         variant="h6"
-                        sx={{ fontWeight: "bold", color: "#fff",
-                          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)" //sjena da se vidi na bilokojoj boji
+                        sx={{
+                          fontWeight: "bold",
+                          color: "#fff",
+                          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)",
                         }}
                       >
                         {event.eventName || "Untitled"}
@@ -131,7 +164,7 @@ const ShowAllEventsFromGroup = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Detaljni dijalog za odabrani event */}
+      {/* Dialog za selektirani event */}
       {selectedEvent && (
         <Dialog
           open={openDetailDialog}
@@ -154,24 +187,77 @@ const ShowAllEventsFromGroup = () => {
               padding: "2rem",
             }}
           >
-            <Typography variant="body1">
-              {selectedEvent.description || "Details not planned, yet!"}
-            </Typography>
-            {/*
-            <Typography variant="body2" sx={{ marginTop: "1rem", fontStyle: "italic" }}>
-              {selectedEvent.date
-                ? new Date(selectedEvent.date).toLocaleDateString()
-                : "No date provided"}
-            </Typography>
-          */}
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={handleDetailDialogClose}
-              sx={{ marginTop: "1rem" }}
-            >
-              Back to Events
-            </Button>
+            {isEditing ? (
+              <>
+                <TextField
+                  label="Activity Title"
+                  fullWidth
+                  variant="outlined"
+                  value={selectedEvent.eventName}
+                  onChange={(e) =>
+                    setSelectedEvent({
+                      ...selectedEvent,
+                      eventName: e.target.value,
+                    })
+                  }
+                  sx={{ marginBottom: "1rem",marginTop: "1rem" }}
+                />
+                <TextField
+                  label="Activity details"
+                  fullWidth
+                  variant="outlined"
+                  multiline
+                  rows={4}
+                  value={selectedEvent.description}
+                  onChange={(e) =>
+                    setSelectedEvent({
+                      ...selectedEvent,
+                      description: e.target.value,
+                    })
+                  }
+                  sx={{ marginBottom: "1rem" }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSaveChanges}
+                  sx={{ marginTop: "1rem" }}
+                >
+                  Save Changes
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={handleBackToDetails}
+                  sx={{ marginTop: "1rem", marginLeft: "1rem" }}
+                >
+                  Back to Details
+                </Button>
+              </>
+            ) : (
+              <>
+                <Typography variant="body1">
+                  {selectedEvent.description || "Details not planned, yet!"}
+                </Typography>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleEditDetails}
+                  sx={{ marginTop: "1rem" }}
+                >
+                  Edit Details
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleDetailDialogClose}
+                  sx={{ marginTop: "1rem", marginLeft: "1rem"  }}
+                >
+                  Activities
+                </Button>
+              </>
+            )}
+
           </DialogContent>
         </Dialog>
       )}
