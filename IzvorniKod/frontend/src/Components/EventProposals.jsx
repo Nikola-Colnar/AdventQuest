@@ -18,12 +18,12 @@ const EventProposals = () => {
         return response.json();
       })
       .then((existingEvents) => {
-        // Function to fetch and filter event proposals
+        //funkcija za dohvat i filtriranje evenata
         const getEventProposals = (attempts = 0, collectedEvents = []) => {
           if (attempts >= 20 || collectedEvents.length >= 5) {
             console.log("Reached max attempts or 5 events");
-            setEvents(collectedEvents); // Set the collected events as the final list
-            return; // If 5 events are collected, stop fetching
+            setEvents(collectedEvents); //finalna lista koja se prikazuje
+            return; // ako ih je 5 stani
           }
 
           fetch("http://localhost:8080/api/groups/getEventProposals")
@@ -34,7 +34,7 @@ const EventProposals = () => {
               return response.json();
             })
             .then((data) => {
-              // Filter out events that already exist in the database and those already added
+              //Filtriram evente koje vec postoje u bazi
               const filteredEvents = data.filter(
                 (event) =>
                   !existingEvents.some(
@@ -43,7 +43,7 @@ const EventProposals = () => {
                   !collectedEvents.some((collectedEvent) => collectedEvent.eventName === event)
               );
 
-              // Collect new events until you have 5 unique ones
+              //filtriraj dok ih nemas 5
               const newEvents = filteredEvents.slice(0, 5 - collectedEvents.length);
 
               const updatedCollectedEvents = [
@@ -54,7 +54,7 @@ const EventProposals = () => {
                 })),
               ];
 
-              // Recursively call to gather more events if necessary
+
               getEventProposals(attempts + 1, updatedCollectedEvents);
             })
             .catch((error) => {
@@ -62,7 +62,7 @@ const EventProposals = () => {
             });
         };
 
-        // Start fetching proposals with retry logic
+        //retry logika
         getEventProposals();
       })
       .catch((error) => {
@@ -96,7 +96,7 @@ const EventProposals = () => {
       })
       .then((data) => {
         console.log("Event added:", data);
-        // Update state to set 'added' to true for the event
+        //state true ako smo ga sada dodali
         setEvents((prevEvents) =>
           prevEvents.map((evt) =>
             evt.eventName === eventTitle ? { ...evt, added: true } : evt
@@ -113,7 +113,7 @@ const EventProposals = () => {
 
   return (
     <div>
-      {/* Button to open the proposals */}
+
       <Button
         variant="contained"
         color="primary"
@@ -123,7 +123,6 @@ const EventProposals = () => {
         Show Event Proposals
       </Button>
 
-      {/* Modal for displaying event proposals */}
       <Modal
         open={open}
         onClose={handleClose}
@@ -176,7 +175,7 @@ const EventProposals = () => {
               </Card>
             ))}
           </div>
-          {/* Button to refresh event proposals */}
+
           <Button
             variant="contained"
             color="secondary"

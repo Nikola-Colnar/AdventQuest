@@ -155,13 +155,15 @@ const ShowAllEventsFromGroup = () => {
             }}
           >
             <Typography variant="body1">
-              {selectedEvent.description || "No description available"}
+              {selectedEvent.description || "Details not planned, yet!"}
             </Typography>
+            {/*
             <Typography variant="body2" sx={{ marginTop: "1rem", fontStyle: "italic" }}>
               {selectedEvent.date
                 ? new Date(selectedEvent.date).toLocaleDateString()
                 : "No date provided"}
             </Typography>
+          */}
             <Button
               variant="outlined"
               color="primary"
