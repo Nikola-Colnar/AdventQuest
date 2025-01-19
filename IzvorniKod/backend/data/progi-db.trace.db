@@ -7172,3 +7172,24 @@ INSERT INTO "PUBLIC"."EVENT"("ID_EVENT","COLOR","DESCRIPTION","END_DATE","EVENT_
 2025-01-15 17:17:10.996647+01:00 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (EVENT: ""ID_GRUPA"" INTEGER)"; SQL statement:
 INSERT INTO "PUBLIC"."EVENT"("ID_EVENT","COLOR","DESCRIPTION","END_DATE","EVENT_NAME","START_DATE","ID_GRUPA","DATE")VALUES(?,?,?,?,?,?,?,?) [22018-224]
+2025-01-19 15:34:02.395774+01:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'dsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdf... (960)"; SQL statement:
+insert into event (color,date,description,event_name,id_grupa,id_event) values (?,?,?,?,?,default) [22001-224]
+2025-01-19 15:34:07.630811+01:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'dsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdf... (883)"; SQL statement:
+insert into event (color,date,description,event_name,id_grupa,id_event) values (?,?,?,?,?,default) [22001-224]
+2025-01-19 15:34:10.686704+01:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'dsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdf... (757)"; SQL statement:
+insert into event (color,date,description,event_name,id_grupa,id_event) values (?,?,?,?,?,default) [22001-224]
+2025-01-19 15:34:13.210803+01:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'dsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdf... (694)"; SQL statement:
+insert into event (color,date,description,event_name,id_grupa,id_event) values (?,?,?,?,?,default) [22001-224]
+2025-01-19 15:34:17.061954+01:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'dsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdf... (648)"; SQL statement:
+insert into event (color,date,description,event_name,id_grupa,id_event) values (?,?,?,?,?,default) [22001-224]
+2025-01-19 15:34:19.425587+01:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'dsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdf... (508)"; SQL statement:
+insert into event (color,date,description,event_name,id_grupa,id_event) values (?,?,?,?,?,default) [22001-224]
+2025-01-19 15:34:21.842479+01:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'dsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdfdddfvdvdfvdsfvdfvdsaasvdvddvdvdf... (443)"; SQL statement:
+insert into event (color,date,description,event_name,id_grupa,id_event) values (?,?,?,?,?,default) [22001-224]
