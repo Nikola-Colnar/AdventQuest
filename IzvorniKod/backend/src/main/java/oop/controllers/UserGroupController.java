@@ -20,15 +20,13 @@ public class UserGroupController {
 
     private final UserService userService;
     private final GroupService groupService;
-    private final EventRepository eventRepository;
     private final EventService eventService;
 
     @Autowired
 
-    public UserGroupController(UserService userService, GroupService groupService, EventRepository eventRepository, EventService eventService) {
+    public UserGroupController(UserService userService, GroupService groupService, EventService eventService) {
         this.userService = userService;
         this.groupService = groupService;
-        this.eventRepository = eventRepository;
         this.eventService = eventService;
     }
 

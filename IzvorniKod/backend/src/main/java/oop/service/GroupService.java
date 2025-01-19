@@ -1,10 +1,7 @@
 package oop.service;
 
 import oop.model.*;
-import oop.repository.EventRepository;
-import oop.repository.GroupRepository;
-import oop.repository.RatedEventRepository;
-import oop.repository.UserRepository;
+import oop.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import oop.dto.*;
@@ -19,15 +16,16 @@ public class GroupService {
     private final RatedEventRepository ratedEventRepo;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
-
+    private final EventCommentsRepository eventCommentsRepo;
 
     @Autowired
-    public GroupService(GroupRepository repo, UserService userService, RatedEventRepository ratedEventRepo, UserRepository userRepository, EventRepository eventRepository) {
+    public GroupService(GroupRepository repo, UserService userService, RatedEventRepository ratedEventRepo, UserRepository userRepository, EventRepository eventRepository, EventCommentsRepository eventCommentsRepo) {
         this.groupRepo = repo;
         this.userService = userService;
         this.ratedEventRepo = ratedEventRepo;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
+        this.eventCommentsRepo = eventCommentsRepo;
     }
 
     public Group createGroup(Group group) {
@@ -89,4 +87,8 @@ public class GroupService {
         return getRandUser(groupId); // malo rekurzije
     }
 
+    public EventComments saveComment(String comment, Event event, User user) {
+       return eventCommentsRepo.save(
+                new EventComments(user, event, comment));
+    }
 }
