@@ -20,7 +20,7 @@ import CalendarUser from "./Components/calendar/CalendarUser.jsx";
 import ShowAllEventsFromGroup from "./Components/ShowAllEventsFromGroup.jsx";
 import AddEvent from "./Components/AddEvent.jsx";
 import EventProposals from "./Components/EventProposals.jsx";
-
+import AdventCalendar from "./Components/AdventCalendar.jsx";
 
 function App() {
   // stanje vidljivosti login forme
@@ -103,6 +103,7 @@ function App() {
             <ShowAllEventsFromGroup></ShowAllEventsFromGroup>
             <AddEvent></AddEvent>
             <EventProposals></EventProposals>
+            <AdventCalendar></AdventCalendar>
 
           </>
         ),

@@ -33,7 +33,7 @@ const AddEvent = () => {
     const newEvent = {
       eventName: eventDetails.title,
       description: eventDetails.description,
-      //date: eventDetails.date, //datum u standardnom formatu
+      date: eventDetails.date, //datum u standardnom formatu
       color: eventDetails.color,
     };
 
@@ -99,7 +99,7 @@ const AddEvent = () => {
                 onChange={handleInputChange}
               />
             </Grid>
-            {/*
+
   <Grid item xs={12}>
     <TextField
       type="date"
@@ -111,7 +111,7 @@ const AddEvent = () => {
       onChange={handleInputChange}
     />
   </Grid>
-*/}
+
             <Grid item xs={12}>
               <Typography align="center" gutterBottom>
                 Activity Color
