@@ -35,7 +35,7 @@ const StyledMenu = styled(Menu)(() => ({
   },
 }));
 
-function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, onSignupClick, calendarVisible }) {
+function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, onSignupClick, calendarVisible, chatOn }) {
 
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -57,6 +57,11 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
   const handleCalendarToggle = () => {
     calendarVisible(true);    // toggle za kalendar
     setAnchorEl(null);  // zatvori dropdown menu kada je kalendar otvoren
+  };
+
+  const handleChatToggle = () => {
+    chatOn(true);
+    setAnchorEl(null);
   };
 
   return (
@@ -122,6 +127,7 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
                   color: "#ffffff",
                 },
               }} disableRipple={true} onClick={handleCalendarToggle}>Activity</Button>
+              <button onClick={handleChatToggle}></button>
               <SignOutButton onClick={handleLogin} onClose={handleMenuClose} />
               {/* Stari logout gumb, mozda cemo ga ponovno iskoristiti */}
               {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}

@@ -81,6 +81,10 @@ function RegForm({ onClick, signIn }) {
         const data = await response.json();  // Parsiranje JSON odgovora
         const username = data.username;
         localStorage.setItem("username", username);
+        
+        const userID = data.userID;
+        localStorage.setItem("userID", userID);
+        
         signIn(true);
       } else {
         setMessage("Failed to register user");
