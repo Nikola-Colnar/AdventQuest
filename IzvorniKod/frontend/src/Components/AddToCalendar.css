@@ -1,0 +1,208 @@
+
+.custom-day-content {
+    position: relative;
+    text-align: center;
+}
+
+.custom-day-number {
+    margin-bottom: 5px;
+}
+
+
+.custom-add-event-btn {
+    background-color: #3174ad;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 12px;
+    margin-top: 5px;
+}
+.custom-add-event-btn:hover {
+    background-color: #255e91;
+}
+
+.fc-daygrid-day-frame{
+    min-width: 10px;
+    height: 100%;
+}
+.fc-daygrid-day-events{
+    min-width: 10px;
+    height: 95%;
+    text-align: center;
+}
+.custom-event-content {
+    height: 100%;
+    display: flex;
+    justify-content: center; /* Opcionalno: Horizontalno centrirajte */
+    align-items: flex-end; /* Sadržaj na dno */
+    padding-bottom: 10px; /* Dodajte razmak od dna */
+}
+{/*ovo je za uredivanje velicine celije, samo day je i za velicinu celije nazivlja dana (pon,uto,sri, itd.)*/}
+.fc-event{
+    border: none;
+    height: 100%;
+}
+.fc-daygrid-event-harness{
+    margin-bottom:0;
+    height: 100%;
+}
+.fc-event-main{
+    height:100%;
+}
+.fc-daygrid-day-bottom {
+    display: none;
+}
+
+
+/*Top i buttoni*/
+
+.fc-daygrid-day-top{
+    width: 100%;
+}
+.fc-daygrid-day-number{
+    width: 100%;
+}
+.fc-custom-day-content{
+    width: 100%;
+    display: flex;
+
+}
+.custom-add-btn{
+    position: absolute;
+    top:0;
+    left:0;
+}
+.custom-add-btn:hover{
+    background-color: #82ff58;
+    transform: scale(1.1);
+}
+.custom-add-btn:active{
+    background-color: #166c00;
+    transform: scale(0.9);
+}
+.custom-remove-btn{
+    position: absolute;
+    top:0;
+    left:0;
+
+
+}
+.custom-remove-btn:hover{
+    background-color: #ff2717;
+    transform: scale(1.1);
+}
+.fc-custom-remove-btn:active{
+    background-color: #ae0101;
+    transform: scale(0.9);
+}
+.custom-day-number{
+    position: absolute;
+    right:0;
+    top:0;
+}
+
+/*dodavanje evenata popup window*/
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+
+.modal-content h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
+    color: #2c6fa6;
+}
+
+
+.modal-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.modal-content li {
+    padding: 15px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+
+.modal-content li:hover {
+    background-color: #7fbf7f;
+}
+
+
+.modal-content li button {
+    font-size: 18px;
+    color: #fff;
+    background-color: #27ae60;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+
+.modal-content li button:hover {
+    background-color: #2ecc71;
+}
+
+
+.modal-content button.close-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.modal-content button.close-btn:hover {
+    background-color: #c0392b;
+}
+
+.custom-event-content {
+    background-color: inherit;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

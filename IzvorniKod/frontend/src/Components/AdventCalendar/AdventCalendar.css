@@ -84,7 +84,7 @@
     align-items: start;
     justify-content: center;
     border-radius: 8px;
-    background-color: #3174ad; /* Ispod možete prilagoditi boje */
+    background-color: #3174ad;
     color: white;
     box-sizing: border-box;
     position: relative;
@@ -124,3 +124,20 @@ posto postoji vec number za ispisivanje, ali suzi tome da se title ispisuje u dr
 .fc-daygrid-day-number-sticky.locked-day {
     display: none;
 }
+{/*OVI SLJEDECI SU DA EVENT POPUNJAVA CIJELI PROZOR!!!!!!!!!!!!!*/}
+.fc-event{
+    border: none;
+    height: 100%;
+}
+.fc-daygrid-event-harness{
+    margin-bottom:0;
+    height: 100%;
+}
+.fc-event-main{
+    height:100%
+}
+.locked-day{
+    height: 100%;
+}.locked{
+    height: 100%;
+ }

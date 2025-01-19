@@ -20,8 +20,9 @@ import CalendarUser from "./Components/calendar/CalendarUser.jsx";
 import ShowAllEventsFromGroup from "./Components/ShowAllEventsFromGroup.jsx";
 import AddEvent from "./Components/AddEvent.jsx";
 import EventProposals from "./Components/EventProposals.jsx";
-import AdventCalendar from "./Components/AdventCalendar.jsx";
 import PastEventList from "./Components/PastEventsList.jsx";
+import AddToCalendar from "./Components/AddToCalendar.jsx";
+import AdventCalendar from "./Components/AdventCalendar/AdventCalendar.jsx";
 
 function App() {
   // stanje vidljivosti login forme
@@ -106,6 +107,7 @@ function App() {
             <EventProposals></EventProposals>
             <AdventCalendar></AdventCalendar>
             <PastEventList></PastEventList>
+            <AddToCalendar></AddToCalendar>
           </>
         ),
       },
