@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import oop.dto.*;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -82,26 +83,30 @@ public class GroupEventController {
         return ResponseEntity.ok(events);
     }
 
-    @GetMapping("/{groupId}/getPastEvents") // otključani eventovi pls ne diraj!
-    public ResponseEntity<List<RatedEventDTO>> getPastEventsByGroupId(@PathVariable int groupId) {
+    @GetMapping("/{groupId}/getPastEvents/{username}") // vraća evenName, brojLajkova i username jel lajkao(da/ne)
+    public ResponseEntity<List<IspisEventDTO>> getPastEventsByGroupId(@PathVariable int groupId, @PathVariable String username) {
 
         Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+        User user = userService.getUserByUsername(username);
 
-        List<Event> event = new ArrayList<>(group.getEvents()); // Eventovi u grupi
-        List<RatedEventDTO> pastEvents = new ArrayList<>(); // Eventove koje cu slati
-
-        //za svaki event treba dohvatiti njegove review
-        for(Event e : event){
-            List<RatedEvent> ratedPastEvents = new ArrayList<>(e.getRatedEvents()); // reviews eventa
-
-            for(RatedEvent r : ratedPastEvents){ // za svaki review printaj username, eventname, review i description
-                //System.out.println(r.getEvent().getEventName());
-                pastEvents.add(new RatedEventDTO(
-                        r.getUser().getUsername(), r.getEvent().getEventName() , r.getReview(), r.getDescription()));
-            }
-        }
-
-        return ResponseEntity.ok(pastEvents);
+        List<Event> events = new ArrayList<>(group.getEvents()); // Eventovi u grupi
+        List<IspisEventDTO> list = new ArrayList<>();
+        //System.out.println(events.size());
+        for(Event event : events){
+           if(event.getDate() != null){
+               int numOfLikes = event.getRatedEvents().size();
+               int userLajkao = 0;
+               System.out.println(numOfLikes);
+               for(RatedEvent e: user.getRatedEvents()){ // provjera jeli user lajkao
+                   if(e.getEvent().getIdEvent() == event.getIdEvent()){
+                       userLajkao=1;
+                       break;
+                   }
+               }
+               list.add(new IspisEventDTO(event.getEventName(), numOfLikes, userLajkao));
+           }
+       }
+       return ResponseEntity.ok(list);
     }
 
     @DeleteMapping("/{groupId}/deleteEvent/{eventId}") // brisanje eventa iz grupe
@@ -141,26 +146,97 @@ public class GroupEventController {
         return ResponseEntity.ok(group.getMessages());
     }
 
-    @PostMapping("/{username}/reviewEvent/{eventId}") // dodavanje nove ocijene eventa
-    public ResponseEntity<RatedEventDTO> reviewEvent(@PathVariable String username, @PathVariable int eventId,
-                                                     @RequestBody String review,  @RequestBody String description) {
+    @PostMapping("/{username}/reviewEvent/{eventId}") // lajkanje eventa
+    public ResponseEntity<RatedEventDTO> reviewEvent(@PathVariable String username, @PathVariable int eventId) {
 
         User user = userService.getUserByUsername(username);
         Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
 
-        RatedEvent ratedEvent = new RatedEvent(user, event, review, description);
-        ratedEventRepository.save(ratedEvent);
-        user.addRatedEvent(ratedEvent);
-        event.addRatedEvent(ratedEvent);
-        eventService.saveEvent(event);
-        userService.saveUser(user);
+        RatedEvent ratedEvent = new RatedEvent(1, user, event);
+        eventService.saveRatedEvent(ratedEvent);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new RatedEventDTO(user.getUsername(), ratedEvent, review, description));
+                new RatedEventDTO(user.getUsername(), event.getEventName(), 1));
     }
+
+    @DeleteMapping("/{username}/deleteLike/{eventId}") // brisanje lajka
+    public ResponseEntity<Integer> deleteLikeEvent(@PathVariable String username, @PathVariable int eventId){
+
+        User user = userService.getUserByUsername(username);
+        Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
+
+        int id = eventService.getRatedEventId(user.getId(), event.getIdEvent());
+
+        user.getRatedEvents().remove(eventService.findRatedEventById(id));
+        event.getRatedEvents().remove(eventService.findRatedEventById(id));
+
+        eventService.deleteRatedEvenById(id);
+
+        return ResponseEntity.ok(id);
+    }
+
+    @PostMapping("/{username}/addComment/{eventId}")
+    public ResponseEntity<EventCommentDTO> addComment(@PathVariable String username, @PathVariable int eventId,
+                                                    @RequestBody String comment) {
+        User user = userService.getUserByUsername(username);
+        Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
+
+        EventComments eventComments = new EventComments(user, event, comment);
+        eventService.addComment(eventComments);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new EventCommentDTO(
+                username, event.getEventName(), comment, eventComments.getCommentId(), eventComments.getDate()));
+    }
+
+    @DeleteMapping("/deleteComment/{commentId}")
+    public ResponseEntity<Boolean> deleteComment(@PathVariable int commentId) {
+        eventService.deleteComment(commentId);
+        return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/{eventId}/allComments/{eventId}")
+    public ResponseEntity<List<EventCommentDTO>> getAllCommentsForEvent(@PathVariable int groupId, @PathVariable int eventId) {
+        Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
+        List<EventCommentDTO> list = new ArrayList<>();
+        for(EventComments ec: event.getComments()){
+            list.add(new EventCommentDTO(ec));
+        }
+        return ResponseEntity.ok(list);
+    }
+
 
     @GetMapping("/getEventProposals") // vraća 5 random prijedloga za event
     public ResponseEntity<List<String>> getEventProposals() {
         return ResponseEntity.ok(eventService.getFiveRandomEvents());
+    }
+
+    @PutMapping("/{groupId}/updateEvent/{eventId}")
+    public ResponseEntity<EventDTO> updateEvent(@PathVariable int groupId, @PathVariable int eventId, @RequestBody Event event) {
+        Event e = eventService.getEventById(eventId).orElseThrow(()-> new RuntimeException("Event not found"));
+        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+        for(Event e2 : group.getEvents()){
+            if(eventId == e2.getIdEvent()){ // event je u toj grupi
+              if(event.getEventName() != null){ e.setEventName(event.getEventName()); }
+              if(event.getDescription() != null){ e.setDescription(event.getDescription()); }
+              if(event.getColor() != null){ e.setColor(event.getColor()); }
+              eventService.saveEvent(e);
+              return ResponseEntity.ok(new EventDTO(e));
+            }
+        }
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+
+    @PutMapping("/{groupId}/setDate/{eventId}") // postavljanje datuma
+    public ResponseEntity<EventDTO> setEventDate(@PathVariable int groupId, @PathVariable int eventId, @RequestBody Event event){
+        Event e = eventService.getEventById(eventId).orElseThrow(()-> new RuntimeException("Event not found"));
+        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+        for(Event e2 : group.getEvents()){
+            if(eventId == e2.getIdEvent()){ // event je u toj grupi
+                e.setDate(event.getDate());
+                eventService.saveEvent(e);
+                return ResponseEntity.ok(new EventDTO(e));
+            }
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 }

@@ -5,56 +5,33 @@ import oop.model.RatedEvent;
 public class RatedEventDTO {
 
     private String username;
-    private RatedEvent ratedEvent;
-    private String review;
-    private String description;
+    private int lajk;
     private String eventName;
 
-    public RatedEventDTO(String username, RatedEvent ratedEvent, String review, String description) {
-        this.username = username;
-        this.ratedEvent = ratedEvent;
-        this.review = review;
-        this.description = description;
-    }
-
-    public RatedEventDTO(String username, String eventName, String review, String description) {
+    public RatedEventDTO(String username, String eventName, int lajk) {
         this.username = username;
         this.eventName = eventName;
-        this.description = description;
-        this.review = review;
+        this.lajk = lajk;
     }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername() {return username;}
 
-    public RatedEvent getRatedEvent() {
-        return ratedEvent;
-    }
+    public void setUsername(String username) {this.username = username;}
 
-    public String getReview() {
-        return review;
-    }
+    public int getLajk() {return lajk;}
 
-    public String getDescription() {
-        return description;
-    }
+    public void setLajk(int lajk) {this.lajk = lajk;}
 
-    public String getEventName() {
-        return eventName;
-    }
+    public String getEventName() {return eventName;}
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
+    public void setEventName(String eventName) {this.eventName = eventName;}
 
     @Override
     public String toString() {
         return "RatedEventDTO{" +
                 "username='" + username + '\'' +
-                ", ratedEvent=" + ratedEvent +
-                ", review='" + review + '\'' +
-                ", description='" + description + '\'' +
+                ", lajk=" + lajk +
+                ", eventName='" + eventName + '\'' +
                 '}';
     }
 }

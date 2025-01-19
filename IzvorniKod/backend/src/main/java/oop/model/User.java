@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -35,6 +36,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RatedEvent> ratedEvents = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventComments> comments = new LinkedList<>();
 
 
     public User() {
@@ -114,4 +118,11 @@ public class User {
         this.groups = groups;
     }
 
+    public List<EventComments> getComments() {return comments;}
+
+    public void addComments(String komentar) {
+        comments.add(new EventComments(komentar));
+    }
+
+    public void setRatedEvents(Set<RatedEvent> ratedEvents) {this.ratedEvents = ratedEvents;}
 }

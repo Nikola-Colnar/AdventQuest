@@ -3,30 +3,42 @@ package oop.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "RatedEvents")
+@Table(name = "UserLikedEvents")
 public class RatedEvent {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ratedEventid;
+    @Column(name = "rated_event_id")
+    private int ratedEventId;
 
-    private String review; // like or dislike
-    private String description;
+    @Column(name = "liked", nullable = false)
+    private int liked; // 1 ako je lajkao, inače 0
 
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    public RatedEvent(User user, Event event, String review, String description) {
-        this.review = review;
-        this.description = description;
+    public RatedEvent(int liked) {
+        this.liked = liked;
+    }
+
+    public RatedEvent(int liked, User user, Event event) {
+        this.liked = liked;
+        this.user = user;
+        this.event = event;
     }
 
     public RatedEvent() {}
 
-    public int getRatedEventid() {return ratedEventid;}
+
+    public int getLiked() {return liked;}
+
+    public void setLiked(int like) {this.liked = like;}
 
     public User getUser() {return user;}
 
@@ -36,14 +48,5 @@ public class RatedEvent {
 
     public void setEvent(Event event) {this.event = event;}
 
-    public String getReview() {return review;}
-
-    public void setReview(String review) {this.review = review;}
-
-    public String getDescription() {return description;}
-
-    public void setDescription(String description) {
-        this.description = description;}
-
-    public String getRatedEventname(){return event.getEventName();}
+    public int getRatedEventid() {return ratedEventId;}
 }

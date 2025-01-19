@@ -2,6 +2,7 @@ package oop.service;
 
 import oop.model.Event;
 import oop.model.Group;
+import oop.model.RatedEvent;
 import oop.model.User;
 import oop.repository.EventRepository;
 import oop.repository.GroupRepository;
@@ -139,7 +140,6 @@ public class UserService {
         }
         throw new RuntimeException("User not found");
     }
-
 
 
 }
