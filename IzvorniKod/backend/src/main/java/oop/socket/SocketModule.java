@@ -55,11 +55,13 @@ public class SocketModule {
             // Auth listener je vec provjerio da JWT token postoji, da je korisnik clan navedene grupe i slicno
             HandshakeData data = client.getHandshakeData();
             String cookieHeader = data.getHttpHeaders().get("cookie");
-            List<HttpCookie> cookies = HttpCookie.parse(cookieHeader);
+            String[] cookies = cookieHeader.split(";");
             String token = null; 
-            for(HttpCookie c: cookies) {
-                if("jwtToken".equals(c.getName())) {
-                    token = c.getValue();
+            for(String c: cookies) {
+                String[] nameValue = c.split("=");
+                System.out.println( c + "\n");
+                if("jwtToken".equals(nameValue[0].trim())) {
+                    token = nameValue[1].trim();
                     break;
                 }
             }

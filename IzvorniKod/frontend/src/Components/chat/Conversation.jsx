@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import Message from "./message";
+import Message from "./Message";
 import useSocket from "./useSocket";
 
 function Conversation(props) {
@@ -18,12 +18,19 @@ function Conversation(props) {
   }, [] );
 
   useEffect(() => {
-    setMessageList([...messageList, newInMsg]);
+    if(newInMsg.poruka != "") {
+      setMessageList([...messageList, newInMsg]);
+    }
   }, [newInMsg]);
 
   const sendNewMessage = () => {
     if(newOutMsg != "") {
       sendMsg(newOutMsg);
+      setMessageList([...messageList, {
+        idSender: props.user.ID,
+        date: Date.now(),
+        poruka: newOutMsg
+      }]);
       setNewOutMsg("");
     }
   }
@@ -34,9 +41,7 @@ function Conversation(props) {
   return (<>
     <h1>Chat za grupu {props.groupID}</h1>
       <ul> {
-          messageList.map(msg => {
-            <Message msg={msg} color={"lightblue"} isSentMsg={msg.sender == props.user.ID}/>
-          })
+          messageList.map((msg, index) => <Message key={index} msg={msg} isSentMsg={msg.idSender == props.user.ID}/>)
       } </ul>
       <textarea name="message-box" id="message-box" onChange={changeMsg} value={newOutMsg} placeholder="type your message..."></textarea>
       <button id="send-button" onClick={sendNewMessage}>send</button>

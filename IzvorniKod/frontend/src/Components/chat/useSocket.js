@@ -15,7 +15,7 @@ const useSocket = (group, userID) => {
           poruka: text,
           idSender: userID
     });
-  }, [group, socket]);
+  }, [socket, group]);
 
   useEffect(() => {
       const s = io({
@@ -33,9 +33,10 @@ const useSocket = (group, userID) => {
         });
       });
       return () => {
-      s.disconnect(); // cleanup funkcija, zatvori stari socket kad se vise ne koristi
+        console.log("zatvoren socket ");
+        s.disconnect(); // cleanup funkcija, zatvori stari socket kad se vise ne koristi
       };
-  }, [group, userID]);
+  }, [group]);
 
   return { newInMsg, isConnected, sendMsg };
 };
