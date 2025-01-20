@@ -60,20 +60,6 @@ public class GroupEventController {
         return ResponseEntity.ok(group.getidPredstavnika()); // zanemari žuto, sve radi
     }
 
-    @GetMapping("/{adminName}/getGroups")
-    public ResponseEntity<List<GroupDTO>> getAllGroups(@PathVariable String adminName){
-        //if(!Objects.equals(adminName, "Romeo")) Promijeni u kojeg kod usera
-        //   return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(groupService.findAllGroups());
-    }
-
-    @GetMapping("/{adminName}/getUsers")
-    public ResponseEntity<List<UserDTO>> getAllUsers(@PathVariable String adminName){
-        //if(!Objects.equals(adminName, "Romeo")) Promijeni u kojeg kod usera
-        //   return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(userService.findAllUsers());
-    }
-
 
     @PostMapping("/{groupid}/addEvent")
     public ResponseEntity<Event> createEvent(@PathVariable int groupid, @RequestBody Event event) {
