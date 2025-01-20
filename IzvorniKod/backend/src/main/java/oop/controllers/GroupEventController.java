@@ -194,8 +194,8 @@ public class GroupEventController {
         return ResponseEntity.ok(true);
     }
 
-    @GetMapping("/{eventId}/allComments/{eventId}")
-    public ResponseEntity<List<EventCommentDTO>> getAllCommentsForEvent(@PathVariable int groupId, @PathVariable int eventId) {
+    @GetMapping("/allComments/{eventId}")
+    public ResponseEntity<List<EventCommentDTO>> getAllCommentsForEvent( @PathVariable int eventId) {
         Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
         List<EventCommentDTO> list = new ArrayList<>();
         for(EventComments ec: event.getComments()){
