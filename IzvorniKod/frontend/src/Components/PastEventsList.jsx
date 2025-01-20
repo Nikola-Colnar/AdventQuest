@@ -18,7 +18,7 @@ import CommentIcon from "@mui/icons-material/Comment";
 
 const PastEventList = () => {
   const [events, setEvents] = useState([]);
-  const [likedEvents, setLikedEvents] = useState({}); //podaci o likeovima
+  const [likedEvents, setLikedEvents] = useState({}); //podaci o stanju like buttona
   const [comments, setComments] = useState({}); //komentari po eventIdu
   const [commentInput, setCommentInput] = useState(""); //trenutni unos komentara
   const [selectedEventId, setSelectedEventId] = useState(null); //trenutno odabrani event za komentare
@@ -38,7 +38,7 @@ const PastEventList = () => {
       if (response.ok) {
         const data = await response.json();
         const today = new Date(); //danasnji datum
-        console.log(today);
+
         const formattedEvents = data
           .filter((event) => event.date && new Date(event.date).getTime() <= today) //micu se koji nemaju datum i koji su stariji od danas
           .map((event) => ({
@@ -47,8 +47,8 @@ const PastEventList = () => {
             date: new Date(event.date),
             description: event.description,
             color: event.color || "#3174ad",
-            likes: 0,
-            userLiked: 0, //personalnilikeovi
+            likes: event.likes || 0,
+            userLiked: event.userLiked || 0, //personalnilikeovi
           }))
           .sort((a, b) => b.date - a.date); //najnoviji prema starijima
 
@@ -64,17 +64,21 @@ const PastEventList = () => {
 
         if (likesResponse.ok) {
           const likesData = await likesResponse.json();
-
+          console.log(likesData);
           // Add likes data to events
           const updatedEvents = formattedEvents.map((event) => {
-            const eventLikes = likesData.find((e) => e.eventId === event.id);
+            const eventLikes = likesData.find((e) => e.eventname === event.title);
             return {
               ...event,
-              likes: eventLikes ? eventLikes.likes : 0,
+              likes: eventLikes ? eventLikes.numOfLikes : 0,
               userLiked: eventLikes ? eventLikes.userLiked : 0,
             };
           });
-          console.log(updatedEvents);
+          const initialLikedEvents = updatedEvents.reduce((acc, event) => {
+            acc[event.id] = event.userLiked === 1; //Ako je korisnik likeo event stanje se postavlja na 1
+            return acc;
+          }, {});
+          setLikedEvents(initialLikedEvents)
           setEvents(updatedEvents);
         } else {
           console.error("Failed to fetch likes");
@@ -93,24 +97,49 @@ const PastEventList = () => {
 
   //upravljanje likeovima
   const handleLike = (eventId) => {
-    setLikedEvents((prev) => ({
-      ...prev,
-      [eventId]: !prev[eventId],
-    }));
+    const username = localStorage.getItem("username");  // Preuzimanje korisničkog imena iz lokalne pohrane
+
+    setLikedEvents((prev) => {
+      const isLiked = prev[eventId];
+      return {
+        ...prev,
+        [eventId]: !isLiked, // Ako je lajkan, makni like, inače dodaj
+      };
+    });
 
     setEvents((prev) =>
       prev.map((event) =>
         event.id === eventId
-          ? { ...event, likes: event.likes + (likedEvents[eventId] ? -1 : 1) }
+          ? {
+            ...event,
+            likes: event.likes + (likedEvents[eventId] ? -1 : 1), // Ako je lajkan, smanji like, inače dodaj
+          }
           : event
       )
     );
-//prop za kasniju implementaciju kada backend bude spreman
-    const likeData = {
-      eventId,
-      liked: !likedEvents[eventId],
+
+    const requestData = {
+      method: likedEvents[eventId] ? "DELETE" : "POST", // Ako je lajkan, šaljemo DELETE, inače POST
+      headers: {
+        "Content-Type": "application/json",
+      },
     };
-    console.log("Like data to send:", likeData);
+
+    const url = `http://localhost:8080/api/groups/${username}/${
+      likedEvents[eventId] ? "deleteLike" : "reviewEvent"
+    }/${eventId}`;
+
+    fetch(url, requestData)
+      .then((response) => {
+        if (response.ok) {
+          console.log("Event successfully updated.");
+        } else {
+          console.error("Failed to update the event.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
   //prikaz komentara specificnog dogadaja
   const handleCommentsToggle = (eventId) => {
