@@ -85,6 +85,7 @@ const ShowAllEventsFromGroup = () => {
       ...selectedEvent,
       eventName: selectedEvent.eventName,
       description: selectedEvent.description,
+      color: selectedEvent.color,
     };
 
     try {
@@ -102,6 +103,7 @@ const ShowAllEventsFromGroup = () => {
       if (response.ok) {
         console.log("Event updated successfully");
         setIsEditing(false);
+        await fetchEventsByGroup();
       } else {
         console.error("Failed to update event");
       }
@@ -200,10 +202,10 @@ const ShowAllEventsFromGroup = () => {
                       eventName: e.target.value,
                     })
                   }
-                  sx={{ marginBottom: "1rem",marginTop: "1rem" }}
+                  sx={{ marginBottom: "1rem", marginTop: "1rem" }}
                 />
                 <TextField
-                  label="Activity details"
+                  label="Activity Details"
                   fullWidth
                   variant="outlined"
                   multiline
@@ -217,6 +219,38 @@ const ShowAllEventsFromGroup = () => {
                   }
                   sx={{ marginBottom: "1rem" }}
                 />
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      marginRight: "1rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Select Color:
+                  </Typography>
+                  <input
+                    type="color"
+                    value={selectedEvent.color || "#ffffff"}
+                    onChange={(e) =>
+                      setSelectedEvent({
+                        ...selectedEvent,
+                        color: e.target.value,
+                      })
+                    }
+                    style={{
+                      width: "100%",
+                      height: "32px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  />
+                </Box>
                 <Button
                   variant="contained"
                   color="primary"
