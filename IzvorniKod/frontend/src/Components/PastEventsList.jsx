@@ -141,37 +141,72 @@ const PastEventList = () => {
         console.error("Error:", error);
       });
   };
-  //prikaz komentara specificnog dogadaja
-  const handleCommentsToggle = (eventId) => {
-    setSelectedEventId((prev) => (prev === eventId ? null : eventId));
-    if (!comments[eventId]) {
-      setComments((prev) => ({
-        ...prev,
-        [eventId]: [],
-      }));
+
+  const fetchComments = async (eventId) => {
+    //if (!comments[eventId]) { //uvjetno fetchanje samo jednom pri otvaranju
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/groups/allComments/${eventId}`, // Backend URL za dohvat komentara
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json(); // Parsiraj odgovore s komentari
+        setComments((prev) => ({
+          ...prev,
+          [eventId]: data, // Spremi komentare u stanje pod eventId ključem
+        }));
+      } else {
+        console.error("Failed to fetch comments");
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
     }
   };
+  //prikaz komentara specificnog dogadaja
+  const handleCommentsToggle = async (eventId) => {
+    setSelectedEventId((prev) => (prev === eventId ? null : eventId)); // Toggle za selektirani event
+    fetchComments(eventId);
+  };
+
   //slanje komentara
   const handleCommentSubmit = (eventId) => {
-    if (!commentInput.trim()) return;
-    const newComment = { id: Date.now(), text: commentInput };
+    if (!commentInput.trim()) return; //ako je komentar prazan ne moze se dodati
 
-    setComments((prev) => ({
-      ...prev,
-      [eventId]: [...prev[eventId], newComment],
-    }));
-    setCommentInput("");
-    //koristim za slanje kasnije prema bakcendu
-    const commentData = {
-      eventId,
-      comment: newComment.text,
-    };
-    console.log("Comment data to send:", commentData);
+    // Slanje komentara na backend
+    fetch(`http://localhost:8080/api/groups/${localStorage.getItem("username")}/addComment/${eventId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: commentInput,
+    })
+      .then(response => {
+        if (response.ok) {
+          console.log("Comment successfully added.");
+          setCommentInput("")
+          fetchComments(eventId);
+        } else {
+          console.error("Failed to add comment.");
+        }
+      })
+      .catch(error => {
+        console.error("Error submitting comment:", error);
+      });
   };
 
   const isToday = (date) => {
     const today = new Date().setHours(0, 0, 0, 0);
     return date.setHours(0, 0, 0, 0) === today;
+  };
+
+  // Sortiranje komentara po datumu
+  const sortCommentsByDate = (comments) => {
+    return comments.sort((a, b) => new Date(b.date) - new Date(a.date));
   };
 
   return (
@@ -240,21 +275,91 @@ const PastEventList = () => {
             </ListItem>
             {/*Sekcija za komentare za odredeni dogadaj otvara ili zatvara */}
             {selectedEventId === event.id && (
-              <Box sx={{ marginLeft: 8, marginTop: 1 }}>
-                <List>
-                  {comments[event.id]?.map((comment) => (
-                    <ListItem key={comment.id}>
-                      <ListItemText primary={comment.text} />
+              <Box sx={{
+                marginLeft: 0,
+                marginTop: 1,
+                padding: 2,
+                backgroundColor: "rgba(191,255,185,0.18)",
+                border: "1px solid #e0e0e0",
+                borderRadius: 2,
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+              }}>
+                <List
+                  sx={{
+                    maxHeight: 350,
+                    overflowY: "auto",
+                    backgroundColor: "rgba(191,255,185,0.18)",
+                    borderRadius: 2,
+                    padding: 1,
+
+                  }}> {/*Za skrolanje i sitno uredenje, maknuti ako cemo raditi css file za urdivanje*/}
+
+                  {sortCommentsByDate(comments[event.id] || []).map((comment) => (
+
+                    <ListItem key={comment.commentId} sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      padding: 1,
+                      marginBottom: 1,
+                      backgroundColor: "rgb(255,255,255)",
+                      borderRadius: 2,
+                      boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1)",
+                      
+                    }}
+                    >
+
+                      <ListItemText
+                        primary={
+                          <>
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                fontWeight: "bold",
+                                color: "#333333", // Tamnija boja za username
+                              }}
+                            >
+                              {comment.username}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "#757575", // Svijetlo siva boja za datum
+                                fontSize: "0.7rem",
+                                marginTop: 0.5,
+                                alignSelf: "flex-end", // Poravnanje udesno
+                              }}
+                            >
+                              {new Date(comment.date).toLocaleString()}
+                            </Typography>
+                          </>
+                        }
+                        secondary={
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: "#424242", // Neutralna boja za tekst komentara
+                              fontSize: "1rem",
+                              lineHeight: 1.5, // Bolja čitljivost
+
+                            }}
+                          >
+                            {comment.comment}
+                          </Typography>
+                        }
+                      />
                     </ListItem>
                   ))}
                 </List>
+
                 <TextField
                   label="Add a comment"
                   variant="outlined"
                   fullWidth
                   value={commentInput}
                   onChange={(e) => setCommentInput(e.target.value)}
-                  sx={{ marginBottom: 2 }}
+                  sx={{ marginBottom: 1 }}
+
                 />
                 <Button
                   variant="contained"
