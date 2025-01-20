@@ -25,6 +25,7 @@ const PastEventList = () => {
 
   const fetchEvents = useCallback(async () => {
     const groupId = localStorage.getItem("myGroupId");
+    const username = localStorage.getItem("username");
     try {
       const response = await fetch(
         `http://localhost:8080/api/groups/${groupId}/getEvents`,
@@ -36,9 +37,10 @@ const PastEventList = () => {
       );
       if (response.ok) {
         const data = await response.json();
-        const today = new Date().setHours(0, 0, 0, 0);
-
+        const today = new Date(); //danasnji datum
+        console.log(today);
         const formattedEvents = data
+          .filter((event) => event.date && new Date(event.date).getTime() <= today) //micu se koji nemaju datum i koji su stariji od danas
           .map((event) => ({
             id: event.eventId,
             title: event.eventName,
@@ -46,10 +48,37 @@ const PastEventList = () => {
             description: event.description,
             color: event.color || "#3174ad",
             likes: 0,
+            userLiked: 0, //personalnilikeovi
           }))
-          .sort((a, b) => b.date - a.date); //sortiranje od najmlađeg prema najstarijem
+          .sort((a, b) => b.date - a.date); //najnoviji prema starijima
 
-        setEvents(formattedEvents);
+        // Fetch likes and personal likes
+        const likesResponse = await fetch(
+          `http://localhost:8080/api/groups/${groupId}/getPastEvents/${username}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (likesResponse.ok) {
+          const likesData = await likesResponse.json();
+
+          // Add likes data to events
+          const updatedEvents = formattedEvents.map((event) => {
+            const eventLikes = likesData.find((e) => e.eventId === event.id);
+            return {
+              ...event,
+              likes: eventLikes ? eventLikes.likes : 0,
+              userLiked: eventLikes ? eventLikes.userLiked : 0,
+            };
+          });
+          console.log(updatedEvents);
+          setEvents(updatedEvents);
+        } else {
+          console.error("Failed to fetch likes");
+        }
       } else {
         console.error("Failed to fetch events");
       }
