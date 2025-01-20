@@ -26,6 +26,8 @@ public class User {
     @NotEmpty(message = "email is required")
     private  String email;
 
+    private int isAdmin;
+
     @ManyToMany
     @JoinTable(
             name = "group_user",
@@ -49,7 +51,16 @@ public class User {
         this.password = password;
         this.username = username;
         this.email = email;
+        this.isAdmin = 0;
     }
+
+    public User(String username, String password, String email, int isAdmin) {
+        this.password = password;
+        this.username = username;
+        this.email = email;
+        this.isAdmin = isAdmin;
+    }
+
 
     public @NotEmpty(message = "email is required") String getEmail() {
         return email;
@@ -81,6 +92,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(int isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
     public Set<RatedEvent> getRatedEvents() {return ratedEvents;}

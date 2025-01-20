@@ -151,4 +151,8 @@ public class UserService {
         return listUserDTO;
     }
 
+    public UserDTO addAdmin(User user) {
+        user.setIsAdmin(1);
+        return new UserDTO(userRepository.save(user));
+    }
 }
