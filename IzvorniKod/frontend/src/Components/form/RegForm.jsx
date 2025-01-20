@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import "./form.css";
 import { FaUser, FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 const REGISTER_API_URL = "http://localhost:8080/register";
 const GOOGLE_LOGIN_API_URL = "http://localhost:8080/api/login/google";
 
-function RegForm({ onClick, signIn }) {
+function RegForm({ signIn }) {
   // state za pracenje podataka u formi
   const [formData, setFormData] = useState({
     username: "",
@@ -24,38 +24,10 @@ function RegForm({ onClick, signIn }) {
   const overlayRef = useRef(null);
   const formRef = useRef(null);
 
-  useEffect(() => {
-    // funkcija koja detektira klik izvan forme (na overlay)
-    const handleClickOutside = (e) => {
-      if (
-        overlayRef.current &&
-        overlayRef.current.contains(e.target) &&
-        !formRef.current.contains(e.target)
-      ) {
-        onClick(); // poziva onClick (hideForm) kad je kliknut overlay
-      }
-    };
-    // dodajemo event listener za klikove na dokument
-    document.addEventListener("click", handleClickOutside);
-
-    // cistimo event listener kad se komponenta unmounta
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [onClick]); // useEffect ce se ponovo pozvati samo ako se onClick promijeni
-
   // funkcija za rukovanje promjenama u input poljima
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  // funkcija za postavljanje tipa korisnika
-  const handleUserRoleClick = (role) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      vrstaUser: role,
-    }));
   };
 
   // registracija korisnika na firebase
@@ -134,36 +106,6 @@ function RegForm({ onClick, signIn }) {
             required // sprjecava submit dok polje nije ispravno
           />
           <IoIosMail className="mailicon"></IoIosMail>
-        </div>
-        <div className="vrstaUser-select">
-          <div className="divKorisnik">
-            <button
-              type="button"
-              onClick={() => handleUserRoleClick("korisnik")}
-              className={
-                formData.vrstaUser === "korisnik"
-                  ? "vrstaUser-button green"
-                  : "vrstaUser-button red"
-              }
-            >
-              User
-              <div className="selector-icon">🎅</div>
-            </button>
-          </div>
-          <div className="divPredstavnik">
-            <button
-              type="button"
-              onClick={() => handleUserRoleClick("predstavnik")}
-              className={
-                formData.vrstaUser === "predstavnik"
-                  ? "vrstaUser-button green"
-                  : "vrstaUser-button red"
-              }
-            >
-              Leader
-              <div className="selector-icon">🎅</div>
-            </button>
-          </div>
         </div>
         {message && (
           <Box

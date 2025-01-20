@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import "./form.css";
 import { FaLock } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
@@ -10,7 +10,7 @@ import { FcGoogle } from "react-icons/fc";
 const USERS_REST_API_URL = "http://localhost:8080/login";
 const GOOGLE_LOGIN_API_URL = "http://localhost:8080/api/login/google";
 
-function Form({ onClick, loggedIn }) {
+function Form({ loggedIn }) {
   // Stanice za formu
   const [formData, setFormData] = useState({
     username: "",
@@ -22,20 +22,6 @@ function Form({ onClick, loggedIn }) {
   // Refovi za overlay i formu
   const overlayRef = useRef(null);
   const formRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      // Zatvaranje forme ako se klikne izvan nje
-      if (overlayRef.current && overlayRef.current.contains(e.target) && !formRef.current.contains(e.target)) {
-        onClick();  // Pozivanje funkcije za zatvaranje
-      }
-    };
-    document.addEventListener("click", handleClickOutside); // Dodavanje event listenera
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside); // Uklanjanje event listenera pri unmountanju komponente
-    };
-  }, [onClick]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

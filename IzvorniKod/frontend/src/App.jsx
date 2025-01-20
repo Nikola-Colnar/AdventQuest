@@ -1,47 +1,51 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import { BrowserRouter as Router, useRoutes} from "react-router-dom";
+import { Navigate, BrowserRouter as Router, useRoutes } from "react-router-dom";
 import "./styles/App.css";
-import Form from "./components/form/Form.jsx";
-import RegForm from "./components/form/RegForm.jsx";
-import Countdown from "./components/countdown/Countdown.jsx";
-import Snowfall from "./components/snowfall/Snowfall.jsx";
-import Header from "./components/Header.jsx";
-import CalendarComponent from "./Components/calendar/CalendarComponent.jsx";
-import { element } from "prop-types";
+import Form from "./Components/form/Form.jsx";
+import RegForm from "./Components/form/RegForm.jsx";
+import Countdown from "./Components/countdown/Countdown.jsx";
+import Snowfall from "./Components/snowfall/Snowfall.jsx";
+import Header from "./Components/Header.jsx";
+// import CalendarComponent from "./Components/calendar/CalendarComponent.jsx";
 import UserInfo from "./Components/form/UserInfo.jsx";
-import CreateGroupButton from "./Components/CreateGroupButton.jsx";
-import AddUserToGroupButton from "./Components/AddUserToGroupButton.jsx";
-import SelectGroupForUserButton from "./Components/SelectGroupForUserButton.jsx";
-import DeleteUserFromGroup from "./Components/DeleteUserFromGroup.jsx";
-import ShowAllUsersFromGroup from "./Components/ShowAllUsersFromGroup.jsx";
-import CalendarLeader from "./Components/calendar/CalendarLeader.jsx";
-import CalendarUser from "./Components/calendar/CalendarUser.jsx";
-import ShowAllEventsFromGroup from "./Components/ShowAllEventsFromGroup.jsx";
-import AddEvent from "./Components/AddEvent.jsx";
-import EventProposals from "./Components/EventProposals.jsx";
-import PastEventList from "./Components/PastEventsList.jsx";
-import AddToCalendar from "./Components/AddToCalendar.jsx";
-import AdventCalendar from "./Components/AdventCalendar/AdventCalendar.jsx";
+import { Box } from "@mui/system";
+// import CreateGroupButton from "./Components/CreateGroupButton.jsx";
+// import AddUserToGroupButton from "./Components/AddUserToGroupButton.jsx";
+// import SelectGroupForUserButton from "./Components/SelectGroupForUserButton.jsx";
+// import DeleteUserFromGroup from "./Components/DeleteUserFromGroup.jsx";
+// import ShowAllUsersFromGroup from "./Components/ShowAllUsersFromGroup.jsx";
+// import CalendarLeader from "./Components/calendar/CalendarLeader.jsx";
+// import CalendarUser from "./Components/calendar/CalendarUser.jsx";
+// import ShowAllEventsFromGroup from "./Components/ShowAllEventsFromGroup.jsx";
+// import AddEvent from "./Components/AddEvent.jsx";
+// import EventProposals from "./Components/EventProposals.jsx";
+// import PastEventList from "./Components/PastEventsList.jsx";
+// import AddToCalendar from "./Components/AddToCalendar.jsx";
+// import AdventCalendar from "./Components/AdventCalendar/AdventCalendar.jsx";
 
 function App() {
-  // stanje vidljivosti login forme
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  // prikaz i sakrivanje forme
-  const showForm = () => setIsFormVisible(true);
-  const hideForm = () => setIsFormVisible(false);
+  // // stanje vidljivosti login forme
+  // const [isFormVisible, setIsFormVisible] = useState(false);
+  // // prikaz i sakrivanje forme
+  // const showForm = () => setIsFormVisible(true);
+  // const hideForm = () => setIsFormVisible(false);
 
-  // stanje vidljivosti registracijske forme
-  const [isRegFormVisible, setIsRegFormVisible] = useState(false);
-  // prikaz i sakrivanje forme
-  const showRegForm = () => setIsRegFormVisible(true);
-  const hideRegForm = () => setIsRegFormVisible(false);
+  // // stanje vidljivosti registracijske forme
+  // const [isRegFormVisible, setIsRegFormVisible] = useState(false);
+  // // prikaz i sakrivanje forme
+  // const showRegForm = () => setIsRegFormVisible(true);
+  // const hideRegForm = () => setIsRegFormVisible(false);
 
   // definiranje stanja prijave, korisnickog imena i kalendara
   // * kod refreshanja stranice provjerava se localstorage
-  const [isLoggedIn, setIsLoggedIn] = useState((localStorage.getItem("username") ? true : false));
-  const [username, setUsername] = useState((localStorage.getItem("username")) || "Guest");
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("username") ? true : false
+  );
+  const [username, setUsername] = useState(
+    localStorage.getItem("username") || "Guest"
+  );
+  // const [showCalendar, setShowCalendar] = useState(false);
 
   const handleLoginStatusChange = (status) => {
     setIsLoggedIn(status);
@@ -55,14 +59,14 @@ function App() {
     setTimeout(hideRegForm, 1000); // sakriva regformu nakon signin-a
   };
 
-  // funkcije za prikaz loginforme i signinforme
-  const handleLoginClick = () => {
-    showForm();
-  };
+  // // funkcije za prikaz loginforme i signinforme
+  // const handleLoginClick = () => {
+  //   showForm();
+  // };
 
-  const handleSignupClick = () => {
-    showRegForm();
-  };
+  // const handleSignupClick = () => {
+  //   showRegForm();
+  // };
 
   // funkcija za prikaz kalendara
   const handleCalendar = (status) => {
@@ -77,45 +81,64 @@ function App() {
     const routes = [
       {
         path: "/",
-        element: (
+        element: isLoggedIn ? (
           <>
+            <Snowfall className="snowfall" />
             <Header
               className="header"
               isLoggedIn={isLoggedIn}
               handlelogin={handlelogin}
               username={username}
-              onLoginClick={handleLoginClick}
-              onSignupClick={handleSignupClick}
               calendarVisible={handleCalendar}
             />
-
-            {isFormVisible && <Form onClick={hideForm} loggedIn={handleLoginStatusChange} />}
-            {isRegFormVisible && <RegForm onClick={hideRegForm} signIn={handleSignInStatusChange} />}
-            {showCalendar && <CalendarComponent hideCalendar={handleCalendar} />}
-
-            <Snowfall className="snowfall" />
             <Countdown targetDate="2025-12-25T00:00:00" />
-            <CreateGroupButton></CreateGroupButton>
-            <AddUserToGroupButton></AddUserToGroupButton>
-            <SelectGroupForUserButton></SelectGroupForUserButton>
-            <DeleteUserFromGroup></DeleteUserFromGroup>
-            <ShowAllUsersFromGroup></ShowAllUsersFromGroup>
-            <CalendarLeader></CalendarLeader>
-            <CalendarUser></CalendarUser>
-            <ShowAllEventsFromGroup></ShowAllEventsFromGroup>
-            <AddEvent></AddEvent>
-            <EventProposals></EventProposals>
-            <AdventCalendar></AdventCalendar>
-            <PastEventList></PastEventList>
-            <AddToCalendar></AddToCalendar>
           </>
+        ) : (
+          <Navigate to="/login" />
+        ),
+      },
+      {
+        path: "/login",
+        element: !isLoggedIn ? (
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            height="100vh"
+            width="100vw"
+          >
+            <Snowfall className="snowfall" />
+            <Form loggedIn={handleLoginStatusChange}/>
+          </Box>
+        ) : (
+          <Navigate to="/" />
+        ),
+      },
+      {
+        path: "/register",
+        element: !isLoggedIn ? (
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            height="100vh"
+            width="100vw"
+          >
+            <Snowfall className="snowfall" />
+            <RegForm signIn={handleSignInStatusChange}/>
+          </Box>
+        ) : (
+          <Navigate to="/" />
         ),
       },
       {
         path: "/userinfo",
-        element: <UserInfo setIsLoggedIn={setIsLoggedIn} loadUsername={setUsername}/>
-      }
+        element: (
+          <UserInfo setIsLoggedIn={setIsLoggedIn} loadUsername={setUsername} />
+        ),
+      },
     ];
+
     return useRoutes(routes);
   };
 

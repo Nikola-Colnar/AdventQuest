@@ -2,3 +2,4 @@
 IzvorniKod/backend/data/progi-db.mv.db
 *.db
 *.db
+.vscode/
