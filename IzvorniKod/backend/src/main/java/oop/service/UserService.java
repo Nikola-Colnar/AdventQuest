@@ -1,5 +1,6 @@
 package oop.service;
 
+import oop.dto.UserDTO;
 import oop.model.Event;
 import oop.model.Group;
 import oop.model.RatedEvent;
@@ -141,5 +142,13 @@ public class UserService {
         throw new RuntimeException("User not found");
     }
 
+
+    public List<UserDTO> findAllUsers() {
+        List<UserDTO> listUserDTO = new ArrayList<>();
+        for (User user : userRepository.findAll()) {
+            listUserDTO.add(new UserDTO(user));
+        }
+        return listUserDTO;
+    }
 
 }

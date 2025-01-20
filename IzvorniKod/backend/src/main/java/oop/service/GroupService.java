@@ -91,4 +91,12 @@ public class GroupService {
        return eventCommentsRepo.save(
                 new EventComments(user, event, comment));
     }
+
+    public List<GroupDTO> findAllGroups() {
+        List<GroupDTO> groupDTOS = new ArrayList<>();
+        for(Group group : groupRepo.findAll()){
+            groupDTOS.add(new GroupDTO(group.getIdGrupa(), group.getNazivGrupa()));
+        }
+        return groupDTOS;
+    }
 }
