@@ -119,14 +119,14 @@ public class UserGroupController {
         return true;
     }
 
-    @GetMapping("/{adminName}/getGroups")
+    @GetMapping("/{adminName}/getAllGroups")
     public ResponseEntity<List<GroupDTO>> getAllGroups(@PathVariable String adminName){
         if(userService.getUserByUsername(adminName).getIsAdmin() != 1)
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         return ResponseEntity.ok(groupService.findAllGroups());
     }
 
-    @GetMapping("/{adminName}/getUsers")
+    @GetMapping("/{adminName}/getAllUsers")
     public ResponseEntity<List<UserDTO>> getAllUsers(@PathVariable String adminName){
         if(userService.getUserByUsername(adminName).getIsAdmin() != 1)
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);

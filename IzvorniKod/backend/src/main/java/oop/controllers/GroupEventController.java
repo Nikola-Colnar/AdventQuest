@@ -67,8 +67,8 @@ public class GroupEventController {
         return ResponseEntity.ok(groupService.findAllGroups());
     }
 
-    @GetMapping("/admin/getUsers")
-    public ResponseEntity<List<UserDTO>> getAllUsers(@PathVariable String adminName){
+    @GetMapping("getUsers")
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
         //if(!Objects.equals(adminName, "Romeo")) Promijeni u kojeg kod usera
         //   return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(userService.findAllUsers());
