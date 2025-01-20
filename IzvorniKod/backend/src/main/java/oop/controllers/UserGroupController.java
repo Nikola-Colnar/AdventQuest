@@ -139,5 +139,24 @@ public class UserGroupController {
         return ResponseEntity.ok(userService.addAdmin(user));
     }
 
+    @DeleteMapping("/admin/{username1}/deleteAdmin/{username2}")
+    public ResponseEntity<Boolean> deleteAdmin(@PathVariable String username1, @PathVariable String username2) {
+        User user1 = userService.getUserByUsername(username1);
+        User user2 = userService.getUserByUsername(username2);
+        if(user1.getIsAdmin() != 1)
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if(user2.getIsAdmin() != 1)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.ok(userService.deleteUser(user2));
+    }
+
+    @DeleteMapping("/admin/{username}/deleteUser/{username2}")
+    public ResponseEntity<Boolean> deleteUser(@PathVariable String username, @PathVariable String username2) {
+        if(userService.getUserByUsername(username).getIsAdmin() != 1)
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return ResponseEntity.ok(userService.deleteUser(userService.getUserByUsername(username2)));
+    }
+
+
 
 }
