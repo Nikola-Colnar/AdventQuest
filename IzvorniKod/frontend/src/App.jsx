@@ -24,6 +24,7 @@ import PastEventList from "./Components/PastEventsList.jsx";
 import AddToCalendar from "./Components/AddToCalendar.jsx";
 import AdventCalendar from "./Components/AdventCalendar/AdventCalendar.jsx";
 import GroupEventPresident from "./Components/GroupEventPresident.jsx";
+import GetAllGroupsAdmin from "./Components/GetAllGroupsAdmin.jsx";
 
 function App() {
   // stanje vidljivosti login forme
@@ -107,6 +108,7 @@ function App() {
             <AddEvent></AddEvent>
             <EventProposals></EventProposals>
             <GroupEventPresident></GroupEventPresident>
+            <GetAllGroupsAdmin></GetAllGroupsAdmin>
             <AdventCalendar></AdventCalendar>
             <PastEventList></PastEventList>
             <AddToCalendar></AddToCalendar>

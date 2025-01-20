@@ -12,7 +12,7 @@ import {
   InputLabel,
 } from "@mui/material";
 
-const SelectGroupForUserButton = () => {
+const GetALLGroupsAdmin = () => {
   const [open, setOpen] = useState(false);
   const [groups, setGroups] = useState([]);
   const [selectedGroupId, setSelectedGroupId] = useState("");
@@ -20,8 +20,7 @@ const SelectGroupForUserButton = () => {
 
   const fetchUserGroups = async () => {
     try {
-      const storedUsername = localStorage.getItem("username");
-      const response = await fetch(`http://localhost:8080/${storedUsername}/getGroups`);
+      const response = await fetch(`http://localhost:8080/api/groups/getGroups`);
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched groups:", data); // Provjera podataka
@@ -46,8 +45,8 @@ const SelectGroupForUserButton = () => {
   const handleGroupSelect = (event) => {
     const groupId = event.target.value; // GroupId iz odabrane vrijednosti
     setSelectedGroupId(groupId); // postavljamo vrijednost
-    const selectedGroup = groups.find(group => group.groupId === groupId);
-    setSelectedGroupName(selectedGroup?.groupName || ""); // Postavimo naziv grupe
+    const selectedGroup = groups.find(group => group.idgroup === groupId);
+    setSelectedGroupName(selectedGroup?.nazivGrupa || ""); // Postavimo naziv grupe
   };
 
   const handleSubmit = () => {
@@ -63,9 +62,10 @@ const SelectGroupForUserButton = () => {
     setOpen(false);
   };
 
+
   return (
     <Box>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+      <Button sx={{ backgroundColor: "green" }} variant="contained" color="primary" onClick={handleClickOpen}>
         Select Group
       </Button>
       <Dialog open={open} onClose={handleClose}>
@@ -80,15 +80,15 @@ const SelectGroupForUserButton = () => {
               MenuProps={{
                 PaperProps: {
                   style: {
-                    maxHeight: 200, //maksimalna visina prije nego sto se scrolla
-                    overflowY: "auto", //vertikalno micanje
+                    maxHeight: 200,
+                    overflowY: "auto", //scrolanje
                   },
                 },
               }}
             >
               {groups.map((group) => (
-                <MenuItem key={group.groupId} value={group.groupId}>
-                  {group.groupName} {/* Provjera prikaza naziva grupe */}
+                <MenuItem key={group.idgroup} value={group.idgroup}>
+                  {group.nazivGrupa} {/* Provjera prikaza naziva grupe */}
                 </MenuItem>
               ))}
             </Select>
@@ -109,4 +109,4 @@ const SelectGroupForUserButton = () => {
   );
 };
 
-export default SelectGroupForUserButton;
+export default GetALLGroupsAdmin;
