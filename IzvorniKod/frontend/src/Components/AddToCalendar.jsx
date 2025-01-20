@@ -29,7 +29,7 @@ const AddToCalendar = () => {
           .map((event) => ({
             id: event.eventId,
             title: event.eventName,
-            start: event.date,
+            date: event.date,
             description: event.description,
             color: event.color || "#3174ad",
           }));
@@ -47,9 +47,12 @@ const AddToCalendar = () => {
   }, []);
 
   const updateEventDate = async (eventId, date) => {
+    const groupId = localStorage.getItem("myGroupId");
+
+    console.log(date)
     try {
       const response = await fetch(
-        `http://localhost:8080/api/events/${eventId}/updateDate`,
+        `http://localhost:8080/api/groups/${groupId}/setDate/${eventId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -83,7 +86,7 @@ const AddToCalendar = () => {
         const eventDate = arg.date;
         const hasEvent = events.some(
           (event) =>
-            new Date(event.start).toDateString() === eventDate.toDateString()
+            new Date(event.date).toDateString() === eventDate.toDateString()
         );
 
         return {
@@ -116,7 +119,7 @@ const AddToCalendar = () => {
             e.stopPropagation(); // Sprječava otvaranje detalja događaja
             const event = events.find(
               (e) =>
-                new Date(e.start).toDateString() === arg.date.toDateString()
+                new Date(e.date).toDateString() === arg.date.toDateString()
             );
             if (event) updateEventDate(event.id, null);
           });
@@ -170,7 +173,7 @@ const AddToCalendar = () => {
                     <button
                       style={{ backgroundColor: event.color || "#27ae60" }} // Korištenje originalne boje događaja
                       onClick={() => {
-                        updateEventDate(event.eventId, selectedDate.toISOString());
+                        updateEventDate(event.eventId, selectedDate.toLocaleDateString("en-CA"));
                         setModalOpen(false);
                       }}
                     >
