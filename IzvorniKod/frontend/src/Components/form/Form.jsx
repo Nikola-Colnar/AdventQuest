@@ -5,6 +5,7 @@ import { IoIosMail } from "react-icons/io";
 import { Box, Alert } from "@mui/material";
 import PropTypes from "prop-types";
 import { FcGoogle } from "react-icons/fc";
+import { Link } from "react-router-dom";
 
 // Endpoint za login i google login
 const USERS_REST_API_URL = "http://localhost:8080/login";
@@ -113,14 +114,20 @@ function Form({ loggedIn }) {
             {<FcGoogle className="google-icon" />} Sign in with Google
           </button>
         </div>
+        <div className="register-link">
+          <div className="line" />
+          <Link to="/register" className="register-text">
+            Don’t have an account? Register here
+          </Link>
+          <div className="line" />
+        </div>
       </form>
     </div>
   );
 }
 
 Form.propTypes = {
-  onClick: PropTypes.func.isRequired,  // Funkcija koja se poziva za zatvaranje forme
-  loggedIn: PropTypes.func.isRequired,  // Funkcija koja označava da je korisnik prijavljen
+  loggedIn: PropTypes.func.isRequired,  // funkcija koja oznacava da je korisnik prijavljen
 };
 
 export default Form;

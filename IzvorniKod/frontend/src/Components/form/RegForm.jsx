@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { IoIosMail } from "react-icons/io";
 import { Box, Alert } from "@mui/material";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 const REGISTER_API_URL = "http://localhost:8080/register";
 const GOOGLE_LOGIN_API_URL = "http://localhost:8080/api/login/google";
@@ -73,7 +74,7 @@ function RegForm({ signIn }) {
   return (
     <div ref={overlayRef} className="overlay">
       <form ref={formRef} className="Form" onSubmit={handleSubmit}>
-        <h2>Sign in</h2>
+        <h2>Register</h2>
         <div className="userdiv">
           <input
             type="text"
@@ -85,17 +86,6 @@ function RegForm({ signIn }) {
           />
           <FaUser className="usericon"></FaUser>
         </div>
-        <div className="passdiv">
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required // sprjecava submit dok polje nije ispravno
-          />
-          <FaLock className="passicon"></FaLock>
-        </div>
         <div className="maildiv">
           <input
             type="email"
@@ -106,6 +96,17 @@ function RegForm({ signIn }) {
             required // sprjecava submit dok polje nije ispravno
           />
           <IoIosMail className="mailicon"></IoIosMail>
+        </div>
+        <div className="passdiv">
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required // sprjecava submit dok polje nije ispravno
+          />
+          <FaLock className="passicon"></FaLock>
         </div>
         {message && (
           <Box
@@ -149,13 +150,19 @@ function RegForm({ signIn }) {
             {<FcGoogle className="google-icon" />} Sign in with Google
           </button>
         </div>
+        <div className="register-link">
+          <div className="line" />
+          <Link to="/login" className="register-text">
+            Already have an account? Login here
+          </Link>
+          <div className="line" />
+        </div>
       </form>
     </div>
   );
 }
 
 RegForm.propTypes = {
-  onClick: PropTypes.func.isRequired,
   signIn: PropTypes.func.isRequired,
 };
 
