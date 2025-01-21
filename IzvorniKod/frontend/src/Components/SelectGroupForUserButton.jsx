@@ -12,7 +12,7 @@ import {
   InputLabel,
 } from "@mui/material";
 
-const SelectGroupForUserButton = () => {
+const SelectGroupForUserButton = (props) => {
   const [open, setOpen] = useState(false);
   const [groups, setGroups] = useState([]);
   const [selectedGroupId, setSelectedGroupId] = useState("");
@@ -46,6 +46,7 @@ const SelectGroupForUserButton = () => {
   const handleGroupSelect = (event) => {
     const groupId = event.target.value; // GroupId iz odabrane vrijednosti
     setSelectedGroupId(groupId); // postavljamo vrijednost
+    props.setSelectedGroupId(groupId); // postavlja group ID i u App da ga koriste druge komponente
     const selectedGroup = groups.find(group => group.groupId === groupId);
     setSelectedGroupName(selectedGroup?.groupName || ""); // Postavimo naziv grupe
   };
