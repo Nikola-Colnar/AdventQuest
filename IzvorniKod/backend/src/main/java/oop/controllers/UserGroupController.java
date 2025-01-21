@@ -157,6 +157,19 @@ public class UserGroupController {
         return ResponseEntity.ok(userService.deleteUser(userService.getUserByUsername(username2)));
     }
 
+    @GetMapping("/{username}/isAdmin")
+    public ResponseEntity<Boolean> isAdmin(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+        return ResponseEntity.ok(user.getIsAdmin() == 1);
+    }
 
+    @GetMapping("/{username}/predstavnik/{groupId}")
+    public ResponseEntity<Boolean> getPredstavnik(@PathVariable String username, @PathVariable int groupId) {
+        User user = userService.getUserByUsername(username);
+        Optional<Group> group = groupService.findById(groupId);
+        if(group.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+        return ResponseEntity.ok(user.getId() == group.get().getidPredstavnika());
+    }
 
 }
