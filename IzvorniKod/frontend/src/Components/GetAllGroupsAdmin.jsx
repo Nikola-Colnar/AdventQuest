@@ -19,8 +19,9 @@ const GetALLGroupsAdmin = () => {
   const [selectedGroupName, setSelectedGroupName] = useState("");
 
   const fetchUserGroups = async () => {
+    const adminName = localStorage.getItem("username");
     try {
-      const response = await fetch(`http://localhost:8080/api/groups/getGroups`);
+      const response = await fetch(`http://localhost:8080/${adminName}/getAllGroups`);
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched groups:", data); // Provjera podataka
