@@ -46,49 +46,39 @@ public class GroupService {
         groupRepo.deleteById(id);
     }
 
-    public Group changeGroupName(int id, String newName){
-        Optional<Group> group = groupRepo.findById(id);
-        if(group.isPresent()){
-            group.get().setNazivGrupa(newName);
-            return groupRepo.save(group.get());
-        }
-        else{
-            throw new NoSuchElementException("Group with ID " + id + " not found.");
-        }
-    }
-
-    public Group getGroupById(int id) {
-        return groupRepo.findById(id).orElse(null); // Vraća null ako grupa nije pronađena
-    }
-
     //dohvacaevente
-    public List<Event> getEventsByGroupId(int groupId) {
-        Group group = groupRepo.findById(groupId)
-                .orElseThrow(() -> new NoSuchElementException("Group with ID " + groupId + " not found."));
-        return new ArrayList<>(group.getEvents()); // Vraća sve događaje povezane s grupom
+    public List<EventDTO> getEventsByGroupId(int groupId) {
+        Group group = groupRepo.findById(groupId).get();//Sigurno dobivam postojeću grupu
+        List<EventDTO> eventDTOS = new ArrayList<>();
+        for (Event event : group.getEvents()) {
+            eventDTOS.add(new EventDTO(event));
+        }
+        return eventDTOS; // Vraća sve događaje povezane s grupom
     }
 
     public Group saveGroup(Group group) {
         return groupRepo.save(group);
     }
-
-    public User getRandUser(int groupId) {
-
-        List<User> userList = new ArrayList<>(groupRepo.findById(groupId).get().getUsers());
-
-        // Odaberi slučajnog korisnika
-        Random random = new Random();
-        int randomIndex = random.nextInt(userList.size());
-
-        //user mora biti različit od trenutkog predstavnika kojeg želimo obrisati
-        if(userList.get(randomIndex).getId() != groupRepo.findById(groupId).get().getidPredstavnika()){
-            return userList.get(randomIndex);
-        }
-        return getRandUser(groupId); // malo rekurzije
-    }
-
+    
     public EventComments saveComment(String comment, Event event, User user) {
        return eventCommentsRepo.save(
                 new EventComments(user, event, comment));
+    }
+
+    public List<GroupDTO> findAllGroups() {
+        List<GroupDTO> groupDTOS = new ArrayList<>();
+        for(Group group : groupRepo.findAll()){
+            groupDTOS.add(new GroupDTO(group.getIdGrupa(), group.getNazivGrupa()));
+        }
+        return groupDTOS;
+    }
+
+    public boolean eventInGroup(int groupId, int eventId) {
+        for(Event event : groupRepo.findById(groupId).get().getEvents()) { // vidoviti Lovro zna da grupa s
+            if(event.getIdEvent() == eventId) {                             // tim IDjem postoji
+                return true;
+            }
+        }
+        return false;
     }
 }

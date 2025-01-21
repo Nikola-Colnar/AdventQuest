@@ -10,19 +10,22 @@ import Header from "./Components/Header.jsx";
 // import CalendarComponent from "./Components/calendar/CalendarComponent.jsx";
 import UserInfo from "./Components/form/UserInfo.jsx";
 import { Box } from "@mui/system";
-// import CreateGroupButton from "./Components/CreateGroupButton.jsx";
-// import AddUserToGroupButton from "./Components/AddUserToGroupButton.jsx";
-// import SelectGroupForUserButton from "./Components/SelectGroupForUserButton.jsx";
-// import DeleteUserFromGroup from "./Components/DeleteUserFromGroup.jsx";
-// import ShowAllUsersFromGroup from "./Components/ShowAllUsersFromGroup.jsx";
-// import CalendarLeader from "./Components/calendar/CalendarLeader.jsx";
-// import CalendarUser from "./Components/calendar/CalendarUser.jsx";
-// import ShowAllEventsFromGroup from "./Components/ShowAllEventsFromGroup.jsx";
-// import AddEvent from "./Components/AddEvent.jsx";
-// import EventProposals from "./Components/EventProposals.jsx";
-// import PastEventList from "./Components/PastEventsList.jsx";
-// import AddToCalendar from "./Components/AddToCalendar.jsx";
-// import AdventCalendar from "./Components/AdventCalendar/AdventCalendar.jsx";
+import CreateGroupButton from "./Components/CreateGroupButton.jsx";
+import AddUserToGroupButton from "./Components/AddUserToGroupButton.jsx";
+import SelectGroupForUserButton from "./Components/SelectGroupForUserButton.jsx";
+import DeleteUserFromGroup from "./Components/DeleteUserFromGroup.jsx";
+import ShowAllUsersFromGroup from "./Components/ShowAllUsersFromGroup.jsx";
+import CalendarLeader from "./Components/calendar/CalendarLeader.jsx";
+import CalendarUser from "./Components/calendar/CalendarUser.jsx";
+import ShowAllEventsFromGroup from "./Components/ShowAllEventsFromGroup.jsx";
+import AddEvent from "./Components/AddEvent.jsx";
+import EventProposals from "./Components/EventProposals.jsx";
+import PastEventList from "./Components/PastEventsList.jsx";
+import AddToCalendar from "./Components/AddToCalendar.jsx";
+import AdventCalendar from "./Components/AdventCalendar/AdventCalendar.jsx";
+import GroupEventPresident from "./Components/GroupEventPresident.jsx";
+import GetAllGroupsAdmin from "./Components/GetAllGroupsAdmin.jsx";
+import DeleteUser from "./Components/DeleteUser.jsx";
 
 function App() {
   // // stanje vidljivosti login forme
@@ -92,6 +95,27 @@ function App() {
               calendarVisible={handleCalendar}
             />
             <Countdown targetDate="2025-12-25T00:00:00" />
+<<<<<<< HEAD
+=======
+            <CreateGroupButton></CreateGroupButton>
+            <AddUserToGroupButton></AddUserToGroupButton>
+            <SelectGroupForUserButton></SelectGroupForUserButton>
+            <DeleteUserFromGroup></DeleteUserFromGroup>
+            <ShowAllUsersFromGroup></ShowAllUsersFromGroup>
+            <CalendarLeader></CalendarLeader>
+            <CalendarUser></CalendarUser>
+            <ShowAllEventsFromGroup></ShowAllEventsFromGroup>
+            <AddEvent></AddEvent>
+            <EventProposals></EventProposals>
+            <GroupEventPresident></GroupEventPresident>
+            <GetAllGroupsAdmin></GetAllGroupsAdmin>
+            <DeleteUser></DeleteUser>
+            <AdventCalendar></AdventCalendar>
+            <PastEventList></PastEventList>
+            <AddToCalendar></AddToCalendar>
+
+
+>>>>>>> dev-ciklus2
           </>
         ) : (
           <Navigate to="/login" />
