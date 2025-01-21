@@ -1,0 +1,24 @@
+.chat .message {
+    position: relative;
+    width: fit-content;
+    align-self: flex-end;
+    background-color: lightskyblue;
+    padding: 0.6em;
+    margin-bottom: 0.2em;
+    border-radius: 15px 0 15px 15px;
+}
+.chat .message .msg-time {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.1em;
+    font-size: 0.7em;
+}
+.chat .message.sent-message .msg-time {
+    left: 0;
+}
+.chat .message.sent-message {
+    background-color: lightgreen;
+    align-self: flex-start;
+    border-radius: 0 15px 15px 15px;   
+}

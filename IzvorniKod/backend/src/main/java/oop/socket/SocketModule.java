@@ -99,6 +99,7 @@ public class SocketModule {
         for (SocketIOClient client : senderClient.getNamespace().getRoomOperations(String.valueOf(grupa.getIdGrupa())).getClients()) {
             if (!client.getSessionId().equals(senderClient.getSessionId())) { // ne salje natrag posiljatelju
                 client.sendEvent("get_message", novaPoruka);
+                System.out.println("sent!\n");
                 activeUserCount++;
             }
         }

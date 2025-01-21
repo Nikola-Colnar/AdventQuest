@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 const SOCKET_HANDSHAKE_URI = "";
 
 const useSocket = (group, userID) => {
-  const [socket, setSocket] = useState();
+  const [socket, setSocket] = useState(null);
   const [newInMsg, setNewInMsg] = useState({
       idSender: "",
       date: null,
@@ -23,6 +23,9 @@ const useSocket = (group, userID) => {
         query: `group=${group}`
       });
       console.log("novi socket: ", s);
+      if(socket !==null) {
+        socket.disconnect();
+      }
       setSocket(s);
       s.on("connect", () => setConnected(true));
       s.on("get_message", (data) => {
