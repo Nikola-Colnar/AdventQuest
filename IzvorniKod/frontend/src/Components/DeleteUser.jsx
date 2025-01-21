@@ -11,7 +11,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete"; // Ikona za brisanje
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const DeleteUser = () => {
   const [open, setOpen] = useState(false);
@@ -22,13 +22,13 @@ const DeleteUser = () => {
 
 
   const fetchUsersByGroup = async () => {
-    const loggedInUsername = localStorage.getItem("username");
+    const adminName = localStorage.getItem("username");
     try {
-      const response = await fetch(`http://localhost:8080/api/groups/getUsers`); //dohvacamo sve usere
+      const response = await fetch(`http://localhost:8080/${adminName}/getAllUsers`); //dohvacamo sve usere
       if (response.ok) {
         const data = await response.json();
-        //console.log(data);
-        const filteredUsers = data.filter(username => username !== loggedInUsername); //filtrirano da se taj korisnik ne prikazuje na spisku
+        console.log(data);
+        const filteredUsers = data.filter(user => user.username !== adminName); //filtrirano da se taj korisnik ne prikazuje na spisku
         //console.log(filteredUsers); filtrirano
         setUsers(filteredUsers);
       } else {
@@ -50,8 +50,10 @@ const DeleteUser = () => {
   };
 
   const handleDeleteUser = async () => {
+    const adminName = localStorage.getItem("username");
+    const deleteuser = userToDelete.username; //uzimamo ime usera kojeg zelimo obrisati
     try {
-      const response = await fetch(`http://localhost:8080/user/${userToDelete}/group/${groupId}`, {
+      const response = await fetch(`http://localhost:8080/admin/${adminName}/deleteUser/${deleteuser}`, {
         method: "DELETE",
       });
       if (response.ok) {
