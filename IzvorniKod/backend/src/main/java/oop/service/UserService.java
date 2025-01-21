@@ -96,18 +96,6 @@ public class UserService {
         return true;
     }
 
-    public User changeUserName(int id, String newName){
-        Optional<User> user = userRepository.findById(id);
-        if(user.isPresent()){
-            User user1 = user.get();
-            user1.setUsername(newName);
-            return userRepository.save(user1);
-        }
-        else{
-            throw new NoSuchElementException("Group with ID " + id + " not found.");
-        }
-    }
-
     public String verify(User user) {
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));

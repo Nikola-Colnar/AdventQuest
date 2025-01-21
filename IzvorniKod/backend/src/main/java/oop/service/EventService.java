@@ -1,5 +1,7 @@
 package oop.service;
 
+import oop.dto.EventCommentDTO;
+import oop.dto.EventDTO;
 import oop.model.*;
 import oop.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,5 +120,32 @@ public class EventService {
 
     public void deleteComment(int commentId) {
         eventCommentsRepository.deleteById(commentId);
+    }
+
+    public List<EventCommentDTO> getAllCommentsForEvent(int eventId) {
+        List<EventCommentDTO> eventCommentDTOList = new ArrayList<>();
+        for(EventComments eventComments : eventRepository.findById(eventId).get().getComments()){ // znam da postoji
+            eventCommentDTOList.add(new EventCommentDTO(eventComments));
+        }
+        return eventCommentDTOList;
+    }
+
+    public EventDTO updateEvent(Event oldEvent, Event newEvent) {
+
+        if(newEvent.getEventName() != null){ oldEvent.setEventName(newEvent.getEventName()); }
+        if(newEvent.getDescription() != null){ oldEvent.setDescription(newEvent.getDescription()); }
+        System.out.println(oldEvent.getColor());
+        System.out.println(newEvent.getColor());
+        if(newEvent.getColor() != null){ oldEvent.setColor(newEvent.getColor()); }
+        System.out.println(oldEvent.getColor());
+        eventRepository.save(oldEvent);
+
+        return new EventDTO(oldEvent);
+    }
+
+    public EventDTO updateDateEvent(Event oldEvent, Event newEvent) {
+        oldEvent.setDate(newEvent.getDate());
+        eventRepository.save(oldEvent);
+        return new EventDTO(oldEvent);
     }
 }
