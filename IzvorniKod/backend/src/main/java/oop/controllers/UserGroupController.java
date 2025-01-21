@@ -20,14 +20,12 @@ public class UserGroupController {
 
     private final UserService userService;
     private final GroupService groupService;
-    private final EventService eventService;
 
     @Autowired
 
-    public UserGroupController(UserService userService, GroupService groupService, EventService eventService) {
+    public UserGroupController(UserService userService, GroupService groupService) {
         this.userService = userService;
         this.groupService = groupService;
-        this.eventService = eventService;
     }
 
     // Kreiranje nove grupe
@@ -106,17 +104,19 @@ public class UserGroupController {
     }
 
 
-    @DeleteMapping("/user/{username}/group/{groupId}")    // Brisanje korisnika iz grupe
-    public boolean deleteUserFromGroup(@PathVariable String username, @PathVariable int groupId) {
+    @DeleteMapping("/user/{username}/group/{groupId}")    // Brisanje korisnika iz grupe (user ne može biti predstavnik
+    public ResponseEntity<UserDTO> deleteUserFromGroup(@PathVariable String username, @PathVariable int groupId) { // ili zadnji član
 
         User user = userService.getUserByUsername(username);
-        if (user == null) {return false;}
+        if (user == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
 
-        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+        Optional<Group> group = groupService.findById(groupId);
+        if (group.isEmpty()) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
 
-        user.getGroups().remove(group);
+
+        user.getGroups().remove(group.get());
         userService.saveUser(user);
-        return true;
+        return ResponseEntity.ok(new UserDTO(user));
     }
 
     @GetMapping("/{adminName}/getAllGroups")
@@ -143,7 +143,7 @@ public class UserGroupController {
     public ResponseEntity<Boolean> deleteAdmin(@PathVariable String username1, @PathVariable String username2) {
         User user1 = userService.getUserByUsername(username1);
         User user2 = userService.getUserByUsername(username2);
-        if(user1.getIsAdmin() != 1)
+        if(user1.getIsAdmin() != 1 || user1.getId() == user2.getId())
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         if(user2.getIsAdmin() != 1)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -152,7 +152,7 @@ public class UserGroupController {
 
     @DeleteMapping("/admin/{username}/deleteUser/{username2}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable String username, @PathVariable String username2) {
-        if(userService.getUserByUsername(username).getIsAdmin() != 1)
+        if(userService.getUserByUsername(username).getIsAdmin() != 1 || userService.getUserByUsername(username2).getIsAdmin() == 1)
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         return ResponseEntity.ok(userService.deleteUser(userService.getUserByUsername(username2)));
     }
