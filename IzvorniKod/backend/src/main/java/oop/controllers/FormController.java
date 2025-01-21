@@ -82,6 +82,7 @@ public class FormController {
 
         // Vraća samo korisničko ime
         responseBody.put("username", user.getUsername());
+        responseBody.put("userID", user.getId());
 
         return ResponseEntity.ok(responseBody); // HTTP 200 OK
     }
@@ -103,6 +104,9 @@ public class FormController {
                 // Kreiranje odgovora s korisničkim imenom
                 Map<String, Object> responseBody = new HashMap<>();
                 responseBody.put("username", user.getUsername()); // Pretpostavljamo da je korisničko ime dio User objekta
+                user = userService.getUserByUsername(user.getUsername()); // dohvaca id
+                responseBody.put("userID", user.getId());
+                System.out.println("ID MU JE " + user.getId());
                 return ResponseEntity.ok(responseBody);
             }
         } catch (Exception e) {

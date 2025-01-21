@@ -1,0 +1,37 @@
+.chat .message {
+    position: relative;
+    width: fit-content;
+    max-width: 80%;
+    align-self: flex-end;
+    background-color: lightskyblue;
+    padding: 0.6em;
+    margin-bottom: 0.2em;
+    border-radius: 15px 0 15px 15px;
+}
+.chat .message .msg-time {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.1em;
+    font-size: 0.7em;
+}   
+.chat .message.sent-message .msg-time {
+    left: 0;
+}
+.chat .message.sent-message {
+    background-color: lightgreen;
+    align-self: flex-start;
+    border-radius: 0 15px 15px 15px;   
+}
+.chat .message.time-hidden .msg-time {
+    visibility: hidden;
+}
+.chat .message.time-hidden {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.chat .message:has(+ .time-hidden) {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-bottom: 0.1em;
+}
