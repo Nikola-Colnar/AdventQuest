@@ -6,6 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/fontawesome-free-regular";
 import "../../styles/Conversation.css"
 
+const MINUTE = 60*1000;
+function areSentWithin(date2, date1, milisec) {
+  return (Date.parse(date2) - Date.parse(date1) <= milisec);
+}
+
 function Conversation(props) {
   const [messageList, setMessageList] = useState([]);
   const { newInMsg, isConnected, sendMsg } = useSocket(props.groupID, props.user.ID);
@@ -45,7 +50,9 @@ function Conversation(props) {
   <div className="chat">
     <h1>Chat za grupu {props.groupID}</h1>
       <ul> {
-          messageList.map((msg, index) => <Message key={index} msg={msg} isSentMsg={msg.idSender == props.user.ID}/>)
+          messageList.map((msg, index, list) => <Message  key={index} msg={msg} 
+                                                          isSentMsg={msg.idSender == props.user.ID} 
+                                                          displayTime ={(index == 0)? true : (msg.idSender != list[index-1].idSender || !areSentWithin(msg.date, list[index-1].date, 2*MINUTE))}/>)
       } </ul>
       <div className="controls">
         <textarea name="message-box" id="message-box" onChange={changeMsg} value={newOutMsg} placeholder="Napišite nešto lijepo..." rows="3"></textarea>

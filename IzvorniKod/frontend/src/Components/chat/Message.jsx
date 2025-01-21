@@ -18,7 +18,7 @@ function parseDate(dateString) {
 
 function Message(props) {
     return (
-        <li className={props.isSentMsg?"message sent-message":"message"}>
+        <li className={"message " + (props.isSentMsg?" sent-message":" ") + (props.displayTime?" ":" time-hidden")}>
             <div className="msg-sender">{props.msg.idSender}</div>
             <div className="msg-time">{parseDate(props.msg.date)}</div>
             <div className="msg-text">{props.msg.poruka}</div>
