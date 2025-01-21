@@ -9,29 +9,39 @@ import Header from "./Components/Header.jsx";
 import UserInfo from "./Components/form/UserInfo.jsx";
 import { Box } from "@mui/system";
 import ProtectedRoute from "./Components/ProtectedRoute.jsx";
+import Conversation from "./Components/chat/Conversation.jsx";
 
 function App() {
   // definiranje stanja prijave, korisnickog imena i kalendara
   // * kod refreshanja stranice provjerava se localstorage
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem("username") ? true : false
-  );
-  const [username, setUsername] = useState(
-    localStorage.getItem("username") || "Guest"
-  );
+  const [isLoggedIn, setIsLoggedIn] = useState((localStorage.getItem("username") ? true : false));
+  const [username, setUsername] = useState((localStorage.getItem("username")) || "Guest");
+  const [userID, setUserID] = useState((localStorage.getItem("userID")));
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selectedGroupId, setSelectedGroupId] = useState("");
 
   const handleLoginStatusChange = (status) => {
     setIsLoggedIn(status);
     setUsername(localStorage.getItem("username"));
+    setUserID(localStorage.getItem("userID"));
   };
 
   const handleSignInStatusChange = (status) => {
     setIsLoggedIn(status);
     setUsername(localStorage.getItem("username"));
+    setUserID(localStorage.getItem("userID"));
   };
 
   const handlelogin = (status) => {
     setIsLoggedIn(status);
+  };
+
+  // socket.io - premjestiti u Conversation klasu
+  const [isChatOn, setIsChatOn] = useState(false);
+
+  // funkcija za prikaz chata
+  const handleChat = (status) => {
+    setIsChatOn(status);
   };
 
   const AppRoutes = () => {
@@ -47,8 +57,11 @@ function App() {
                 isLoggedIn={isLoggedIn}
                 handlelogin={handlelogin}
                 username={username}
+                calendarVisible={handleCalendar}
+                chatOn={handleChat}
               />
               <Countdown targetDate="2025-12-25T00:00:00" />
+              {isChatOn && <Conversation groupID={selectedGroupId} user={{ name: username, ID: userID }} />}
             </>
           </ProtectedRoute>
         ),

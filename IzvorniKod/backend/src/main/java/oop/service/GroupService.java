@@ -56,6 +56,12 @@ public class GroupService {
         return eventDTOS; // Vraća sve događaje povezane s grupom
     }
 
+    public List<User> getUsersByGroupId(int groupId) {
+        Group group = groupRepo.findById(groupId)
+                .orElseThrow(() -> new NoSuchElementException("Group with ID " + groupId + " not found."));
+        return new ArrayList<>(group.getUsers()); // Vraća sve korisnike iz grupe
+    }
+
     public Group saveGroup(Group group) {
         return groupRepo.save(group);
     }
@@ -80,5 +86,9 @@ public class GroupService {
             }
         }
         return false;
+    }
+
+    public Group getGroupById(int grupaIDInt) {
+        return groupRepo.findById(grupaIDInt).get();
     }
 }

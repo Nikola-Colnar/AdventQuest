@@ -51,8 +51,14 @@ function Form({ loggedIn }) {
         setSeverity("error");
       } else {
         const data = await response.json();  // Parsiranje JSON odgovora
+        console.log("user podaci: ", data);
         const username = data.username;
         localStorage.setItem("username", username);  // Spremanje username-a u localStorage
+        
+        // ID je potreban za usporedbu s ID pošiljatelja poruke
+        const userID = data.userID;
+        localStorage.setItem("userID", userID);
+
         loggedIn(true);  // Pozivanje funkcije koja označava da je korisnik prijavljen
         setMessage("User logged in successfully");
         setSeverity("success");  // Postavljanje poruke i statusa

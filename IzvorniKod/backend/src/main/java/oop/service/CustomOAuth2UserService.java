@@ -51,7 +51,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // Set token as HTTP-only cookie
         Cookie cookie = new Cookie("jwtToken", token);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true); // Ensure the cookie is only sent over HTTPS
+        cookie.setSecure(false); // Ensure the cookie is only sent over HTTPS - NC promijenio u false
         cookie.setPath("/");
         cookie.setMaxAge(24 * 60 * 60); // Set cookie expiration to 1 day
         response.addCookie(cookie);
