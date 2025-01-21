@@ -12,11 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import oop.dto.*;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController //Rad izmedu grupa i događaja
@@ -54,54 +52,64 @@ public class GroupEventController {
 //    }
     @GetMapping("/{groupId}/getIdPredstavnik") //Dohvaćanje ID Predstavnika grupe
     public ResponseEntity<Integer> getPredstavniksIdByGroupId(@PathVariable int groupId){
+        Optional<Group> group = groupService.findById(groupId);
+        if(group.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
-        return ResponseEntity.ok(group.getidPredstavnika()); // zanemari žuto, sve radi
+        return ResponseEntity.ok(group.get().getidPredstavnika());
     }
 
     @PostMapping("/{groupid}/addEvent")
-    public ResponseEntity<Event> createEvent(@PathVariable int groupid, @RequestBody Event event) {
+    public ResponseEntity<EventDTO> createEvent(@PathVariable int groupid, @RequestBody Event event) {
+        Optional<Group> group = groupService.findById(groupid);
 
-        Group group = groupService.findById(groupid).orElseThrow(() -> new RuntimeException("Group not found"));
-        event.setGroup(group);
+        if(group.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        event.setGroup(group.get());
         Event savedEvent = eventService.saveEvent(event);
-        return ResponseEntity.ok(savedEvent);
+
+        return ResponseEntity.ok(new EventDTO(savedEvent));
     }
 
     @GetMapping("/{groupId}/getEvents")
     public ResponseEntity<List<EventDTO>> getEventsByGroupId(@PathVariable int groupId) {
+        Optional<Group> group = groupService.findById(groupId);
 
-        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+        if(group.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        List<EventDTO> events = group.getEvents().stream()
-                .map(EventDTO::new) // Mapira svaki `Event` u `EventDTO`
-                .collect(Collectors.toList());
+        List<EventDTO> eventsDTOS = groupService.getEventsByGroupId(groupId);
 
-        if (events.isEmpty()) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
+        if (eventsDTOS.isEmpty()) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
 
-        return ResponseEntity.ok(events);
+        return ResponseEntity.ok(eventsDTOS);
     }
 
-    @GetMapping("/{groupId}/getPastEvents") // otključani eventovi pls ne diraj!
-    public ResponseEntity<List<RatedEventDTO>> getPastEventsByGroupId(@PathVariable int groupId) {
+    @GetMapping("/{groupId}/getPastEvents/{username}") // vraća evenName, brojLajkova i username jel lajkao(da/ne)
+    public ResponseEntity<List<IspisEventDTO>> getPastEventsByGroupId(@PathVariable int groupId, @PathVariable String username) {
 
         Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+        User user = userService.getUserByUsername(username);
 
-        List<Event> event = new ArrayList<>(group.getEvents()); // Eventovi u grupi
-        List<RatedEventDTO> pastEvents = new ArrayList<>(); // Eventove koje cu slati
-
-        //za svaki event treba dohvatiti njegove review
-        for(Event e : event){
-            List<RatedEvent> ratedPastEvents = new ArrayList<>(e.getRatedEvents()); // reviews eventa
-
-            for(RatedEvent r : ratedPastEvents){ // za svaki review printaj username, eventname, review i description
-                //System.out.println(r.getEvent().getEventName());
-                pastEvents.add(new RatedEventDTO(
-                        r.getUser().getUsername(), r.getEvent().getEventName() , r.getReview(), r.getDescription()));
-            }
-        }
-
-        return ResponseEntity.ok(pastEvents);
+        List<Event> events = new ArrayList<>(group.getEvents()); // Eventovi u grupi
+        List<IspisEventDTO> list = new ArrayList<>();
+        //System.out.println(events.size());
+        for(Event event : events){
+           if(event.getDate() != null){
+               int numOfLikes = event.getRatedEvents().size();
+               int userLajkao = 0;
+               System.out.println(numOfLikes);
+               for(RatedEvent e: user.getRatedEvents()){ // provjera jeli user lajkao
+                   if(e.getEvent().getIdEvent() == event.getIdEvent()){
+                       userLajkao=1;
+                       break;
+                   }
+               }
+               list.add(new IspisEventDTO(event.getEventName(), numOfLikes, userLajkao));
+           }
+       }
+       return ResponseEntity.ok(list);
     }
 
     @DeleteMapping("/{groupId}/deleteEvent/{eventId}") // brisanje eventa iz grupe
@@ -126,9 +134,12 @@ public class GroupEventController {
     @PostMapping("/{groupId}/addMessage") // dodavanje nove poruke
     public ResponseEntity<Message> createMessageForGroup(@PathVariable int groupId, @RequestBody Message message) {
 
-        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+        Optional<Group> group = groupService.findById(groupId);
 
-        message.setGroup(group);
+        if(group.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        message.setGroup(group.get());
         Message savedMessage = messageService.createMessage(message);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedMessage);
@@ -137,30 +148,105 @@ public class GroupEventController {
     @GetMapping("/{groupId}/getMessages") // dohvat nove poruka
     public ResponseEntity<List<Message>> getMessagesByGroupId(@PathVariable int groupId) {
 
-        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
-        return ResponseEntity.ok(group.getMessages());
+        Optional<Group> group = groupService.findById(groupId);
+
+        if(group.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok(group.get().getMessages());
     }
 
-    @PostMapping("/{username}/reviewEvent/{eventId}") // dodavanje nove ocijene eventa
-    public ResponseEntity<RatedEventDTO> reviewEvent(@PathVariable String username, @PathVariable int eventId,
-                                                     @RequestHeader String review,  @RequestHeader String description) {
+    @PostMapping("/{username}/reviewEvent/{eventId}") // lajkanje eventa
+    public ResponseEntity<RatedEventDTO> reviewEvent(@PathVariable String username, @PathVariable int eventId) {
 
         User user = userService.getUserByUsername(username);
-        Event event = eventService.getEventById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
+        Optional<Event> event = eventService.getEventById(eventId);
 
-        RatedEvent ratedEvent = new RatedEvent(user, event, review, description);
-        ratedEventRepository.save(ratedEvent);
-        user.addRatedEvent(ratedEvent);
-        event.addRatedEvent(ratedEvent);
-        eventService.saveEvent(event);
-        userService.saveUser(user);
+        if(event.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        RatedEvent ratedEvent = new RatedEvent(1, user, event.get());
+        eventService.saveRatedEvent(ratedEvent);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new RatedEventDTO(user.getUsername(), ratedEvent, review, description));
+                new RatedEventDTO(user.getUsername(), event.get().getEventName(), 1));
+    }
+
+    @DeleteMapping("/{username}/deleteLike/{eventId}") // brisanje lajka
+    public ResponseEntity<Integer> deleteLikeEvent(@PathVariable String username, @PathVariable int eventId){
+
+        User user = userService.getUserByUsername(username);
+        Optional<Event> event = eventService.getEventById(eventId);
+
+        if(event.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        int id = eventService.getRatedEventId(user.getId(), event.get().getIdEvent());
+
+        user.getRatedEvents().remove(eventService.findRatedEventById(id));
+        event.get().getRatedEvents().remove(eventService.findRatedEventById(id));
+
+        eventService.deleteRatedEvenById(id);
+
+        return ResponseEntity.ok(id);
+    }
+
+    @PostMapping("/{username}/addComment/{eventId}")
+    public ResponseEntity<EventCommentDTO> addComment(@PathVariable String username, @PathVariable int eventId,
+                                                    @RequestBody String comment) {
+        User user = userService.getUserByUsername(username);
+        Optional<Event> event = eventService.getEventById(eventId);
+
+        if(event.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        EventComments eventComments = new EventComments(user, event.get(), comment);
+        eventService.addComment(eventComments);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new EventCommentDTO(
+                username, event.get().getEventName(), comment, eventComments.getCommentId(), eventComments.getDate()));
+    }
+
+    @DeleteMapping("/deleteComment/{commentId}")
+    public ResponseEntity<Boolean> deleteComment(@PathVariable int commentId) {
+        eventService.deleteComment(commentId);
+        return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/allComments/{eventId}")
+    public ResponseEntity<List<EventCommentDTO>> getAllCommentsForEvent( @PathVariable int eventId) {
+        Optional<Event> event = eventService.getEventById(eventId);
+        if(event.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok(eventService.getAllCommentsForEvent(eventId));
     }
 
     @GetMapping("/getEventProposals") // vraća 5 random prijedloga za event
     public ResponseEntity<List<String>> getEventProposals() {
         return ResponseEntity.ok(eventService.getFiveRandomEvents());
+    }
+
+    @PutMapping("/{groupId}/updateEvent/{eventId}") // mogućnost mijanja naziva, opisa i/ili boje eventa
+    public ResponseEntity<EventDTO> updateEvent(@PathVariable int groupId, @PathVariable int eventId, @RequestBody Event event) {
+        Optional<Event> e = eventService.getEventById(eventId);
+        Optional<Group> group = groupService.findById(groupId);
+
+        if(e.isEmpty() || group.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if(!groupService.eventInGroup(groupId, eventId))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity.ok(eventService.updateEvent(e.get(), event));
+
+    }
+
+    @PutMapping("/{groupId}/setDate/{eventId}") // postavljanje datuma
+    public ResponseEntity<EventDTO> setEventDate(@PathVariable int groupId, @PathVariable int eventId, @RequestBody Event event){
+        Optional<Event> e = eventService.getEventById(eventId);
+        Optional<Group> group = groupService.findById(groupId);
+
+        if(e.isEmpty() || group.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if(!groupService.eventInGroup(groupId, eventId))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity.ok(eventService.updateDateEvent(e.get(), event));
     }
 }

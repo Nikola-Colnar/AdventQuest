@@ -47,7 +47,7 @@ const CreateGroupButton = () => {
         setGroupName("");
         console.log(createdGroup);
         localStorage.setItem("myGroupName", createdGroup.nazivGrupa);
-        localStorage.setItem("myGroupId", createdGroup.idGrupa);
+        localStorage.setItem("myGroupId", createdGroup.idgroup);
       } else {
         console.error("Failed to create group");
       }

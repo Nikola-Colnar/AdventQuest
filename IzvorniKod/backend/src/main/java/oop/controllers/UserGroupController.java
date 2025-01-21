@@ -20,15 +20,13 @@ public class UserGroupController {
 
     private final UserService userService;
     private final GroupService groupService;
-    private final EventRepository eventRepository;
     private final EventService eventService;
 
     @Autowired
 
-    public UserGroupController(UserService userService, GroupService groupService, EventRepository eventRepository, EventService eventService) {
+    public UserGroupController(UserService userService, GroupService groupService, EventService eventService) {
         this.userService = userService;
         this.groupService = groupService;
-        this.eventRepository = eventRepository;
         this.eventService = eventService;
     }
 
@@ -120,6 +118,45 @@ public class UserGroupController {
         userService.saveUser(user);
         return true;
     }
+
+    @GetMapping("/{adminName}/getAllGroups")
+    public ResponseEntity<List<GroupDTO>> getAllGroups(@PathVariable String adminName){
+        if(userService.getUserByUsername(adminName).getIsAdmin() != 1)
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return ResponseEntity.ok(groupService.findAllGroups());
+    }
+
+    @GetMapping("/{adminName}/getAllUsers")
+    public ResponseEntity<List<UserDTO>> getAllUsers(@PathVariable String adminName){
+        if(userService.getUserByUsername(adminName).getIsAdmin() != 1)
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return ResponseEntity.ok(userService.findAllUsers());
+    }
+
+    @PostMapping("/{username}/addAdmin")
+    public ResponseEntity<UserDTO> addAdmin(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+        return ResponseEntity.ok(userService.addAdmin(user));
+    }
+
+    @DeleteMapping("/admin/{username1}/deleteAdmin/{username2}")
+    public ResponseEntity<Boolean> deleteAdmin(@PathVariable String username1, @PathVariable String username2) {
+        User user1 = userService.getUserByUsername(username1);
+        User user2 = userService.getUserByUsername(username2);
+        if(user1.getIsAdmin() != 1)
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if(user2.getIsAdmin() != 1)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.ok(userService.deleteUser(user2));
+    }
+
+    @DeleteMapping("/admin/{username}/deleteUser/{username2}")
+    public ResponseEntity<Boolean> deleteUser(@PathVariable String username, @PathVariable String username2) {
+        if(userService.getUserByUsername(username).getIsAdmin() != 1)
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return ResponseEntity.ok(userService.deleteUser(userService.getUserByUsername(username2)));
+    }
+
 
 
 }

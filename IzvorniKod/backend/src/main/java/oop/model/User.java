@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +26,8 @@ public class User {
     @NotEmpty(message = "email is required")
     private  String email;
 
+    private int isAdmin;
+
     @ManyToMany
     @JoinTable(
             name = "group_user",
@@ -36,6 +39,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RatedEvent> ratedEvents = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventComments> comments = new LinkedList<>();
+
 
     public User() {
     }
@@ -45,7 +51,16 @@ public class User {
         this.password = password;
         this.username = username;
         this.email = email;
+        this.isAdmin = 0;
     }
+
+    public User(String username, String password, String email, int isAdmin) {
+        this.password = password;
+        this.username = username;
+        this.email = email;
+        this.isAdmin = isAdmin;
+    }
+
 
     public @NotEmpty(message = "email is required") String getEmail() {
         return email;
@@ -77,6 +92,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(int isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
     public Set<RatedEvent> getRatedEvents() {return ratedEvents;}
@@ -114,4 +137,11 @@ public class User {
         this.groups = groups;
     }
 
+    public List<EventComments> getComments() {return comments;}
+
+    public void addComments(String komentar) {
+        comments.add(new EventComments(komentar));
+    }
+
+    public void setRatedEvents(Set<RatedEvent> ratedEvents) {this.ratedEvents = ratedEvents;}
 }

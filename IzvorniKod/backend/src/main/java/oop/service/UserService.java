@@ -1,7 +1,9 @@
 package oop.service;
 
+import oop.dto.UserDTO;
 import oop.model.Event;
 import oop.model.Group;
+import oop.model.RatedEvent;
 import oop.model.User;
 import oop.repository.EventRepository;
 import oop.repository.GroupRepository;
@@ -78,24 +80,20 @@ public class UserService {
         return jwtService.generateToken(user.getUsername());
     }
 
-    public void deleteUser(User user) {
-        // Provjera da li korisnik postoji s istim email-om
-        if (userRepository.findByEmail(user.getEmail()) == null) {
-            throw new RuntimeException("User with this username doesn't exist");
+    public boolean deleteUser(User user) {
+        // Treba provjeriti je li user predstavnik u nekoj grupi ili jedini član
+        for(Group group : user.getGroups()) {
+            if(group.getUsers().size() == 1){ // ako je jedini član brišemo cijelu grupu
+                user.removeGroup(group);
+                groupRepository.delete(group);
+            } else if(group.getidPredstavnika() == user.getId()){      // ako je predstavnik dodjeljujemo to
+                User u = getRandUser(group.getIdGrupa());      // nekom drugom useru u toj grupi
+                group.setidPredstavnika(u.getId());
+                groupRepository.save(group);
+            }
         }
         userRepository.delete(user);
-    }
-
-    public User changeUserName(int id, String newName){
-        Optional<User> user = userRepository.findById(id);
-        if(user.isPresent()){
-            User user1 = user.get();
-            user1.setUsername(newName);
-            return userRepository.save(user1);
-        }
-        else{
-            throw new NoSuchElementException("Group with ID " + id + " not found.");
-        }
+        return true;
     }
 
     public String verify(User user) {
@@ -140,6 +138,31 @@ public class UserService {
         throw new RuntimeException("User not found");
     }
 
+    public List<UserDTO> findAllUsers() {
+        List<UserDTO> listUserDTO = new ArrayList<>();
+        for (User user : userRepository.findAll()) {
+            listUserDTO.add(new UserDTO(user));
+        }
+        return listUserDTO;
+    }
 
+    public UserDTO addAdmin(User user) {
+        user.setIsAdmin(1);
+        return new UserDTO(userRepository.save(user));
+    }
 
+    public User getRandUser(int groupId) {
+
+        List<User> userList = new ArrayList<>(groupRepository.findById(groupId).get().getUsers());
+
+        // Odaberi slučajnog korisnika
+        Random random = new Random();
+        int randomIndex = random.nextInt(userList.size());
+
+        //user mora biti različit od trenutkog predstavnika kojeg želimo obrisati
+        if(userList.get(randomIndex).getId() != groupRepository.findById(groupId).get().getidPredstavnika()){
+            return userList.get(randomIndex);
+        }
+        return getRandUser(groupId); // malo rekurzije
+    }
 }

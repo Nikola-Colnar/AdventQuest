@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,7 +21,7 @@ public class Event {
     private LocalDate date;
 
     private String eventName;
-    private String color = "green";
+    private String color;
     private String description;
 
     @ManyToOne
@@ -28,6 +30,9 @@ public class Event {
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RatedEvent> ratedEvents = new HashSet<>();
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventComments> comments = new LinkedList<>();
 
     public Event() {}
 
@@ -99,6 +104,14 @@ public class Event {
         ratedEvents.remove(ratedEvent);
         ratedEvent.setEvent(null);
     }
+
+    public List<EventComments> getComments() {return comments;}
+
+    public void addComments(String komentar) {
+        comments.add(new EventComments(komentar));
+    }
+
+    public void setRatedEvents(Set<RatedEvent> ratedEvents) {this.ratedEvents = ratedEvents;}
 
     @Override
     public String toString() {
