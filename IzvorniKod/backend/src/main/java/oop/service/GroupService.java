@@ -87,4 +87,8 @@ public class GroupService {
         }
         return false;
     }
+
+    public Group getGroupById(int grupaIDInt) {
+        return groupRepo.findById(grupaIDInt).get();
+    }
 }

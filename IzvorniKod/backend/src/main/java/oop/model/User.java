@@ -26,6 +26,7 @@ public class User {
     @NotEmpty(message = "email is required")
     private  String email;
 
+    @Column(name = "is_admin", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int isAdmin;
 
     @ManyToMany
