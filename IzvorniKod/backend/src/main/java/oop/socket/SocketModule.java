@@ -17,6 +17,7 @@ import java.net.HttpCookie;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.corundumstudio.socketio.listener.ConnectListener;
@@ -26,7 +27,7 @@ import com.corundumstudio.socketio.listener.DisconnectListener;
 
 @Slf4j
 @Component
-public class SocketModule {
+public class SocketModule implements CommandLineRunner {
 
     @Autowired
     private JWTService jwtService;
@@ -39,6 +40,8 @@ public class SocketModule {
     
     @Autowired
     private MessageService messageService;
+
+    private User chatBot;
     
     private final SocketIOServer server;
 
@@ -104,5 +107,16 @@ public class SocketModule {
             }
         }
         log.info("Message sent to {} active users", String.valueOf(activeUserCount));
+    }
+    @Override
+    public void run(String... args) {
+        User chatBot = new User("chatBot", "chatBot", "chatBot@app");
+        try {
+            userService.createUser(chatBot);
+            log.info("Stvoren korisnik za chatBota");
+        } catch(RuntimeException e) {
+            log.info("Korisnik za chatBota vec postoji");
+        }
+        this.chatBot = userService.getUserByUsername("chatBot");
     }
 }
