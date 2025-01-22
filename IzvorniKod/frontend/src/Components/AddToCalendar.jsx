@@ -3,6 +3,7 @@ import { Calendar } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./AddToCalendar.css";
+import { Button } from "@mui/material";
 
 const AddToCalendar = () => {
   const calendarRef = useRef(null);
@@ -12,6 +13,7 @@ const AddToCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [eventDetails, setEventDetails] = useState(null); // Za detalje događaja
+  const [calendarVisible, setCalendarVisible] = useState(false); // Novo stanje za prikaz kalendara
 
   const fetchEvents = useCallback(async () => {
     const groupId = localStorage.getItem("myGroupId");
@@ -49,7 +51,6 @@ const AddToCalendar = () => {
   const updateEventDate = async (eventId, date) => {
     const groupId = localStorage.getItem("myGroupId");
 
-    console.log(date)
     try {
       const response = await fetch(
         `http://localhost:8080/api/groups/${groupId}/setDate/${eventId}`,
@@ -70,7 +71,7 @@ const AddToCalendar = () => {
   };
 
   useEffect(() => {
-    if (!calendarRef.current) return;
+    if (!calendarRef.current || !calendarVisible) return; // Kalendar se inicijalizira samo ako je vidljiv
 
     calendarInstance.current = new Calendar(calendarRef.current, {
       plugins: [dayGridPlugin, interactionPlugin],
@@ -111,6 +112,7 @@ const AddToCalendar = () => {
             e.stopPropagation(); // Sprječava otvaranje detalja događaja
             setSelectedDate(arg.date);
             setModalOpen(true);
+            fetchEvents(); // Refetch događaja
           });
         }
 
@@ -143,6 +145,7 @@ const AddToCalendar = () => {
             "Just have as much fun as you can!",
           date: info.event.start.toDateString(),
         });
+        fetchEvents(); // Refetch događaja
       },
     });
 
@@ -151,15 +154,21 @@ const AddToCalendar = () => {
     return () => {
       calendarInstance.current.destroy();
     };
-  }, [events]);
+  }, [events, calendarVisible]);
 
   useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+    if (calendarVisible) fetchEvents();
+  }, [fetchEvents, calendarVisible]);
 
   return (
     <div className="calendar-container">
-      <div ref={calendarRef}></div>
+      {/* Gumb za otvaranje kalendara */}
+      <Button onClick={() => setCalendarVisible(!calendarVisible)}>
+        {calendarVisible ? "Close Calendar" : "Open Calendar"}
+      </Button>
+
+      {/* Prikaz kalendara ako je vidljiv */}
+      {calendarVisible && <div ref={calendarRef}></div>}
 
       {modalOpen && (
         <div className="modal">
@@ -171,9 +180,12 @@ const AddToCalendar = () => {
                 .map((event) => (
                   <li key={event.eventId}>
                     <button
-                      style={{ backgroundColor: event.color || "#27ae60" }} // Korištenje originalne boje događaja
+                      style={{ backgroundColor: event.color || "#27ae60" }}
                       onClick={() => {
-                        updateEventDate(event.eventId, selectedDate.toLocaleDateString("en-CA"));
+                        updateEventDate(
+                          event.eventId,
+                          selectedDate.toLocaleDateString("en-CA")
+                        );
                         setModalOpen(false);
                       }}
                     >

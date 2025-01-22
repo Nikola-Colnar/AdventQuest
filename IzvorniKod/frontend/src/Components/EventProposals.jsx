@@ -12,14 +12,6 @@ const EventProposals = () => {
     try {
       //fetchanje evenata koji vec postoje (da se sprijece duplikacije)
       const response = await fetch(`http://localhost:8080/api/groups/${groupId}/getEvents`);
-      if (response.status === 404) {
-        console.log("No existing events found (404). Group doesn't have quests planned yet! Expected if there is nothing on the list yet!");
-        generateEventProposals(); // Ako nema evenata, pokreni generiranje
-        return;
-      }
-      if (!response.ok) {
-        throw new Error("Failed to fetch existing events");
-      }
       const existingEvents = await response.json();
 
       //funkcija za dohvat i filtriranje evenata
@@ -65,7 +57,7 @@ const EventProposals = () => {
       //retry logika
       await getEventProposals();
     } catch (error) {
-      console.error("Error fetching existing events or there is no events", error.message);
+      console.error("Error fetching existing events:", error.message);
       generateEventProposals();
     }
   };
