@@ -172,4 +172,9 @@ public class UserGroupController {
         return ResponseEntity.ok(user.getId() == group.get().getidPredstavnika());
     }
 
+    @GetMapping("/{username}/getUserId") //Vraća id usera
+    public ResponseEntity<Integer> getUserId(@PathVariable String username) {  //ovo moze sa tokenima kasnije
+        return ResponseEntity.ok(userService.getUserByUsername(username).getId());
+    }
+
 }

@@ -9,7 +9,8 @@ import Header from "./Components/Header.jsx";
 import UserInfo from "./Components/form/UserInfo.jsx";
 import { Box } from "@mui/system";
 import ProtectedRoute from "./Components/ProtectedRoute.jsx";
-import Conversation from "./Components/chat/Conversation.jsx";
+import AdminRoute from "./Components/AdminRoute.jsx";
+import GroupDashboard from "./Components/GroupDashboard.jsx";
 
 function App() {
   // definiranje stanja prijave, korisnickog imena i kalendara
@@ -17,8 +18,6 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState((localStorage.getItem("username") ? true : false));
   const [username, setUsername] = useState((localStorage.getItem("username")) || "Guest");
   const [userID, setUserID] = useState((localStorage.getItem("userID")));
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedGroupId, setSelectedGroupId] = useState("");
 
   const handleLoginStatusChange = (status) => {
     setIsLoggedIn(status);
@@ -36,14 +35,6 @@ function App() {
     setIsLoggedIn(status);
   };
 
-  // socket.io - premjestiti u Conversation klasu
-  const [isChatOn, setIsChatOn] = useState(false);
-
-  // funkcija za prikaz chata
-  const handleChat = (status) => {
-    setIsChatOn(status);
-  };
-
   const AppRoutes = () => {
     const routes = [
       {
@@ -57,10 +48,8 @@ function App() {
                 isLoggedIn={isLoggedIn}
                 handlelogin={handlelogin}
                 username={username}
-                chatOn={handleChat}
               />
               <Countdown targetDate="2025-12-25T00:00:00" />
-              {isChatOn && <Conversation groupID={selectedGroupId} user={{ name: username, ID: userID }} />}
             </>
           </ProtectedRoute>
         ),
@@ -100,20 +89,46 @@ function App() {
         ),
       },
       {
-        path: "/groups",
+        path: "/dashboard",
         element: (
           <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <Snowfall className="snowfall" />
             <Box
               display="flex"
-              alignItems="center"
-              justifyContent="center"
+              flexDirection="column"
               height="100vh"
-              width="100vw"
+              width="100%"
+              alignItems={"center"}
             >
-              <Snowfall className="snowfall" />
-              <h1>Groups</h1>
+              <Header
+                className="header"
+                isLoggedIn={isLoggedIn}
+                handlelogin={handlelogin}
+                username={username}
+              />
+              <GroupDashboard username={username} userID={userID} />
             </Box>
           </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin",
+        element: (
+          <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <AdminRoute username={username}>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                height="100vh"
+                width="100vw"
+              >
+                <Snowfall className="snowfall" />
+                <h1>Admin</h1>
+              </Box>
+            </AdminRoute>
+          </ProtectedRoute>
+
         ),
       },
       {

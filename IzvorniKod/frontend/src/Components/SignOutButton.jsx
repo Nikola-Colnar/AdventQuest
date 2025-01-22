@@ -1,21 +1,21 @@
-import { styled } from "@mui/system";
-import { MenuItem } from "@mui/material";
+//import { styled } from "@mui/system";
+//import { MenuItem } from "@mui/material";
 import PropTypes from "prop-types";
+import { Button } from "@mui/material"
 
-// styling za logout gumb
-const LogoutButton = styled(MenuItem)(() => ({
-  backgroundColor: "rgba(255, 24, 24, 0.27)",
-  color: "black",
-  textAlign: "center",
-  justifyContent: "center",
-
-  ":hover": {
-    backgroundColor: "red",
-    color: "white",
-    textAlign: "center",
-    justifyContent: "center",
-  },
-}));
+//const LogoutButton = styled(MenuItem)(() => ({
+//  backgroundColor: "rgba(255, 24, 24, 0.27)",
+//  color: "black",
+//  textAlign: "center",
+//  justifyContent: "center",
+//
+//  ":hover": {
+//    backgroundColor: "red",
+//    color: "white",
+//    textAlign: "center",
+//    justifyContent: "center",
+//  },
+//}));
 
 const SignOutButton = ({ onClick, onClose }) => {
   // funkcija za sign out
@@ -26,26 +26,46 @@ const SignOutButton = ({ onClick, onClose }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Include credentials in the request
+        credentials: "include",
       });
-  
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-  
-      // Resetiraj lokalno stanje i očisti localStorage
+
+      // resetiraj lokalno stanje i ocisti localStorage
       localStorage.clear();
-      onClick(); // Resetira stanje prijave (isLoggedIn -> false)
-      onClose(); // Zatvori meni
+      onClick(); // resetira stanje prijave (isLoggedIn -> false)
+      onClose(); // zatvori meni
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
   };
 
   return (
-    <LogoutButton className="logout_button" onClick={handleSignOut}>
+    <Button
+      onClick={() => {
+        handleSignOut()
+      }}
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        textAlign: "center",
+        width: "100%",
+        alignItems: "center",
+        backgroundColor: "rgba(255, 69, 58, 0.3)",
+        color: "black",
+        transition: "background-color 0.3s, color 0.3s",
+
+        "&:hover": {
+          backgroundColor: "rgba(255, 0, 0, 0.85)",
+          color: "#ffffff",
+        },
+      }}
+      disableRipple={true}
+    >
       Sign Out
-    </LogoutButton>
+    </Button>
   );
 };
 
