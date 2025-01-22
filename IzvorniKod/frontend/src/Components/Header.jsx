@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, Button, Menu, MenuItem, Avatar, Box } from
 import { styled } from "@mui/system";
 import SignOutButton from "./SignOutButton.jsx";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 
 // styling za navigacijsku traku
@@ -35,9 +36,7 @@ const StyledMenu = styled(Menu)(() => ({
   },
 }));
 
-function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, onSignupClick, calendarVisible, chatOn }) {
-
-
+function Header({ isLoggedIn, handlelogin, username, userAvatar }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   // funkcije za dropdown menu
@@ -54,22 +53,14 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
     handlelogin(false);
   };
 
-  const handleCalendarToggle = () => {
-    calendarVisible(true);    // toggle za kalendar
-    setAnchorEl(null);  // zatvori dropdown menu kada je kalendar otvoren
-  };
-
-  const handleChatToggle = () => {
-    chatOn(true);
-    setAnchorEl(null);
-  };
-
   return (
     <StyledAppBar position="static">
       <StyledToolbar>
-        <Logo variant="h6" component="div">
-          AdventQuest
-        </Logo>
+        <Link to={"/"} className="dashboard-link">
+          <Logo variant="h6" component="div" color="white">
+            AdventQuest
+          </Logo>
+        </Link>
 
         {/* Conditional rendering ovisno je li korisnik prijavljen ili nije */}
         {(isLoggedIn) ? (
@@ -112,27 +103,24 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, onLoginClick, o
                 {username}
 
               </MenuItem>
-              <Button sx={{
-                display: "flex",
-                justifyContent: "center",
-                textAlign: "center",
-                width: "100%",
-                alignItems: "center",
-                backgroundColor: "rgba(84, 221, 52, 0.24)",
-                color: "black",
-                transition: "background-color 0.3s, color 0.3s",
+              <Link to="/dashboard" className="dashboard-link">
+                <Button sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  width: "100%",
+                  alignItems: "center",
+                  backgroundColor: "rgba(84, 221, 52, 0.24)",
+                  color: "black",
+                  transition: "background-color 0.3s, color 0.3s",
 
-                "&:hover": {
-                  backgroundColor: "rgb(16, 165, 16)",
-                  color: "#ffffff",
-                },
-              }} disableRipple={true} onClick={handleCalendarToggle}>Activity</Button>
-              <button onClick={handleChatToggle}></button>
+                  "&:hover": {
+                    backgroundColor: "rgb(16, 165, 16)",
+                    color: "#ffffff",
+                  },
+                }} disableRipple={true}>Dashboard</Button>
+              </Link>
               <SignOutButton onClick={handleLogin} onClose={handleMenuClose} />
-              {/* Stari logout gumb, mozda cemo ga ponovno iskoristiti */}
-              {/*<LogoutButton onClick={() => { handleMenuClose(); onLogoutClick(); }}>*/}
-              {/*  Logout*/}
-              {/*</LogoutButton>*/}
             </StyledMenu>
           </Box>
         ) : (
@@ -151,9 +139,6 @@ Header.propTypes = {
   handlelogin: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
   userAvatar: PropTypes.string,
-  onLoginClick: PropTypes.func.isRequired,
-  onSignupClick: PropTypes.func.isRequired,
-  calendarVisible: PropTypes.func.isRequired,
 };
 
 export default Header;

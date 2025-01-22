@@ -4,17 +4,17 @@
   border-radius: 8px;
   width: fit-content;
   margin: auto;
-  transition: box-shadow 1.5s ease, transform 1.5s ease;
   background: transparent;
   backdrop-filter: blur(20px);
 }
 
-.Form:hover {
+.overlay:hover {
+  transition: box-shadow 1.5s ease, transform 1.5s ease;
   transform: translateY(-10px);
   box-shadow: 0 6px 20px rgba(255, 0, 0, 0.378), 0 5px 25px rgba(114, 4, 4, 0.626);
 }
 
-input {
+.overlay input {
   border: 1px solid #ccc;
   border-radius: 1.5em;
   width: 100%;
@@ -24,7 +24,7 @@ input {
   padding: 10px 10px 10px 1em;
 }
 
-input:focus {
+.overlay input:focus {
   color: #3f3f3f; /* boja teksta unutar inputa */
   background-color: #c9f4c8; /* pozadina inputa */
   outline-color: green;
@@ -147,11 +147,12 @@ input:focus {
 
 /* overlay za zatamnjenu pozadinu */
 .overlay {
-  position: fixed;
+  /* position: static; */
+  border-radius: 8px;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: fit-content;
+  height: fit-content;
   background-color: rgba(0, 0, 0, 0.6); /* tamnimo pozadinu */
   display: flex;
   align-items: center;
@@ -202,7 +203,7 @@ input:focus {
   box-shadow: 5px 4px 10px rgba(2, 170, 44, 0.2);
 }
 
-.vrstaUser-select {
+/* .vrstaUser-select {
   display: flex;
   width: auto;
   height: 3em;
@@ -218,10 +219,10 @@ input:focus {
 .divPredstavnik {
   position: relative;
   width: 50%;
-}
+} */
 
-.vrstaUser-button {
-  display: flex; /* pozicioniramo gumbe u sredinu */
+/* .vrstaUser-button {
+  display: flex; pozicioniramo gumbe u sredinu
   justify-content: center;
   border-radius: 8px;
   margin: auto;
@@ -258,9 +259,34 @@ input:focus {
   top: 40%;
   transform: translateY(-50%);
   font-size: 1.4em;
-}
+} */
 
 /* skrivamo djeda bozicnjaka ako gumb nije selektiran */
-.vrstaUser-button.red .selector-icon {
+/* .vrstaUser-button.red .selector-icon {
   display: none
+} */
+
+.register-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background-color: #ccc;
+}
+
+.register-text {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.register-text:hover {
+  color: #9dd29c;
 }

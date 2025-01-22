@@ -1,16 +1,17 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import "./form.css";
 import { FaLock } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
 import { Box, Alert } from "@mui/material";
 import PropTypes from "prop-types";
 import { FcGoogle } from "react-icons/fc";
+import { Link } from "react-router-dom";
 
 // Endpoint za login i google login
 const USERS_REST_API_URL = "http://localhost:8080/login";
 const GOOGLE_LOGIN_API_URL = "http://localhost:8080/api/login/google";
 
-function Form({ onClick, loggedIn }) {
+function Form({ loggedIn }) {
   // Stanice za formu
   const [formData, setFormData] = useState({
     username: "",
@@ -22,20 +23,6 @@ function Form({ onClick, loggedIn }) {
   // Refovi za overlay i formu
   const overlayRef = useRef(null);
   const formRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      // Zatvaranje forme ako se klikne izvan nje
-      if (overlayRef.current && overlayRef.current.contains(e.target) && !formRef.current.contains(e.target)) {
-        onClick();  // Pozivanje funkcije za zatvaranje
-      }
-    };
-    document.addEventListener("click", handleClickOutside); // Dodavanje event listenera
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside); // Uklanjanje event listenera pri unmountanju komponente
-    };
-  }, [onClick]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -133,14 +120,20 @@ function Form({ onClick, loggedIn }) {
             {<FcGoogle className="google-icon" />} Sign in with Google
           </button>
         </div>
+        <div className="register-link">
+          <div className="line" />
+          <Link to="/register" className="register-text">
+            Don’t have an account? Register here
+          </Link>
+          <div className="line" />
+        </div>
       </form>
     </div>
   );
 }
 
 Form.propTypes = {
-  onClick: PropTypes.func.isRequired,  // Funkcija koja se poziva za zatvaranje forme
-  loggedIn: PropTypes.func.isRequired,  // Funkcija koja označava da je korisnik prijavljen
+  loggedIn: PropTypes.func.isRequired,  // funkcija koja oznacava da je korisnik prijavljen
 };
 
 export default Form;
