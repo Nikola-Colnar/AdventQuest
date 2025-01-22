@@ -8267,3 +8267,6 @@ select u1_0.id,u1_0.email,u1_0.is_admin,u1_0.password,u1_0.username from users u
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
 	at java.base/java.lang.Thread.run(Thread.java:1575)
+2025-01-23 00:21:23.913777+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "MESAGE" not found; SQL statement:
+select * from mesage [42102-224]

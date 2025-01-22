@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Message from "./Message";
+import AIEventMessage from "./AIEventMessage";
 import useSocket from "./useSocket";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/fontawesome-free-regular";
@@ -37,7 +38,8 @@ function Conversation(props) {
       setMessageList([...messageList, {
         idSender: props.user.ID,
         date: Date(),
-        poruka: newOutMsg
+        poruka: newOutMsg,
+        username: props.user.name
       }]);
       setNewOutMsg("");
     }
@@ -50,10 +52,15 @@ function Conversation(props) {
   <div className="chat">
     <h1>Chat za grupu {props.groupID}</h1>
       <ul> {
-          messageList.map((msg, index, list) => <Message  key={index} msg={msg} 
-                                                          isSentMsg={msg.idSender == props.user.ID} 
-                                                          displayTime ={(index == 0)? true : (msg.idSender != list[index-1].idSender || !areSentWithin(msg.date, list[index-1].date, 2*MINUTE))}/>)
-      } </ul>
+          messageList.map((msg, index, list) => {
+            const showTime = (index == 0)? true : (msg.idSender != list[index-1].idSender || !areSentWithin(msg.date, list[index-1].date, 2*MINUTE));
+            if(msg.username == "chatBot") {
+              return (<AIEventMessage key={index} msg={msg} hasTime={true} displayTime={showTime}/>);
+            } else {
+              return (<Message key={index} msg={msg} isSentMsg={msg.idSender == props.user.ID} displayTime ={showTime}/>);
+            }
+          }
+      )} </ul>
       <div className="controls">
         <textarea name="message-box" id="message-box" onChange={changeMsg} value={newOutMsg} placeholder="Napišite nešto lijepo..." rows="3"></textarea>
         <button id="send-button" onClick={sendNewMessage}>
