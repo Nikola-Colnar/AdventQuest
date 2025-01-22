@@ -91,4 +91,13 @@ public class GroupService {
     public Group getGroupById(int grupaIDInt) {
         return groupRepo.findById(grupaIDInt).get();
     }
+
+    public List<MessageDTO> getAllMessages(int groupId) {
+        List<MessageDTO> messageDTOS = new ArrayList<>();
+        for(Message message : groupRepo.findById(groupId).get().getMessages()) {
+            String username = userRepository.findById(Integer.parseInt(message.getIdSender())).get().getUsername();
+            messageDTOS.add(new MessageDTO(message, username));
+        }
+        return messageDTOS;
+    }
 }

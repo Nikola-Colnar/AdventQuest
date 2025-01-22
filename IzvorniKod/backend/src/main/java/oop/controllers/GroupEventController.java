@@ -146,14 +146,14 @@ public class GroupEventController {
     }
 
     @GetMapping("/{groupId}/getMessages") // dohvat nove poruka
-    public ResponseEntity<List<Message>> getMessagesByGroupId(@PathVariable int groupId) {
+    public ResponseEntity<List<MessageDTO>> getMessagesByGroupId(@PathVariable int groupId) {
 
         Optional<Group> group = groupService.findById(groupId);
 
         if(group.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok(group.get().getMessages());
+        return ResponseEntity.ok(groupService.getAllMessages(groupId));
     }
 
     @PostMapping("/{username}/reviewEvent/{eventId}") // lajkanje eventa

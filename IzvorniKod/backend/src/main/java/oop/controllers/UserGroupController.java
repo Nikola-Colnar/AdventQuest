@@ -105,6 +105,10 @@ public class UserGroupController {
         }
     }
 
+    @GetMapping("/{username}/getUserId") //Vraća id usera
+    public ResponseEntity<Integer> getUserId(@PathVariable String username) {  //ovo moze sa tokenima kasnije
+        return ResponseEntity.ok(userService.getUserByUsername(username).getId());
+    }
 
     @DeleteMapping("/user/{username}/group/{groupId}")    // Brisanje korisnika iz grupe
     public boolean deleteUserFromGroup(@PathVariable String username, @PathVariable int groupId) {
