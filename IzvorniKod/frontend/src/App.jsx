@@ -57,7 +57,6 @@ function App() {
                 isLoggedIn={isLoggedIn}
                 handlelogin={handlelogin}
                 username={username}
-                calendarVisible={handleCalendar}
                 chatOn={handleChat}
               />
               <Countdown targetDate="2025-12-25T00:00:00" />
