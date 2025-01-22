@@ -5,7 +5,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "./AddToCalendar.css";
 import { Button } from "@mui/material";
 
-const AddToCalendar = () => {
+const AddToCalendar = ({refreshComponent}) => {
   const calendarRef = useRef(null);
   const calendarInstance = useRef(null);
   const [events, setEvents] = useState([]);
@@ -61,7 +61,8 @@ const AddToCalendar = () => {
         }
       );
       if (response.ok) {
-        fetchEvents();
+        await fetchEvents();
+        refreshComponent();
       } else {
         console.error("Failed to update event date");
       }
@@ -112,7 +113,7 @@ const AddToCalendar = () => {
             e.stopPropagation(); // Sprječava otvaranje detalja događaja
             setSelectedDate(arg.date);
             setModalOpen(true);
-            fetchEvents(); // Refetch događaja
+
           });
         }
 
@@ -145,7 +146,7 @@ const AddToCalendar = () => {
             "Just have as much fun as you can!",
           date: info.event.start.toDateString(),
         });
-        fetchEvents(); // Refetch događaja
+
       },
     });
 
