@@ -19,6 +19,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idGrupa;
 
+    @Column(unique = true)
     @NotEmpty(message = "Naziv grupe je obavezan")
     private String nazivGrupa;
 
