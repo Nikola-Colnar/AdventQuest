@@ -6,70 +6,87 @@ const EventProposals = () => {
   const [events, setEvents] = useState([]);
   const [open, setOpen] = useState(false);
 
-  const fetchEvents = () => {
+  const fetchEvents = async () => {
     const groupId = localStorage.getItem("myGroupId");
 
-    // Fetch current events to avoid duplication
-    fetch(`http://localhost:8080/api/groups/${groupId}/getEvents`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    try {
+      //fetchanje evenata koji vec postoje (da se sprijece duplikacije)
+      const response = await fetch(`http://localhost:8080/api/groups/${groupId}/getEvents`);
+      if (response.status === 404) {
+        console.log("No existing events found (404). Group doesn't have quests planned yet! Expected if there is nothing on the list yet!");
+        generateEventProposals(); // Ako nema evenata, pokreni generiranje
+        return;
+      }
+      if (!response.ok) {
+        throw new Error("Failed to fetch existing events");
+      }
+      const existingEvents = await response.json();
+
+      //funkcija za dohvat i filtriranje evenata
+      const getEventProposals = async (attempts = 0, collectedEvents = []) => {
+        if (attempts >= 20 || collectedEvents.length >= 5) {
+          console.log("Reached max attempts or 5 events");
+          setEvents(collectedEvents); //finalna lista koja se prikazuje
+          return; // ako ih je 5 stani
         }
-        return response.json();
-      })
-      .then((existingEvents) => {
-        //funkcija za dohvat i filtriranje evenata
-        const getEventProposals = (attempts = 0, collectedEvents = []) => {
-          if (attempts >= 20 || collectedEvents.length >= 5) {
-            console.log("Reached max attempts or 5 events");
-            setEvents(collectedEvents); //finalna lista koja se prikazuje
-            return; // ako ih je 5 stani
+
+        try {
+          const response = await fetch("http://localhost:8080/api/groups/getEventProposals");
+          if (!response.ok) {
+            throw new Error("Failed to fetch event proposals.");
           }
+          const data = await response.json();
 
-          fetch("http://localhost:8080/api/groups/getEventProposals")
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              return response.json();
-            })
-            .then((data) => {
-              //Filtriram evente koje vec postoje u bazi
-              const filteredEvents = data.filter(
-                (event) =>
-                  !existingEvents.some(
-                    (existingEvent) => existingEvent.eventName === event
-                  ) &&
-                  !collectedEvents.some((collectedEvent) => collectedEvent.eventName === event)
-              );
+          //Filtriram evente koje vec postoje u bazi
+          const filteredEvents = data.filter(
+            (event) =>
+              !existingEvents.some(
+                (existingEvent) => existingEvent.eventName === event
+              ) &&
+              !collectedEvents.some((collectedEvent) => collectedEvent.eventName === event)
+          );
 
-              //filtriraj dok ih nemas 5
-              const newEvents = filteredEvents.slice(0, 5 - collectedEvents.length);
+          //filtriraj dok ih nemas 5
+          const newEvents = filteredEvents.slice(0, 5 - collectedEvents.length);
+          const updatedCollectedEvents = [
+            ...collectedEvents,
+            ...newEvents.map((event) => ({
+              eventName: event,
+              added: false,
+            })),
+          ];
 
-              const updatedCollectedEvents = [
-                ...collectedEvents,
-                ...newEvents.map((event) => ({
-                  eventName: event,
-                  added: false,
-                })),
-              ];
+          await getEventProposals(attempts + 1, updatedCollectedEvents);
+        } catch (error) {
+          console.error("Error fetching event proposals:", error.message);
+        }
+      };
 
-
-              getEventProposals(attempts + 1, updatedCollectedEvents);
-            })
-            .catch((error) => {
-              console.error("Error fetching event proposals:", error);
-            });
-        };
-
-        //retry logika
-        getEventProposals();
-      })
-      .catch((error) => {
-        console.error("Error fetching existing events:", error);
-      });
+      //retry logika
+      await getEventProposals();
+    } catch (error) {
+      console.error("Error fetching existing events or there is no events", error.message);
+      generateEventProposals();
+    }
   };
 
+//funkcija za slucaj ako nema kreiranih evenata
+  const generateEventProposals = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/groups/getEventProposals");
+      if (!response.ok) {
+        throw new Error("Failed to generate event proposals.");
+      }
+      const data = await response.json();
+      const newEvents = data.slice(0, 5).map((event) => ({
+        eventName: event,
+        added: false,
+      }));
+      setEvents(newEvents);
+    } catch (error) {
+      console.error("Error generating event proposals:", error.message);
+    }
+  };
   useEffect(() => {
     fetchEvents();
   }, []);
