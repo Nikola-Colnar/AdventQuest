@@ -213,5 +213,4 @@ public class UserGroupController {
         return ResponseEntity.ok(user.getId() == group.get().getidPredstavnika());
     }
 
-
 }
