@@ -18,7 +18,9 @@ function Conversation(props) {
   const [newOutMsg, setNewOutMsg] = useState("");
 
   useEffect(() => {
-    fetch(`/api/groups/${props.groupID}/getMessages`)
+    fetch(`/api/groups/${props.groupID}/getMessages`, {
+      credentials : "include",
+    })
     .then(data => data.json())
     .then(messageList => {
       console.log("lista", messageList);

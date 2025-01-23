@@ -11,6 +11,7 @@ import { Box } from "@mui/system";
 import ProtectedRoute from "./Components/ProtectedRoute.jsx";
 import AdminRoute from "./Components/AdminRoute.jsx";
 import GroupDashboard from "./Components/GroupDashboard.jsx";
+import Logout from "./Components/form/Logout.jsx";
 
 function App() {
   // definiranje stanja prijave, korisnickog imena i kalendara
@@ -35,6 +36,7 @@ function App() {
     setIsLoggedIn(status);
   };
 
+  
   const AppRoutes = () => {
     const routes = [
       {
@@ -137,6 +139,12 @@ function App() {
           <UserInfo setIsLoggedIn={setIsLoggedIn} loadUsername={setUsername} />
         ),
       },
+      {
+        path: "/logout",
+        element: (
+        <Logout setIsLoggedIn={setIsLoggedIn}  />
+      ),
+      }
     ];
 
     return useRoutes(routes);

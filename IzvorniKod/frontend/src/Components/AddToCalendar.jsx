@@ -3,8 +3,9 @@ import { Calendar } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./AddToCalendar.css";
+import { Button } from "@mui/material";
 
-const AddToCalendar = () => {
+const AddToCalendar = ({refreshComponent}) => {
   const calendarRef = useRef(null);
   const calendarInstance = useRef(null);
   const [events, setEvents] = useState([]);
@@ -12,6 +13,7 @@ const AddToCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [eventDetails, setEventDetails] = useState(null); // Za detalje događaja
+  const [calendarVisible, setCalendarVisible] = useState(false); // Novo stanje za prikaz kalendara
 
   const fetchEvents = useCallback(async () => {
     const groupId = localStorage.getItem("myGroupId");
@@ -20,6 +22,7 @@ const AddToCalendar = () => {
         `http://localhost:8080/api/groups/${groupId}/getEvents`,
         {
           headers: { "Content-Type": "application/json" },
+          credentials : "include"
         }
       );
       if (response.ok) {
@@ -38,6 +41,10 @@ const AddToCalendar = () => {
         if (calendarInstance.current) {
           calendarInstance.current.setOption("events", formattedEvents);
         }
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch events");
       }
@@ -49,18 +56,23 @@ const AddToCalendar = () => {
   const updateEventDate = async (eventId, date) => {
     const groupId = localStorage.getItem("myGroupId");
 
-    console.log(date)
     try {
       const response = await fetch(
         `http://localhost:8080/api/groups/${groupId}/setDate/${eventId}`,
         {
           method: "PUT",
+          credentials : "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ date }),
         }
       );
       if (response.ok) {
-        fetchEvents();
+        await fetchEvents();
+        refreshComponent();
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to update event date");
       }
@@ -70,7 +82,7 @@ const AddToCalendar = () => {
   };
 
   useEffect(() => {
-    if (!calendarRef.current) return;
+    if (!calendarRef.current || !calendarVisible) return; // Kalendar se inicijalizira samo ako je vidljiv
 
     calendarInstance.current = new Calendar(calendarRef.current, {
       plugins: [dayGridPlugin, interactionPlugin],
@@ -111,6 +123,7 @@ const AddToCalendar = () => {
             e.stopPropagation(); // Sprječava otvaranje detalja događaja
             setSelectedDate(arg.date);
             setModalOpen(true);
+
           });
         }
 
@@ -143,6 +156,7 @@ const AddToCalendar = () => {
             "Just have as much fun as you can!",
           date: info.event.start.toDateString(),
         });
+
       },
     });
 
@@ -151,15 +165,21 @@ const AddToCalendar = () => {
     return () => {
       calendarInstance.current.destroy();
     };
-  }, [events]);
+  }, [events, calendarVisible]);
 
   useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+    if (calendarVisible) fetchEvents();
+  }, [fetchEvents, calendarVisible]);
 
   return (
     <div className="calendar-container">
-      <div ref={calendarRef}></div>
+      {/* Gumb za otvaranje kalendara */}
+      <Button onClick={() => setCalendarVisible(!calendarVisible)}>
+        {calendarVisible ? "Close Calendar" : "Open Calendar"}
+      </Button>
+
+      {/* Prikaz kalendara ako je vidljiv */}
+      {calendarVisible && <div ref={calendarRef}></div>}
 
       {modalOpen && (
         <div className="modal">
@@ -171,9 +191,12 @@ const AddToCalendar = () => {
                 .map((event) => (
                   <li key={event.eventId}>
                     <button
-                      style={{ backgroundColor: event.color || "#27ae60" }} // Korištenje originalne boje događaja
+                      style={{ backgroundColor: event.color || "#27ae60" }}
                       onClick={() => {
-                        updateEventDate(event.eventId, selectedDate.toLocaleDateString("en-CA"));
+                        updateEventDate(
+                          event.eventId,
+                          selectedDate.toLocaleDateString("en-CA")
+                        );
                         setModalOpen(false);
                       }}
                     >

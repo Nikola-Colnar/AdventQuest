@@ -32,8 +32,9 @@ const CreateGroupButton = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/${localStorage.getItem("username")}/createGroup`, {
+      const response = await fetch(`http://localhost:8080/createGroup`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -48,6 +49,10 @@ const CreateGroupButton = () => {
         console.log(createdGroup);
         localStorage.setItem("myGroupName", createdGroup.nazivGrupa);
         localStorage.setItem("myGroupId", createdGroup.idgroup);
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to create group");
       }

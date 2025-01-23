@@ -7,40 +7,47 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormHelperText
 } from "@mui/material";
 
 const AddUserToGroupButton = () => {
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
 
+  //Povratne poruke za korisnika
+  const [infoMessage, setInfoMessage] = useState("");
+
   const handleClickOpen = () => {
     setOpen(true);
+    setInfoMessage("");
   };
 
   const handleClose = () => {
     setOpen(false);
+    setInfoMessage("");
   };
 
   const handleAddUser = async () => {
     if (!username) {
-      console.error("Username is required!");
+      setInfoMessage("Username required!");
       return;
     }
 
-    const groupId = localStorage.getItem("myGroupId"); // Dohvati groupId iz localStorage
+    const groupId = localStorage.getItem("myGroupId");
     if (!groupId) {
-      console.error("Group ID not found in localStorage!");
+      setInfoMessage("Join group to add users!");
       return;
     }
 
     const userToAdd = {
       username: username,
-      groupId: parseInt(groupId, 10), // Pretvaranje u cijeli broj
+      groupId: parseInt(groupId, 10),
     };
 
     try {
       const response = await fetch(`http://localhost:8080/${groupId}/addUser`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -48,13 +55,19 @@ const AddUserToGroupButton = () => {
       });
 
       if (response.ok) {
-        console.log("User added to group successfully");
-        setOpen(false);
+        setInfoMessage("New Adventurer added");
         setUsername("");
-      } else {
-        console.error("User doesn't exist");
+        setTimeout(() => setInfoMessage(""), 2000);
+      } else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }else {
+        setInfoMessage("User doesn't exist"); // Tvoj tekst za poruku
+        setTimeout(() => setInfoMessage(""), 2000);
       }
     } catch (error) {
+      setInfoMessage("Error occurred. Please try again.");
+      setTimeout(() => setInfoMessage(""), 2000);
       console.error("Error:", error);
     }
   };
@@ -76,6 +89,9 @@ const AddUserToGroupButton = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
+          {infoMessage && (
+            <FormHelperText>{infoMessage}</FormHelperText> //poruke ispod textfielda
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary">
