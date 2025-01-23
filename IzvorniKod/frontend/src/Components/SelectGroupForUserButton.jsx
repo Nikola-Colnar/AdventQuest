@@ -21,7 +21,9 @@ const SelectGroupForUserButton = (props) => {
   const fetchUserGroups = async () => {
     try {
       const storedUsername = localStorage.getItem("username");
-      const response = await fetch(`http://localhost:8080/${storedUsername}/getGroups`);
+      const response = await fetch(`http://localhost:8080/getGroups`, {
+        credentials: "include",
+      });
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched groups:", data); // Provjera podataka

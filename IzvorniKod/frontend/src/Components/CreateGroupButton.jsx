@@ -32,8 +32,9 @@ const CreateGroupButton = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/${localStorage.getItem("username")}/createGroup`, {
+      const response = await fetch(`http://localhost:8080/createGroup`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

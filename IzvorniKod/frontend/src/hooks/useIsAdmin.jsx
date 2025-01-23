@@ -11,7 +11,9 @@ const useIsAdmin = (username) => {
     const fetchIsAdmin = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_BASE_URL}/${username}/isAdmin`);
+        const response = await fetch(`${API_BASE_URL}/isAdmin`, {
+          credentials: "include",
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch admin status.");
         }

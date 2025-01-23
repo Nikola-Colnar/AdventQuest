@@ -54,11 +54,12 @@ const PastEventList = () => {
 
         // Fetch likes and personal likes
         const likesResponse = await fetch(
-          `http://localhost:8080/api/groups/${groupId}/getPastEvents/${username}`,
+          `http://localhost:8080/api/groups/${groupId}/getPastEvents`,
           {
             headers: {
               "Content-Type": "application/json",
             },
+            credentials: "include",
           }
         );
 
@@ -123,9 +124,10 @@ const PastEventList = () => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     };
 
-    const url = `http://localhost:8080/api/groups/${username}/${
+    const url = `http://localhost:8080/api/groups/${
       likedEvents[eventId] ? "deleteLike" : "reviewEvent"
     }/${eventId}`;
 
@@ -178,11 +180,12 @@ const PastEventList = () => {
     if (!commentInput.trim()) return; //ako je komentar prazan ne moze se dodati
 
     // Slanje komentara na backend
-    fetch(`http://localhost:8080/api/groups/${localStorage.getItem("username")}/addComment/${eventId}`, {
+    fetch(`http://localhost:8080/api/groups/addComment/${eventId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: commentInput,
     })
       .then(response => {

@@ -55,6 +55,7 @@ const DeleteUserFromGroup = () => {
       const groupId = localStorage.getItem("myGroupId"); // ID grupe u kojem se nalazi ovaj user
       const response = await fetch(`http://localhost:8080/user/${userToDelete}/group/${groupId}`, {
         method: "DELETE",
+        credentials: "include",
       });
       if (response.ok) {
         // Ako je korisnik uspješno obrisan, ažuriraj korisnički popis
