@@ -48,13 +48,13 @@ const SelectGroupForUserButton = (props) => {
   const handleGroupSelect = (event) => {
     const groupId = event.target.value; // GroupId iz odabrane vrijednosti
     setSelectedGroupId(groupId); // postavljamo vrijednost
-    props.setSelectedGroupId(groupId); // postavlja group ID i u App da ga koriste druge komponente
     const selectedGroup = groups.find(group => group.groupId === groupId);
     setSelectedGroupName(selectedGroup?.groupName || ""); // Postavimo naziv grupe
   };
 
   const handleSubmit = () => {
     if (selectedGroupId) {
+      props.setSelectedGroupId(selectedGroupId); // postavlja group ID i u App da ga koriste druge komponente
       localStorage.setItem("myGroupId", selectedGroupId); // Spremi groupId u localStorage
       localStorage.setItem("myGroupName", selectedGroupName);
       console.log("Selected Group ID saved to localStorage:", selectedGroupId);

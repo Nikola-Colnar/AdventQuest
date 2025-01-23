@@ -99,7 +99,7 @@ const AddEvent = () => {
                 onChange={handleInputChange}
               />
             </Grid>
-
+            {/* Ne Koristimo vise datum u dodavanju evenata, samo predsjednik moze rasporedivati evente
   <Grid item xs={12}>
     <TextField
       type="date"
@@ -111,6 +111,7 @@ const AddEvent = () => {
       onChange={handleInputChange}
     />
   </Grid>
+  */}
 
             <Grid item xs={12}>
               <Typography align="center" gutterBottom>
@@ -128,6 +129,7 @@ const AddEvent = () => {
                         border: "1px solid #ccc",
                         borderRadius: "5px",
                         cursor: "pointer",
+                        width: "80%",
                       }}
                     />
                 </Box>

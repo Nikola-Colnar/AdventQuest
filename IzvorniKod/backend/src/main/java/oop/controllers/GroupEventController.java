@@ -73,9 +73,7 @@ public class GroupEventController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         List<EventDTO> eventsDTOS = groupService.getEventsByGroupId(groupId);
-
-        if (eventsDTOS.isEmpty()) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
-
+        
         return ResponseEntity.ok(eventsDTOS);
     }
 

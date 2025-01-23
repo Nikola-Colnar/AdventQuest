@@ -16,7 +16,7 @@ import EventIcon from "@mui/icons-material/Event";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
 
-const PastEventList = () => {
+const PastEventList = (refresh) => {
   const [events, setEvents] = useState([]);
   const [likedEvents, setLikedEvents] = useState({}); //podaci o stanju like buttona
   const [comments, setComments] = useState({}); //komentari po eventIdu
@@ -94,7 +94,7 @@ const PastEventList = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, [fetchEvents]);
+  }, [fetchEvents,refresh]);
 
   //upravljanje likeovima
   const handleLike = (eventId) => {

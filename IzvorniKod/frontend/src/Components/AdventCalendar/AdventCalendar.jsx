@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction"; // Za podršku klikova
 import "./AdventCalendar.css"; // Dodajte prilagođene stilove
 
-const AdventCalendar = () => {
+const AdventCalendar = (refresh) => {
   const calendarRef = useRef(null);
   const calendarInstance = useRef(null);
   const [events, setEvents] = useState([]);
@@ -43,7 +43,7 @@ const AdventCalendar = () => {
     } catch (error) {
       console.error("Error fetching events:", error);
     }
-  }, []);
+  }, [refresh]);
 
   // Inicijalizacija kalendara
   useEffect(() => {

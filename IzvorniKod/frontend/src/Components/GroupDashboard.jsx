@@ -19,6 +19,14 @@ const GroupDashboard = ({ username, userID }) => {
 
   // Hook se uvijek poziva, ali `useIsPresident` neće raditi ništa dok nema `selectedGroupId`
   const { isPresident, loading, error } = useIsPresident(username, selectedGroupId || -1);
+  //promjena refresha, rerendera komponente
+  const [refresh, setRefresh] = useState(0);
+
+    //promjena refresha
+  const refreshComponent = () => {
+    setRefresh(prevState => prevState + 1);
+    };
+
 
   return (
     <div>
@@ -41,11 +49,11 @@ const GroupDashboard = ({ username, userID }) => {
           <DeleteUserFromGroup />
           <GroupEventPresident />
           {/*Ovo su komponente koje imaju i predsjednik i obicni clanovi*/}
-          <AdventCalendar />
+          <AdventCalendar refreshProp = {refresh}/>
           <AddEvent />
-          <AddToCalendar />
+          <AddToCalendar refreshComponent={refreshComponent}/>
           <EventProposal />
-          <PastEventsList />
+          <PastEventsList refreshProp = {refresh}/>
           <Conversation groupID={selectedGroupId} user={{ name: username, ID: userID }} />
         </div>
       ) : (
