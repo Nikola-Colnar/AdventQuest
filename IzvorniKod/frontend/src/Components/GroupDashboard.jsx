@@ -53,8 +53,9 @@ const GroupDashboard = ({ username, userID }) => {
           <AddEvent />
           <AddToCalendar refreshComponent={refreshComponent}/>
           <EventProposal />
-          <PastEventsList refreshProp = {refresh}/>
-          <Conversation groupID={selectedGroupId} user={{ name: username, ID: userID }} />
+          <PastEventsList />
+          <Conversation groupID={selectedGroupId} groupName={localStorage.getItem("myGroupName")} user={{ name: username, ID: userID }} />
+
         </div>
       ) : (
         <div>
@@ -67,7 +68,7 @@ const GroupDashboard = ({ username, userID }) => {
           <EventProposal />
           <PastEventsList />
           <ShowAllEventsFromGroup />
-          <Conversation groupID={selectedGroupId} user={{ name: username, ID: userID }} />
+          <Conversation groupID={selectedGroupId} groupName={localStorage.getItem("myGroupName")} user={{ name: username, ID: userID }} />
         </div>
       )}
     </div>

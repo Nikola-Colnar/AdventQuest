@@ -32,7 +32,8 @@ const useSocket = (group, userID) => {
       setNewInMsg({
           idSender: data.idSender,
           date: data.date,
-          poruka: data.poruka
+          poruka: data.poruka,
+          username: data.username
         });
       });
       return () => {
