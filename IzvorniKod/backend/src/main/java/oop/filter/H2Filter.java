@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @Component
-public class JwtFilter extends OncePerRequestFilter {
+public class H2Filter extends OncePerRequestFilter {
 
     @Autowired
     private JWTService jwtService;
@@ -30,8 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private ApplicationContext context;
 
-    private static final List<String> UNPROTECTED_PATHS = List.of("/", "/register", "/login", "/logout", "login?logout", "/api/login/google", "/h2-console");
-
+    private static final List<String> PROTECTED_PATHS = List.of("/h2-console/**");
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -39,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
 
-        if (!UNPROTECTED_PATHS.contains(request.getRequestURI())) {
+        if (request.getRequestURI().startsWith("/h2-console")) {
             System.out.println("Protected path, checking authorization");
 
 
@@ -65,10 +64,23 @@ public class JwtFilter extends OncePerRequestFilter {
                 UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
 
                 if (jwtService.validateToken(token, userDetails)) {
-                    //Postavljanje korisnika u SecurityContext
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication); // Ažuriranje SecurityContext
+                    if (userDetails instanceof oop.model.User) {
+                        oop.model.User user = (oop.model.User) userDetails;
+                        if (user.getIsAdmin() == 1) {
+                            //Postavljanje korisnika u SecurityContext
+                            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities());
+                            SecurityContextHolder.getContext().setAuthentication(authentication); // Ažuriranje SecurityContext
+                            // User is admin, proceed with the filter chain
+                            filterChain.doFilter(request, response);
+                            return;
+                        } else {
+                            System.out.println("User is not an admin");
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            return;
+                        }
+                    }
+
                     response.setStatus(HttpServletResponse.SC_OK);
                 } else {
                     System.out.println("Userdetails nije instanca oop.model.user");

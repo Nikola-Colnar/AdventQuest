@@ -53,8 +53,9 @@ const DeleteUser = () => {
     const adminName = localStorage.getItem("username");
     const deleteuser = userToDelete.username; //uzimamo ime usera kojeg zelimo obrisati
     try {
-      const response = await fetch(`http://localhost:8080/admin/${adminName}/deleteUser/${deleteuser}`, {
+      const response = await fetch(`http://localhost:8080/admin/deleteUser/${deleteuser}`, {
         method: "DELETE",
+        credentials: "include",
       });
       if (response.ok) {
         // Ako je korisnik uspješno obrisan, ažuriraj korisnički popis

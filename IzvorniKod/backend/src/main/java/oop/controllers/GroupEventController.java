@@ -1,11 +1,9 @@
 package oop.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import oop.model.*;
 import oop.repository.RatedEventRepository;
-import oop.service.EventService;
-import oop.service.GroupService;
-import oop.service.MessageService;
-import oop.service.UserService;
+import oop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,29 +25,24 @@ public class GroupEventController {
     private final EventService eventService;
     private final MessageService messageService;
     private final RatedEventRepository ratedEventRepository;
+    private final JWTService jwtService;
 
     @Autowired
-    public GroupEventController(GroupService groupService, UserService userService, EventService eventService, MessageService messageService, RatedEventRepository ratedEventRepository) {
+    public GroupEventController(GroupService groupService,
+                                UserService userService,
+                                EventService eventService,
+                                MessageService messageService,
+                                RatedEventRepository ratedEventRepository,
+                                JWTService jwtService) {
         this.groupService = groupService;
         this.userService = userService;
         this.eventService = eventService;
         this.messageService = messageService;
         this.ratedEventRepository = ratedEventRepository;
+        this.jwtService = jwtService;
     }
 
 
-//    @PostMapping("/{groupId}/addEvent") // stvaranje eventa u grupi
-//    public ResponseEntity<Event> createEventForGroup(@PathVariable int groupId, @RequestBody Event event) {
-//        // Postoji li grupa
-//        Optional<Group> group = groupService.findById(groupId);
-//        if (group.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        } else {
-//            event.setGroup(group.get());
-//            eventService.save(event);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(event);
-//        }
-//    }
     @GetMapping("/{groupId}/getIdPredstavnik") //Dohvaćanje ID Predstavnika grupe
     public ResponseEntity<Integer> getPredstavniksIdByGroupId(@PathVariable int groupId){
         Optional<Group> group = groupService.findById(groupId);
@@ -84,9 +77,9 @@ public class GroupEventController {
         return ResponseEntity.ok(eventsDTOS);
     }
 
-    @GetMapping("/{groupId}/getPastEvents/{username}") // vraća evenName, brojLajkova i username jel lajkao(da/ne)
-    public ResponseEntity<List<IspisEventDTO>> getPastEventsByGroupId(@PathVariable int groupId, @PathVariable String username) {
-
+    @GetMapping("/{groupId}/getPastEvents") // vraća evenName, brojLajkova i username jel lajkao(da/ne)
+    public ResponseEntity<List<IspisEventDTO>> getPastEventsByGroupId(@PathVariable int groupId, HttpServletRequest request) {
+        String username = jwtService.getUsernameFromHttpServletRequest(request);
         Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
         User user = userService.getUserByUsername(username);
 
@@ -154,9 +147,9 @@ public class GroupEventController {
         return ResponseEntity.ok(groupService.getAllMessages(groupId));
     }
 
-    @PostMapping("/{username}/reviewEvent/{eventId}") // lajkanje eventa
-    public ResponseEntity<RatedEventDTO> reviewEvent(@PathVariable String username, @PathVariable int eventId) {
-
+    @PostMapping("/reviewEvent/{eventId}") // lajkanje eventa
+    public ResponseEntity<RatedEventDTO> reviewEvent(HttpServletRequest request, @PathVariable int eventId) {
+        String username = jwtService.getUsernameFromHttpServletRequest(request);
         User user = userService.getUserByUsername(username);
         Optional<Event> event = eventService.getEventById(eventId);
 
@@ -169,9 +162,9 @@ public class GroupEventController {
                 new RatedEventDTO(user.getUsername(), event.get().getEventName(), 1));
     }
 
-    @DeleteMapping("/{username}/deleteLike/{eventId}") // brisanje lajka
-    public ResponseEntity<Integer> deleteLikeEvent(@PathVariable String username, @PathVariable int eventId){
-
+    @DeleteMapping("/deleteLike/{eventId}") // brisanje lajka
+    public ResponseEntity<Integer> deleteLikeEvent(HttpServletRequest request, @PathVariable int eventId){
+        String username = jwtService.getUsernameFromHttpServletRequest(request);
         User user = userService.getUserByUsername(username);
         Optional<Event> event = eventService.getEventById(eventId);
 
@@ -187,9 +180,10 @@ public class GroupEventController {
         return ResponseEntity.ok(id);
     }
 
-    @PostMapping("/{username}/addComment/{eventId}")
-    public ResponseEntity<EventCommentDTO> addComment(@PathVariable String username, @PathVariable int eventId,
+    @PostMapping("/addComment/{eventId}")
+    public ResponseEntity<EventCommentDTO> addComment(HttpServletRequest request, @PathVariable int eventId,
                                                     @RequestBody String comment) {
+        String username = jwtService.getUsernameFromHttpServletRequest(request);
         User user = userService.getUserByUsername(username);
         Optional<Event> event = eventService.getEventById(eventId);
 
