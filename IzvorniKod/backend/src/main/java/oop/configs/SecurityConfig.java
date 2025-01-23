@@ -78,7 +78,6 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/register", "/login", "/logout", "login?logout", "/api/login/google").permitAll()
                         .requestMatchers("/h2-console/**").authenticated()
-                        .requestMatchers("/admin/addAdmin").permitAll() //OVO MAKNUT NAKON STO ADDAS ADMINA U BAZU
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
