@@ -54,6 +54,7 @@ public class GroupEventController {
 
     @PostMapping("/{groupid}/addEvent")
     public ResponseEntity<EventDTO> createEvent(@PathVariable int groupid, @RequestBody Event event) {
+        System.out.println("EVENT: +  " + event);
         Optional<Group> group = groupService.findById(groupid);
 
         if(group.isEmpty())

@@ -4,9 +4,9 @@ import "../../styles/Message.css";
 
 function reformatDate(date) {
     const datum = date.split(".");
-    var dateStandard = datum[2] + "-";
-    dateStandard += ((datum[1].length==1)?"0":"") + datum[1];
-    dateStandard += ((datum[0].length==1)?"0":"") + datum[0];
+    var dateStandard = datum[2] + "-";  // Dodaje godinu i prvu crticu
+    dateStandard += ((datum[1].length == 1) ? "0" : "") + datum[1] + "-";  // Dodaje mjesec i drugu crticu
+    dateStandard += ((datum[0].length == 1) ? "0" : "") + datum[0];  // Dodaje dan
     return dateStandard;
 }
 
@@ -24,6 +24,7 @@ function AIEventMessage(props) {
             try {
                 const response = await fetch(`http://localhost:8080/api/groups/${props.groupID}/addEvent`, {
                     method: "POST",
+                    credentials : "include",
                     headers: {
                     "Content-Type": "application/json",
                     },
