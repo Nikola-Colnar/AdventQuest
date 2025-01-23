@@ -86,8 +86,7 @@ public class SecurityConfig {
                         }))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
-                            System.out.println("authenticationEntryPoint error -> nemas token");
-                            response.sendRedirect("http://localhost:5173/logout"); //ako nisi autoriziran
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
                         }))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));   //za h2
@@ -100,6 +99,7 @@ public class SecurityConfig {
                 .permitAll()
                 .deleteCookies("jwtToken")
                 .logoutSuccessHandler((request, response, authentication) -> {
+                    System.out.println("Izvrsavam spring security logout");
                     response.setStatus(HttpServletResponse.SC_OK);
                 })
         );

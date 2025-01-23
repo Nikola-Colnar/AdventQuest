@@ -49,6 +49,10 @@ const CreateGroupButton = () => {
         console.log(createdGroup);
         localStorage.setItem("myGroupName", createdGroup.nazivGrupa);
         localStorage.setItem("myGroupId", createdGroup.idgroup);
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to create group");
       }

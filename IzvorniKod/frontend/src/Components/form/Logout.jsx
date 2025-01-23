@@ -13,7 +13,7 @@ const Logout = ({ setIsLoggedIn, loadUsername }) => {
         setIsLoggedIn(false);  // Set logged-in status to false
 
         // send a logout request to the backend
-        const response = await fetch("http://localhost:8080/api/logout", {
+        const response = await fetch("http://localhost:8080/logout", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

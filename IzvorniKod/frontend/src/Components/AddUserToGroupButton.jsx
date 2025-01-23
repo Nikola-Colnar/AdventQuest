@@ -58,7 +58,10 @@ const AddUserToGroupButton = () => {
         setInfoMessage("New Adventurer added");
         setUsername("");
         setTimeout(() => setInfoMessage(""), 2000);
-      } else {
+      } else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }else {
         setInfoMessage("User doesn't exist"); // Tvoj tekst za poruku
         setTimeout(() => setInfoMessage(""), 2000);
       }

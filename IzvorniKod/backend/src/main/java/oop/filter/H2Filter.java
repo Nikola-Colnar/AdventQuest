@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import oop.model.MyUserDetails;
+import oop.model.User;
 import oop.service.JWTService;
 import oop.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.SignedObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -64,13 +67,17 @@ public class H2Filter extends OncePerRequestFilter {
                 UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
 
                 if (jwtService.validateToken(token, userDetails)) {
-                    if (userDetails instanceof oop.model.User) {
-                        oop.model.User user = (oop.model.User) userDetails;
+                    // Proverite da li je userDetails instanca MyUserDetails
+                    if (userDetails instanceof MyUserDetails) {
+                        MyUserDetails myUserDetails = (MyUserDetails) userDetails;
+                        User user = myUserDetails.getUser(); // Pretpostavimo da imate getter za User u MyUserDetails
+
                         if (user.getIsAdmin() == 1) {
-                            //Postavljanje korisnika u SecurityContext
+                            System.out.println("Da, ti si admin");
+                            // Postavljanje korisnika u SecurityContext
                             Authentication authentication = new UsernamePasswordAuthenticationToken(
                                     userDetails, null, userDetails.getAuthorities());
-                            SecurityContextHolder.getContext().setAuthentication(authentication); // Ažuriranje SecurityContext
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
                             // User is admin, proceed with the filter chain
                             filterChain.doFilter(request, response);
                             return;
@@ -79,13 +86,11 @@ public class H2Filter extends OncePerRequestFilter {
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             return;
                         }
+                    } else {
+                        System.out.println("UserDetails nije instanca MyUserDetails");
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        return;
                     }
-
-                    response.setStatus(HttpServletResponse.SC_OK);
-                } else {
-                    System.out.println("Userdetails nije instanca oop.model.user");
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
                 }
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
