@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/fontawesome-free-regular";
 import "../../styles/Conversation.css"
 
-const MINUTE = 60*1000;
+const MINUTE = 60 * 1000;
 function areSentWithin(date2, date1, milisec) {
   return (Date.parse(date2) - Date.parse(date1) <= milisec);
 }
@@ -18,21 +18,21 @@ function Conversation(props) {
 
   useEffect(() => {
     fetch(`/api/groups/${props.groupID}/getMessages`)
-    .then(data => data.json())
-    .then(messageList => {
-      console.log("lista", messageList);
-      setMessageList(messageList);
-    });
-  }, [] );
+      .then(data => data.json())
+      .then(messageList => {
+        console.log("lista", messageList);
+        setMessageList(messageList);
+      });
+  }, []);
 
   useEffect(() => {
-    if(newInMsg.poruka != "") {
+    if (newInMsg.poruka != "") {
       setMessageList([...messageList, newInMsg]);
     }
   }, [newInMsg]);
 
   const sendNewMessage = () => {
-    if(newOutMsg != "") {
+    if (newOutMsg != "") {
       sendMsg(newOutMsg);
       setMessageList([...messageList, {
         idSender: props.user.ID,
@@ -47,12 +47,12 @@ function Conversation(props) {
   }
 
   return (
-  <div className="chat">
-    <h1>Chat za grupu {props.groupID}</h1>
+    <div className="chat">
+      <h1>Chat za grupu {props.groupID}</h1>
       <ul> {
-          messageList.map((msg, index, list) => <Message  key={index} msg={msg} 
-                                                          isSentMsg={msg.idSender == props.user.ID} 
-                                                          displayTime ={(index == 0)? true : (msg.idSender != list[index-1].idSender || !areSentWithin(msg.date, list[index-1].date, 2*MINUTE))}/>)
+        messageList.map((msg, index, list) => <Message key={index} msg={msg}
+          isSentMsg={msg.idSender == props.user.ID}
+          displayTime={(index == 0) ? true : (msg.idSender != list[index - 1].idSender || !areSentWithin(msg.date, list[index - 1].date, 2 * MINUTE))} />)
       } </ul>
       <div className="controls">
         <textarea name="message-box" id="message-box" onChange={changeMsg} value={newOutMsg} placeholder="Napišite nešto lijepo..." rows="3"></textarea>
@@ -60,6 +60,6 @@ function Conversation(props) {
           <FontAwesomeIcon icon={faPaperPlane} />
         </button>
       </div>
-      </div>);
+    </div>);
 }
 export default Conversation;

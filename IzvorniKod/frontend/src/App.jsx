@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Navigate, BrowserRouter as Router, useRoutes } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "./styles/App.css";
 import Form from "./Components/form/Form.jsx";
 import RegForm from "./Components/form/RegForm.jsx";
@@ -12,12 +13,49 @@ import ProtectedRoute from "./Components/ProtectedRoute.jsx";
 import AdminRoute from "./Components/AdminRoute.jsx";
 import GroupDashboard from "./Components/GroupDashboard.jsx";
 
+const christmasTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#2E8B57",
+      contrastText: "#FFFFFF",
+    },
+    secondary: {
+      main: "#800020",
+      contrastText: "#FFFFFF",
+    },
+    info: {
+      main: "#DAA520",
+      contrastText: "#FFFFFF",
+    },
+    background: {
+      default: "#F5F5F5",
+      paper: "#FFFFFF",
+    },
+    text: {
+      primary: "#000000",
+      secondary: "#800020",
+    },
+  },
+  typography: {
+    h1: {
+      fontWeight: 700,
+    },
+    h2: {
+      fontWeight: 600,
+    },
+    body1: {
+      fontWeight: 400,
+    },
+  },
+});
+
 function App() {
   // definiranje stanja prijave, korisnickog imena i kalendara
   // * kod refreshanja stranice provjerava se localstorage
   const [isLoggedIn, setIsLoggedIn] = useState((localStorage.getItem("username") ? true : false));
   const [username, setUsername] = useState((localStorage.getItem("username")) || "Guest");
   const [userID, setUserID] = useState((localStorage.getItem("userID")));
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // dodano radi prikaza odabrane grupe
 
   const handleLoginStatusChange = (status) => {
     setIsLoggedIn(status);
@@ -35,6 +73,10 @@ function App() {
     setIsLoggedIn(status);
   };
 
+  const refreshHeader = () => {
+    setRefreshTrigger((prev) => prev + 1); // Povećanje refreshTrigger stanja
+  };
+
   const AppRoutes = () => {
     const routes = [
       {
@@ -48,6 +90,7 @@ function App() {
                 isLoggedIn={isLoggedIn}
                 handlelogin={handlelogin}
                 username={username}
+                refreshTrigger={refreshTrigger}
               />
               <Countdown targetDate="2025-12-25T00:00:00" />
             </>
@@ -92,21 +135,23 @@ function App() {
         path: "/dashboard",
         element: (
           <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <Snowfall className="snowfall" />
             <Box
               display="flex"
               flexDirection="column"
+              alignItems="center"
               height="100vh"
               width="100%"
-              alignItems={"center"}
+              maxWidth="100vw"
             >
+              <Snowfall className="snowfall" />
               <Header
                 className="header"
                 isLoggedIn={isLoggedIn}
                 handlelogin={handlelogin}
                 username={username}
+                refreshTrigger={refreshTrigger}
               />
-              <GroupDashboard username={username} userID={userID} />
+              <GroupDashboard username={username} userID={userID} refreshHeader={refreshHeader} />
             </Box>
           </ProtectedRoute>
         ),
@@ -143,9 +188,11 @@ function App() {
   };
 
   return (
-    <Router>
-      <AppRoutes />
-    </Router>
+    <ThemeProvider theme={christmasTheme}>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </ThemeProvider>
   );
 }
 

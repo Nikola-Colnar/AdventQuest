@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-const CreateGroupButton = () => {
+const CreateGroupButton = (props) => {
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
 
@@ -48,6 +48,8 @@ const CreateGroupButton = () => {
         console.log(createdGroup);
         localStorage.setItem("myGroupName", createdGroup.nazivGrupa);
         localStorage.setItem("myGroupId", createdGroup.idgroup);
+        props.setSelectedGroupId(createdGroup.idgroup); // postavlja group ID i u App da ga koriste druge komponente
+        props.refreshHeader();
       } else {
         console.error("Failed to create group");
       }

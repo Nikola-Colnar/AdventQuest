@@ -57,6 +57,7 @@ const SelectGroupForUserButton = (props) => {
       localStorage.setItem("myGroupName", selectedGroupName);
       console.log("Selected Group ID saved to localStorage:", selectedGroupId);
       console.log("Selected Group Name saved to localStorage:", selectedGroupName);
+      props.refreshHeader();
     } else {
       console.error("No group selected!");
     }
@@ -104,8 +105,6 @@ const SelectGroupForUserButton = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {selectedGroupId && <p>Selected Group: {selectedGroupName}</p>}
     </Box>
   );
 };

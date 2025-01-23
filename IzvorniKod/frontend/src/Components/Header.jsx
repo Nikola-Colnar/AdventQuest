@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppBar, Toolbar, Typography, Button, Menu, MenuItem, Avatar, Box } from "@mui/material";
 import { styled } from "@mui/system";
 import SignOutButton from "./SignOutButton.jsx";
@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 // styling za navigacijsku traku
 const StyledAppBar = styled(AppBar)(() => ({
   position: "relative",  // position relative jer static position ne moze mijenjati z index
-  backgroundColor: "rgba(255, 0, 0)",  // boja navigacijskog bara
+  backgroundColor: "#800020",  // boja navigacijskog bara
   boxShadow: "none",
   zIndex: 11,
 }));
@@ -36,8 +36,16 @@ const StyledMenu = styled(Menu)(() => ({
   },
 }));
 
-function Header({ isLoggedIn, handlelogin, username, userAvatar }) {
+function Header({ isLoggedIn, handlelogin, username, userAvatar, refreshProp }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [groupName, setGroupName] = useState("");
+
+  useEffect(() => {
+    const storedGroupName = localStorage.getItem("myGroupName");
+    if (storedGroupName) {
+      setGroupName(storedGroupName);
+    }
+  }, [refreshProp]);
 
   // funkcije za dropdown menu
   const handleMenuOpen = (event) => {
@@ -61,6 +69,13 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar }) {
             AdventQuest
           </Logo>
         </Link>
+
+        {/* Prikaz naziva grupe ako postoji */}
+        {groupName && (
+          <Typography variant="h6" color="white">
+            {groupName.toUpperCase()}
+          </Typography>
+        )}
 
         {/* Conditional rendering ovisno je li korisnik prijavljen ili nije */}
         {(isLoggedIn) ? (
