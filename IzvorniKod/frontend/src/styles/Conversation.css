@@ -28,3 +28,7 @@
     border: 1px solid black;
     background-color: lightgreen;
 }
+.chat h1 {
+    text-align: center;
+    font-size: 1.8em;
+}

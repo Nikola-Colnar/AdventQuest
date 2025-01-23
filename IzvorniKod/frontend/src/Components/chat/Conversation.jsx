@@ -50,12 +50,12 @@ function Conversation(props) {
 
   return (
   <div className="chat">
-    <h1>Chat za grupu {props.groupID}</h1>
+    <h1>CHAT - {props.groupName}</h1>
       <ul> {
           messageList.map((msg, index, list) => {
             const showTime = (index == 0)? true : (msg.idSender != list[index-1].idSender || !areSentWithin(msg.date, list[index-1].date, 2*MINUTE));
             if(msg.username == "chatBot") {
-              return (<AIEventMessage key={index} msg={msg} hasTime={true} displayTime={showTime}/>);
+              return (<AIEventMessage key={index} msg={msg} groupID={props.groupID} hasTime={true} displayTime={showTime}/>);
             } else {
               return (<Message key={index} msg={msg} isSentMsg={msg.idSender == props.user.ID} displayTime ={showTime}/>);
             }
