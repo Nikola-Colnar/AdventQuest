@@ -52,7 +52,7 @@ function Conversation(props) {
 
   return (
   <div className="chat">
-    <h1>CHAT - {props.groupName}</h1>
+    <h1>{props.groupName}</h1>
       <ul> {
           messageList.map((msg, index, list) => {
             const showTime = (index == 0)? true : (msg.idSender != list[index-1].idSender || !areSentWithin(msg.date, list[index-1].date, 2*MINUTE));
@@ -64,7 +64,7 @@ function Conversation(props) {
           }
       )} </ul>
       <div className="controls">
-        <textarea name="message-box" id="message-box" onChange={changeMsg} value={newOutMsg} placeholder="Napišite nešto lijepo..." rows="3"></textarea>
+        <textarea name="message-box" id="message-box" onChange={changeMsg} value={newOutMsg} placeholder="Write anything you would like to do..." rows="3"></textarea>
         <button id="send-button" onClick={sendNewMessage}>
           <FontAwesomeIcon icon={faPaperPlane} />
         </button>

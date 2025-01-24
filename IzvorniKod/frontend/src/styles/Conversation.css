@@ -1,9 +1,9 @@
 .chat {
     position: relative;
-    padding-left: 10px;
-    margin-top: 10px;
-    background-color: rgba(100, 100, 100, 0.4);
-    width: 80%;
+    background-color: rgba(181, 181, 181, 0.46);
+    width: 100%;
+
+
 }
 .chat ul {
     display: flex;
@@ -11,7 +11,7 @@
     list-style-type: none;
     padding: 5px;
     overflow: auto scroll;
-    height: 400px;
+    height: 500px;
 }
 .chat .controls {
     background-color: red;
@@ -30,4 +30,5 @@
 .chat h1 {
     text-align: center;
     font-size: 1.8em;
+    background-color: rgba(204, 46, 46, 0.16);
 }

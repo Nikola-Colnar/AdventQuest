@@ -129,12 +129,17 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
           )}
 
           {/* Chat Section */}
-          <Paper elevation={3} sx={{ p: 2, zIndex: 11}}>
+          <Paper elevation={3} sx={{ p: 2, zIndex: 11, backgroundColor: "rgba(255,255,255,0.75)"}}>
             <Typography variant="h6">Group Chat</Typography>
-            <Conversation groupName = {localStorage.getItem("myGroupName")}
+            <Paper  elevation={4} sx={{ zIndex: 11, backgroundColor: "rgba(255,255,255,0.75)",
+              marginTop: 2 }}>
+            <Conversation
+
+              groupName = {localStorage.getItem("myGroupName")}
               groupID={selectedGroupId}
               user={{ name: username, ID: userID }}
             />
+              </Paper>
           </Paper>
 
           {/* Panel koji svi vide */}
