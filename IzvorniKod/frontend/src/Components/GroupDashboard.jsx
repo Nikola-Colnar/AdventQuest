@@ -129,7 +129,7 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
           {/* Chat Section */}
           <Paper elevation={3} sx={{ p: 2, zIndex: 11}}>
             <Typography variant="h6">Group Chat</Typography>
-            <Conversation
+            <Conversation groupName = {localStorage.getItem("myGroupName")}
               groupID={selectedGroupId}
               user={{ name: username, ID: userID }}
             />
