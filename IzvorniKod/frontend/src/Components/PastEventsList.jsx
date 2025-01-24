@@ -238,10 +238,7 @@ const PastEventList = (refresh) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: "0 auto", padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        Conquered Quests
-      </Typography>
+    <Box sx={{ maxWidth: "100%", margin: "0 auto", padding: 2 }}>
       <List>
         {events.map((event) => (
           <div key={event.id}>

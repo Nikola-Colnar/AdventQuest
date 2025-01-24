@@ -102,35 +102,80 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
               backgroundColor: "rgba(255,255,255,0.75)"
 
             }}>
-              <Typography variant="h6">President Panel</Typography>
+              <Typography sx={{
+                color: "#2E8B57",
+                fontWeight: "bold",
+                textAlign: "left",
+                textShadow: "4px 4px 6px rgba(0, 0, 0, 0.4)",
+                position: "relative",
+                cursor: "default",
+              }} variant="h5">President Panel</Typography>
+              <Paper elevation={0} sx={{ p: 2, zIndex: 11,
+                display: "flex" ,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                backgroundColor: "rgba(255,255,255,0)",
+                borderTop: "solid",
+                borderColor: "rgba(16,165,16,0.02)"
+              }}>
               <AddUserToGroupButton />
               <DeleteUserFromGroup />
               <AddToCalendar refreshComponent={refreshComponent} refreshProp={refresh} />
               <GroupEventPresident />
               <AddEvent refreshComponent={refreshComponent}/>
               <EventProposal />
+              </Paper>
             </Paper>
           )}
           {!isPresident && (
             <Paper elevation={3} sx={{ p: 2, zIndex: 11,
               display: "flex" ,
-              flexDirection: "row",
+              flexDirection: "column",
               justifyContent: "space-between",
               flexWrap: "wrap",
               backgroundColor: "rgba(255,255,255,0.75)"
             }}>
-              <Typography variant="h6">User Panel</Typography>
+              <Typography
+                sx={{
+                  color: "#2E8B57",
+                  fontWeight: "bold",
+                  textAlign: "left",
+                  textShadow: "4px 4px 6px rgba(0, 0, 0, 0.4)",
+                  position: "relative",
+                  cursor: "default",
+                }}
+                variant="h5">User Panel</Typography>
+              <Paper elevation={0} sx={{ p: 2, zIndex: 11,
+                display: "flex" ,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                backgroundColor: "rgba(255,255,255,0)",
+                borderTop: "solid",
+                borderColor: "rgba(16,165,16,0.02)"
+              }}>
               <AddEvent refreshComponent={refreshComponent}/>
               <EventProposal />
               <ShowAllEventsFromGroup></ShowAllEventsFromGroup>
               <ShowAllUsersFromGroup></ShowAllUsersFromGroup>
-
+              </Paper>
             </Paper>
           )}
 
           {/* Chat Section */}
           <Paper elevation={3} sx={{ p: 2, zIndex: 11, backgroundColor: "rgba(255,255,255,0.75)"}}>
-            <Typography variant="h6">Group Chat</Typography>
+            <Typography
+              sx={{
+                color: "#2E8B57",
+                fontWeight: "bold",
+                textAlign: "left",
+                textShadow: "4px 4px 6px rgba(0, 0, 0, 0.4)",
+                position: "relative",
+
+                cursor: "default",
+              }}
+              variant="h4">Group Chat</Typography>
             <Paper  elevation={4} sx={{ zIndex: 11, backgroundColor: "rgba(255,255,255,0.75)",
               marginTop: 2 }}>
             <Conversation
@@ -148,10 +193,9 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
                         sx={{
                           color: "#2E8B57",
                           fontWeight: "bold",
-                          textAlign: "center",
+                          textAlign: "left",
                           textShadow: "4px 4px 6px rgba(0, 0, 0, 0.4)",
                           position: "relative",
-                          padding: "10px 0",
                           cursor: "default",
                         }}>
               Advent Calendar
@@ -159,8 +203,21 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
             <Paper  elevation={2} sx={{ p: 2, zIndex: 11, marginTop: "10px" }}>
             <AdventCalendar refreshProp={refresh} />
             </Paper>
-            <Paper  elevation={2} sx={{ p: 2, zIndex: 11, marginTop: "15px" }}>
-            <PastEventsList refreshProp={refresh} />
+            </Paper>
+          <Paper  elevation={2} sx={{ p: 2, zIndex: 11, marginTop: "15px" , backgroundColor: "rgba(255,255,255,0.75)"}}>
+            <Typography variant="h4"
+                        sx={{
+                          color: "#2E8B57",
+                          fontWeight: "bold",
+                          textAlign: "left",
+                          textShadow: "4px 4px 6px rgba(0, 0, 0, 0.4)",
+                          position: "relative",
+                          cursor: "default",
+                        }}>
+              Conquered Quests
+            </Typography>
+            <Paper  elevation={3} sx={{ p: 2, zIndex: 11, backgroundColor: "rgba(255,255,255,0.75)" }}>
+              <PastEventsList refreshProp={refresh} />
             </Paper>
 
           </Paper>

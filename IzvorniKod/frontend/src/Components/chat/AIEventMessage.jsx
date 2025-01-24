@@ -55,15 +55,15 @@ function AIEventMessage(props) {
     return (
         <li className={"message AI-message " + (props.displayTime?" ":" time-hidden")}>
             <div className="msg-sender">{props.msg.username}</div>
-            <div className="prompt"> Želite li dodati ovu aktivnost?</div>
+            <div className="prompt"> Would you like to add this activity?</div>
             <div className="msg-time">{parseDate(props.msg.date)}</div>
-            <div className="msg-activity"><span>aktivnost: </span>{parts[0]}</div>
-            <div className="msg-description"><span>opis: </span>{parts[1]}</div>
-            <div className="msg-act-date"><span>datum: </span>{hasDate?parts[2]:"no date"}</div>
+            <div className="msg-activity"><span>activity: </span>{parts[0]}</div>
+            <div className="msg-description"><span>description: </span>{parts[1]}</div>
+            <div className="msg-act-date"><span>date: </span>{hasDate?parts[2]:"no date"}</div>
             {active?
                 <div className="msg-control">
-                    <button className="da" onClick={()=>acceptEvent(parts)}>DA</button>
-                    <button className="ne" onClick={()=>rejectEvent(parts)}>NE</button>
+                    <button className="da" onClick={()=>acceptEvent(parts)}>Yes</button>
+                    <button className="ne" onClick={()=>rejectEvent(parts)}>No</button>
                 </div>
                 :
                 <div className="resolutionMessage">{resolveMessage}</div>
