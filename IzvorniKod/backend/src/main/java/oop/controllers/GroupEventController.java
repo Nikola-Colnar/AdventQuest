@@ -74,7 +74,15 @@ public class GroupEventController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         List<EventDTO> eventsDTOS = groupService.getEventsByGroupId(groupId);
+ 
+
+      
+
+        eventsDTOS.sort(Comparator.comparing(EventDTO::getEventId));
+
+
         
+
         return ResponseEntity.ok(eventsDTOS);
     }
 
@@ -109,8 +117,19 @@ public class GroupEventController {
         //DODAJ AUTENTIFIKACIJU DA JE ZAHTJEV POSLAO PREDSTAVNIK TOKEN!!!
         //ZAKOMENTIRAN kod je stara logika treba se zamjeniti s sadasnjom autentifikacijom da radi isto!!
         //////////////////////////////////////////////////////
-        //Provjera postoji li grupa i user
-        Group group = groupService.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+        // Provjera postoji li grupa
+        Group group = groupService.findById(groupId).orElse(null);
+        if (group == null) {
+            // Ako grupa ne postoji, vraća se HTTP status 404 (Not Found)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        // Provjera postoji li event i je li povezan s grupom
+        Event event = eventService.getEventById(eventId).orElse(null);
+        if (event == null || !group.getEvents().contains(event)) {
+            // Ako event ne postoji ili nije povezan s grupom, vraća se HTTP status 404 (Not Found)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         //Optional<User> user = userService.getUserById(Integer.parseInt(idUser));
         //if (group == null || user.isEmpty()) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);}
 
