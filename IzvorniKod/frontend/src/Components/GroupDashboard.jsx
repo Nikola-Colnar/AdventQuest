@@ -19,6 +19,7 @@ import PastEventsList from "./PastEventsList";
 import Conversation from "./chat/Conversation";
 import useIsPresident from "../hooks/useIsPresident";
 import ShowAllEventsFromGroup from "./ShowAllEventsFromGroup.jsx";
+import ShowAllUsersFromGroup from "./ShowAllUsersFromGroup.jsx";
 
 const GroupDashboard = ({ username, userID, refreshHeader }) => {
   const [selectedGroupId, setSelectedGroupId] = useState(
@@ -43,7 +44,7 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
         Group Management
       </Typography>
 
-      <Box mb={3} display="flex" gap={2}>
+      <Box sx = {{backgroundColor: "transparent"}}mb={3} display="flex" gap={2}>
         <CreateGroupButton setSelectedGroupId={setSelectedGroupId} refreshHeader={refreshHeader} />
         <SelectGroupForUserButton setSelectedGroupId={setSelectedGroupId} refreshHeader={refreshHeader} />
       </Box>
@@ -80,7 +81,7 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
           )}
 
           {/* Chat Section */}
-          <Paper elevation={3} sx={{ p: 2 }}>
+          <Paper elevation={3} sx={{ p: 2}}>
             <Typography variant="h6">Group Chat</Typography>
             <Conversation
               groupID={selectedGroupId}
@@ -89,7 +90,7 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
           </Paper>
 
           {/* Panel koji svi vide */}
-          <Paper elevation={3} sx={{ p: 2 }}>
+          <Paper  elevation={3} sx={{ p: 2}}>
             <Typography variant="h6">
               Advent Calendar
             </Typography>
@@ -98,6 +99,7 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
             <AddEvent refreshComponent={refreshComponent}/>
             <EventProposal />
               <ShowAllEventsFromGroup></ShowAllEventsFromGroup>
+              <ShowAllUsersFromGroup></ShowAllUsersFromGroup>
             </Box>
             <PastEventsList refreshProp={refresh} />
           </Paper>

@@ -48,7 +48,7 @@ const ShowAllUsersFromGroup = () => {
 
   return (
     <Box>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+      <Button sx={{marginTop: "20px"}} variant="contained" color="primary" onClick={handleClickOpen}>
         Show participants
       </Button>
       <Dialog open={open} onClose={handleClose}>
