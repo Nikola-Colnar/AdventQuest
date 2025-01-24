@@ -18,6 +18,7 @@ import EventProposal from "./EventProposals";
 import PastEventsList from "./PastEventsList";
 import Conversation from "./chat/Conversation";
 import useIsPresident from "../hooks/useIsPresident";
+import ShowAllEventsFromGroup from "./ShowAllEventsFromGroup.jsx";
 
 const GroupDashboard = ({ username, userID, refreshHeader }) => {
   const [selectedGroupId, setSelectedGroupId] = useState(
@@ -96,6 +97,7 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
             <Box sx={{display: "flex", flexDirection:"row"}}>
             <AddEvent refreshComponent={refreshComponent}/>
             <EventProposal />
+              <ShowAllEventsFromGroup></ShowAllEventsFromGroup>
             </Box>
             <PastEventsList refreshProp={refresh} />
           </Paper>

@@ -114,7 +114,7 @@ const ShowAllEventsFromGroup = () => {
 
   return (
     <Box>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+      <Button sx = {{marginTop:"20px"}} variant="contained" color="primary" onClick={handleClickOpen}>
         Show Events
       </Button>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
