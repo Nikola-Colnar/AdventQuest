@@ -35,7 +35,9 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
-    public void deleteMessage(int id) {};
+    public void deleteMessage(int id) {
+        messageRepository.deleteById(id); 
+    };
 
 
 }

@@ -7,7 +7,8 @@ const useSocket = (group, userID) => {
   const [newInMsg, setNewInMsg] = useState({
       idSender: "",
       date: null,
-      poruka: ""
+      poruka: "",
+      messageID: null
     });
   const [isConnected, setConnected] = useState(false);
   const sendMsg = useCallback((text) => {
@@ -33,7 +34,8 @@ const useSocket = (group, userID) => {
           idSender: data.idSender,
           date: data.date,
           poruka: data.poruka,
-          username: data.username
+          username: data.username,
+          messageID: data.messageID
         });
       });
       return () => {

@@ -156,6 +156,22 @@ public class GroupEventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedMessage);
     }
 
+    @PostMapping("/{groupId}/deleteAIMessage/{msgID}") // brisanje AI poruke
+    public ResponseEntity<Integer> deleteMessage(@PathVariable int groupId, @PathVariable int msgID) {
+        System.out.println("brisanje AI poruke");
+        Optional<Message> message = messageService.getMessageById(msgID);
+        if(message.isEmpty()) {
+            System.out.println("AI poruka s danim ID ne postoji");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        User sender = userService.getUserById(Integer.parseInt(message.get().getIdSender())).get();
+        if("chatBot".equals(sender.getUsername())) {
+            messageService.deleteMessage(msgID);
+            return ResponseEntity.ok(msgID);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     @GetMapping("/{groupId}/getMessages") // dohvat nove poruka
     public ResponseEntity<List<MessageDTO>> getMessagesByGroupId(@PathVariable int groupId) {
 

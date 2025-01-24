@@ -13,6 +13,26 @@ function reformatDate(date) {
 function AIEventMessage(props) {
     const [active, setActive] = useState(true);
     const [resolveMessage, setResolveMessage] = useState("");
+    const removeAIMessage = useCallback(
+        async (msgID) => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/groups/${props.groupID}/deleteAIMessage/${msgID}`, {
+                    method: "POST",
+                    credentials : "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                });
+                if (response.ok) {
+                    console.log("AI message successfully removed from database");
+                } else {
+                    console.error("Failed to remove AI message");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+    );
     const acceptEvent = useCallback(
         async (event) => {
             const newEvent = {
@@ -34,6 +54,8 @@ function AIEventMessage(props) {
                     console.log("Event successfully added");
                     setActive(false); // Zatvori dijalog
                     setResolveMessage("PRIHVAĆENO");
+                    console.log("brisem AI poruku. id = ", props.msg.messageID);
+                    removeAIMessage(props.msg.messageID);
                 } else {
                     console.error("Failed to add event");
                 }
@@ -46,6 +68,8 @@ function AIEventMessage(props) {
         (event) => {
             setActive(false); // Zatvori dijalog
             setResolveMessage("ODBIJENO");
+            console.log("brisem AI poruku. id = ", props.msg.messageID);
+            removeAIMessage(props.msg.messageID);
         }
     );
 
