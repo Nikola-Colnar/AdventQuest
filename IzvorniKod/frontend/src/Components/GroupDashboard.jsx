@@ -6,20 +6,20 @@ import {
   Divider,
   Stack,
 } from "@mui/material";
-import CreateGroupButton from "./CreateGroupButton";
-import SelectGroupForUserButton from "./SelectGroupForUserButton";
-import AddUserToGroupButton from "./AddUserToGroupButton";
-import DeleteUserFromGroup from "./DeleteUserFromGroup";
-import GroupEventPresident from "./GroupEventPresident";
+import CreateGroupButton from "./Pres_User_komponente/CreateGroupButton.jsx";
+import SelectGroupForUserButton from "./Pres_User_komponente/SelectGroupForUserButton.jsx";
+import AddUserToGroupButton from "./PresidentKomponente/AddUserToGroupButton.jsx";
+import DeleteUserFromGroup from "./PresidentKomponente/DeleteUserFromGroup.jsx";
+import GroupEventPresident from "./PresidentKomponente/GroupEventPresident.jsx";
 import AdventCalendar from "./AdventCalendar/AdventCalendar";
-import AddEvent from "./AddEvent";
-import AddToCalendar from "./AddToCalendar";
-import EventProposal from "./EventProposals";
-import PastEventsList from "./PastEventsList";
+import AddEvent from "./Pres_User_komponente/AddEvent.jsx";
+import AddToCalendar from "./PresidentKomponente/AddToCalendar.jsx";
+import EventProposal from "./Pres_User_komponente/EventProposals.jsx";
+import PastEventsList from "./Pres_User_komponente/PastEventsList.jsx";
 import Conversation from "./chat/Conversation";
 import useIsPresident from "../hooks/useIsPresident";
-import ShowAllEventsFromGroup from "./ShowAllEventsFromGroup.jsx";
-import ShowAllUsersFromGroup from "./ShowAllUsersFromGroup.jsx";
+import ShowAllEventsFromGroup from "./Pres_User_komponente/ShowAllEventsFromGroup.jsx";
+import ShowAllUsersFromGroup from "./Pres_User_komponente/ShowAllUsersFromGroup.jsx";
 
 const GroupDashboard = ({ username, userID, refreshHeader }) => {
   const [selectedGroupId, setSelectedGroupId] = useState(

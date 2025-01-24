@@ -1,18 +1,18 @@
 import PropTypes from "prop-types";
 import useIsAdmin from "../hooks/useIsAdmin";
 import { Box, Divider, Paper, Stack, Typography } from "@mui/material";
-import AddUserToGroupButton from "./AddUserToGroupButton.jsx";
-import DeleteUserFromGroup from "./DeleteUserFromGroup.jsx";
-import AddToCalendar from "./AddToCalendar.jsx";
-import GroupEventPresident from "./GroupEventPresident.jsx";
-import AddEvent from "./AddEvent.jsx";
-import EventProposal from "./EventProposals.jsx";
-import DeleteUser from "./DeleteUser.jsx";
+import AddUserToGroupButton from "./PresidentKomponente/AddUserToGroupButton.jsx";
+import DeleteUserFromGroup from "./PresidentKomponente/DeleteUserFromGroup.jsx";
+import AddToCalendar from "./PresidentKomponente/AddToCalendar.jsx";
+import GroupEventPresident from "./PresidentKomponente/GroupEventPresident.jsx";
+import AddEvent from "./Pres_User_komponente/AddEvent.jsx";
+import EventProposal from "./Pres_User_komponente/EventProposals.jsx";
+import DeleteUser from "./AdminKomponente/DeleteUser.jsx";
 import Conversation from "./chat/Conversation.jsx";
 import AdventCalendar from "./AdventCalendar/AdventCalendar.jsx";
-import PastEventsList from "./PastEventsList.jsx";
+import PastEventsList from "./Pres_User_komponente/PastEventsList.jsx";
 import { useState } from "react";
-import GetAllGroupsAdmin from "./GetAllGroupsAdmin.jsx";
+import GetAllGroupsAdmin from "./AdminKomponente/GetAllGroupsAdmin.jsx";
 
 const AdminRoute = ({ username, userID }) => {
   const { isAdmin, loading, error } = useIsAdmin(username);
