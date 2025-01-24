@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -96,7 +96,7 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
           {isPresident && (
             <Paper elevation={3} sx={{ p: 2 , zIndex: 12,
               display: "flex" ,
-              flexDirection: "row",
+              flexDirection: "column",
               justifyContent: "space-between",
               flexWrap: "wrap",
               backgroundColor: "rgba(255,255,255,0.75)"
@@ -117,7 +117,9 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
                 flexWrap: "wrap",
                 backgroundColor: "rgba(255,255,255,0)",
                 borderTop: "solid",
-                borderColor: "rgba(16,165,16,0.02)"
+                borderColor: "rgba(16,165,16,0.02)",
+                padding:0,
+                paddingTop: "10px"
               }}>
               <AddUserToGroupButton />
               <DeleteUserFromGroup />
@@ -153,7 +155,9 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
                 flexWrap: "wrap",
                 backgroundColor: "rgba(255,255,255,0)",
                 borderTop: "solid",
-                borderColor: "rgba(16,165,16,0.02)"
+                borderColor: "rgba(16,165,16,0.02)",
+                padding:0,
+                paddingTop: "10px"
               }}>
               <AddEvent refreshComponent={refreshComponent}/>
               <EventProposal />

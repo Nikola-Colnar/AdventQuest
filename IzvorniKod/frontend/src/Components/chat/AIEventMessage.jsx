@@ -38,7 +38,6 @@ function AIEventMessage(props) {
             const newEvent = {
                 eventName: event[0],
                 description: event[1],
-                date: reformatDate(event[2]),
                 color: "#a31515",
             };
             try {
