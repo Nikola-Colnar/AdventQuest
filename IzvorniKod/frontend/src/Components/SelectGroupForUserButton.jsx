@@ -21,12 +21,19 @@ const SelectGroupForUserButton = (props) => {
   const fetchUserGroups = async () => {
     try {
       const storedUsername = localStorage.getItem("username");
-      const response = await fetch(`http://localhost:8080/${storedUsername}/getGroups`);
+      const response = await fetch(`http://localhost:8080/getGroups`, {
+        credentials: "include",
+      });
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched groups:", data); // Provjera podataka
         setGroups(data); // Postavljanje grupa
-      } else {
+      } 
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }
+      else {
         console.error("Failed to fetch user groups");
       }
     } catch (error) {

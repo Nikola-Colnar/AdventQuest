@@ -1,15 +1,20 @@
 package oop.configs;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import oop.filter.H2Filter;
 import oop.filter.JwtFilter;
 import oop.service.CustomOAuth2UserService;
+import oop.service.JWTService;
 import oop.service.MyUserDetailsService;
+import oop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,6 +51,10 @@ public class SecurityConfig {
     private JwtFilter jwtFilter;
 
     @Autowired
+    private H2Filter h2Filter;
+
+
+    @Autowired
     private CustomOAuth2UserService customOauth2UserService;
 
 //    @Bean
@@ -67,8 +76,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/h2-console/**", "/register", "/login", "/logout", "login?logout", "/api/login/google").permitAll()
-                        .anyRequest().permitAll())
+                        .requestMatchers("/", "/register", "/login", "/logout", "login?logout", "/api/login/google").permitAll()
+                        .requestMatchers("/h2-console/**").authenticated()
+                        .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler((request, response, authentication) -> {
@@ -83,11 +93,13 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(h2Filter, jwtFilter.getClass());
         http.cors(withDefaults()); // Enable CORS with default configuration
         http.logout(logout -> logout
                 .permitAll()
                 .deleteCookies("jwtToken")
                 .logoutSuccessHandler((request, response, authentication) -> {
+                    System.out.println("Izvrsavam spring security logout");
                     response.setStatus(HttpServletResponse.SC_OK);
                 })
         );

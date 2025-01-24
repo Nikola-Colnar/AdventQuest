@@ -27,6 +27,7 @@ const CalendarComponent = ({ hideCalendar }) => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials : "include",
       });
       if (response.ok) {
         const data = await response.json();
@@ -43,6 +44,9 @@ const CalendarComponent = ({ hideCalendar }) => {
         if (calendarInstance.current) {
           calendarInstance.current.setOption('events', formattedEvents);
         }
+      }else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch events");
       }
@@ -117,6 +121,7 @@ const CalendarComponent = ({ hideCalendar }) => {
     try {
       const response = await fetch(`http://localhost:8080/api/groups/${groupId}/addEvent`, {
         method: "POST",
+        credentials : "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -135,6 +140,10 @@ const CalendarComponent = ({ hideCalendar }) => {
           color: "#a31515",
         });
 
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to save event to backend");
       }

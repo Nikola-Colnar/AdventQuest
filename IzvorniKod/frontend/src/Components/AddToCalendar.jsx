@@ -23,6 +23,7 @@ const AddToCalendar = ({ refreshComponent }) => {
         `http://localhost:8080/api/groups/${groupId}/getEvents`,
         {
           headers: { "Content-Type": "application/json" },
+          credentials : "include"
         }
       );
       if (response.ok) {
@@ -41,6 +42,10 @@ const AddToCalendar = ({ refreshComponent }) => {
         if (calendarInstance.current) {
           calendarInstance.current.setOption("events", formattedEvents);
         }
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch events");
       }
@@ -57,6 +62,7 @@ const AddToCalendar = ({ refreshComponent }) => {
         `http://localhost:8080/api/groups/${groupId}/setDate/${eventId}`,
         {
           method: "PUT",
+          credentials : "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ date }),
         }
@@ -64,6 +70,10 @@ const AddToCalendar = ({ refreshComponent }) => {
       if (response.ok) {
         await fetchEvents();
         refreshComponent();
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to update event date");
       }

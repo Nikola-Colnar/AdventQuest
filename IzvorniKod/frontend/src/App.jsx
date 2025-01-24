@@ -52,6 +52,7 @@ const christmasTheme = createTheme({
     },
   },
 });
+import Logout from "./Components/form/Logout.jsx";
 
 function App() {
   // definiranje stanja prijave, korisnickog imena i kalendara
@@ -81,6 +82,7 @@ function App() {
     setRefreshTrigger((prev) => prev + 1); // Povećanje refreshTrigger stanja
   };
 
+  
   const AppRoutes = () => {
     const routes = [
       {
@@ -251,6 +253,12 @@ function App() {
           <UserInfo setIsLoggedIn={setIsLoggedIn} loadUsername={setUsername} />
         ),
       },
+      {
+        path: "/logout",
+        element: (
+        <Logout setIsLoggedIn={setIsLoggedIn}  />
+      ),
+      }
     ];
 
     return useRoutes(routes);

@@ -36,11 +36,17 @@ const GroupEventsPresident = () => {
     const groupId = localStorage.getItem("myGroupId");
     try {
       const response = await fetch(
-        `http://localhost:8080/api/groups/${groupId}/getEvents`
+        `http://localhost:8080/api/groups/${groupId}/getEvents` , {
+          credentials : "include",
+        }
       );
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch events by group");
       }
@@ -93,6 +99,7 @@ const GroupEventsPresident = () => {
         `http://localhost:8080/api/groups/${groupId}/updateEvent/${selectedEvent.eventId}`,
         {
           method: "PUT",
+          credentials : "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -104,6 +111,10 @@ const GroupEventsPresident = () => {
         console.log("Event updated successfully");
         setIsEditing(false);
         await fetchEventsByGroup();
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to update event");
       }
@@ -118,6 +129,7 @@ const GroupEventsPresident = () => {
         `http://localhost:8080/api/groups/${groupId}/deleteEvent/${selectedEvent.eventId}`,
         {
           method: "DELETE",
+          credentials : "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -128,6 +140,10 @@ const GroupEventsPresident = () => {
         console.log("Event deleted successfully");
         setOpenDetailDialog(false); // Zatvaranje dijaloga
         await fetchEventsByGroup(); // Osvježi popis događaja
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to delete event");
       }

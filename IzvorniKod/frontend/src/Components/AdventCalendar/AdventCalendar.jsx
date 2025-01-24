@@ -20,6 +20,7 @@ const AdventCalendar = (refresh) => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials : "include",
         }
       );
       if (response.ok) {
@@ -37,6 +38,10 @@ const AdventCalendar = (refresh) => {
         if (calendarInstance.current) {
           calendarInstance.current.setOption("events", formattedEvents);
         }
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch events");
       }

@@ -37,10 +37,16 @@ const ShowAllEventsFromGroup = () => {
     try {
       const response = await fetch(
         `http://localhost:8080/api/groups/${groupId}/getEvents`
-      );
+      , {
+        credentials : "include",
+      });
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch events by group");
       }
@@ -93,6 +99,7 @@ const ShowAllEventsFromGroup = () => {
         `http://localhost:8080/api/groups/${groupId}/updateEvent/${selectedEvent.eventId}`,
         {
           method: "PUT",
+          credentials : "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -104,6 +111,10 @@ const ShowAllEventsFromGroup = () => {
         console.log("Event updated successfully");
         setIsEditing(false);
         await fetchEventsByGroup();
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to update event");
       }

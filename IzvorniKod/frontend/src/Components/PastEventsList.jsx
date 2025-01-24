@@ -33,6 +33,7 @@ const PastEventList = (refresh) => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials : "include",
         }
       );
       if (response.ok) {
@@ -54,11 +55,12 @@ const PastEventList = (refresh) => {
 
         // Fetch likes and personal likes
         const likesResponse = await fetch(
-          `http://localhost:8080/api/groups/${groupId}/getPastEvents/${username}`,
+          `http://localhost:8080/api/groups/${groupId}/getPastEvents`,
           {
             headers: {
               "Content-Type": "application/json",
             },
+            credentials: "include",
           }
         );
 
@@ -80,10 +82,21 @@ const PastEventList = (refresh) => {
           }, {});
           setLikedEvents(initialLikedEvents)
           setEvents(updatedEvents);
-        } else {
+        }
+        else if(response.status == 401){
+          console.log("Unauthorized: Redirecting to /logout")
+          window.location.href = "/logout";
+        }
+        
+         else {
           console.error("Failed to fetch likes");
         }
-      } else {
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }
+       else {
         console.error("Failed to fetch events");
       }
     } catch (error) {
@@ -123,9 +136,10 @@ const PastEventList = (refresh) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     };
 
-    const url = `http://localhost:8080/api/groups/${username}/${
+    const url = `http://localhost:8080/api/groups/${
       likedEvents[eventId] ? "deleteLike" : "reviewEvent"
     }/${eventId}`;
 
@@ -133,6 +147,10 @@ const PastEventList = (refresh) => {
       .then((response) => {
         if (response.ok) {
           console.log("Event successfully updated.");
+        }
+        else if(response.status == 401){
+          console.log("Unauthorized: Redirecting to /logout")
+          window.location.href = "/logout";
         } else {
           console.error("Failed to update the event.");
         }
@@ -151,6 +169,7 @@ const PastEventList = (refresh) => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials : "include",
         }
       );
 
@@ -160,6 +179,10 @@ const PastEventList = (refresh) => {
           ...prev,
           [eventId]: data, // Spremi komentare u stanje pod eventId ključem
         }));
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch comments");
       }
@@ -178,11 +201,12 @@ const PastEventList = (refresh) => {
     if (!commentInput.trim()) return; //ako je komentar prazan ne moze se dodati
 
     // Slanje komentara na backend
-    fetch(`http://localhost:8080/api/groups/${localStorage.getItem("username")}/addComment/${eventId}`, {
+    fetch(`http://localhost:8080/api/groups/addComment/${eventId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: commentInput,
     })
       .then(response => {
@@ -190,7 +214,11 @@ const PastEventList = (refresh) => {
           console.log("Comment successfully added.");
           setCommentInput("")
           fetchComments(eventId);
-        } else {
+        } 
+        else if(response.status == 401){
+          console.log("Unauthorized: Redirecting to /logout")
+          window.location.href = "/logout";
+        }else {
           console.error("Failed to add comment.");
         }
       })

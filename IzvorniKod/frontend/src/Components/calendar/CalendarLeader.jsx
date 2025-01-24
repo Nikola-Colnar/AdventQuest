@@ -29,6 +29,7 @@ const CalendarLeader = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials : "include",
       });
       if (response.ok) {
         const data = await response.json();
@@ -46,6 +47,10 @@ const CalendarLeader = () => {
         if (calendarInstance.current) {
           calendarInstance.current.setOption('events', formattedEvents);
         }
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch events");
       }
@@ -102,6 +107,7 @@ const CalendarLeader = () => {
     try {
       const response = await fetch(`http://localhost:8080/api/groups/${groupId}/deleteEvent/${idEvent}`, {
         method: "DELETE",
+        credentials : "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -110,6 +116,10 @@ const CalendarLeader = () => {
       if (response.ok) {
         console.log("Event deleted successfully");
         await fetchEvents(); // Osvježavanje događaja
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to delete event");
       }
@@ -147,6 +157,7 @@ const CalendarLeader = () => {
     try {
       const response = await fetch(`http://localhost:8080/api/groups/${groupId}/addEvent`, {
         method: "POST",
+        credentials : "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -165,6 +176,10 @@ const CalendarLeader = () => {
           color: "#a31515",
         });
 
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to save event to backend");
       }

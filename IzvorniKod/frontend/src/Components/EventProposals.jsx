@@ -11,8 +11,15 @@ const EventProposals = () => {
 
     try {
       //fetchanje evenata koji vec postoje (da se sprijece duplikacije)
-      const response = await fetch(`http://localhost:8080/api/groups/${groupId}/getEvents`);
+      const response = await fetch(`http://localhost:8080/api/groups/${groupId}/getEvents`, { // ovo ne daje cookie
+        credentials : "include",
+      });
       const existingEvents = await response.json();
+      if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout");
+        window.location.href = "/logout";
+        return;
+      }
 
       //funkcija za dohvat i filtriranje evenata
       const getEventProposals = async (attempts = 0, collectedEvents = []) => {
@@ -23,10 +30,18 @@ const EventProposals = () => {
         }
 
         try {
-          const response = await fetch("http://localhost:8080/api/groups/getEventProposals");
-          if (!response.ok) {
+          const response = await fetch("http://localhost:8080/api/groups/getEventProposals", {
+            credentials : "include",
+          });
+          if(response.status == 401){
+            console.log("Unauthorized: Redirecting to /logout")
+            window.location.href = "/logout";
+          }
+          else if (!response.ok) {
             throw new Error("Failed to fetch event proposals.");
           }
+          
+
           const data = await response.json();
 
           //Filtriram evente koje vec postoje u bazi
@@ -65,8 +80,14 @@ const EventProposals = () => {
 //funkcija za slucaj ako nema kreiranih evenata
   const generateEventProposals = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/groups/getEventProposals");
-      if (!response.ok) {
+      const response = await fetch("http://localhost:8080/api/groups/getEventProposals", {
+        credentials : "include",
+      });
+     if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }
+      else if (!response.ok) {
         throw new Error("Failed to generate event proposals.");
       }
       const data = await response.json();
@@ -83,39 +104,47 @@ const EventProposals = () => {
     fetchEvents();
   }, []);
 
-  const handleAddEvent = (eventTitle) => {
+  const handleAddEvent = async (eventTitle) => {
     const groupId = localStorage.getItem("myGroupId");
     const event = {
       eventName: eventTitle,
-      description: "Details not planned, yet!"
+      description: "Details not planned, yet!",
     };
-
-    fetch(`http://localhost:8080/api/groups/${groupId}/addEvent`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(event),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Event added:", data);
-        //state true ako smo ga sada dodali
-        setEvents((prevEvents) =>
-          prevEvents.map((evt) =>
-            evt.eventName === eventTitle ? { ...evt, added: true } : evt
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error adding event:", error);
+  
+    try {
+      const response = await fetch(`http://localhost:8080/api/groups/${groupId}/addEvent`, { // ovo ne daje cookie
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(event),
       });
+  
+      if (response.status == 401) {
+        console.log("Unauthorized: Redirecting to /logout");
+        window.location.href = "/logout";
+        return; // Prekini izvršavanje funkcije nakon redirekcije
+      }
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log("Event added:", data);
+  
+      // Ažurirajte stanje da označite da je događaj dodat
+      setEvents((prevEvents) =>
+        prevEvents.map((evt) =>
+          evt.eventName === eventTitle ? { ...evt, added: true } : evt
+        )
+      );
+    } catch (error) {
+      console.error("Error adding event:", error);
+    }
   };
+  
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

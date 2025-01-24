@@ -32,8 +32,9 @@ const CreateGroupButton = (props) => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/${localStorage.getItem("username")}/createGroup`, {
+      const response = await fetch(`http://localhost:8080/createGroup`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -50,6 +51,10 @@ const CreateGroupButton = (props) => {
         localStorage.setItem("myGroupId", createdGroup.idgroup);
         props.setSelectedGroupId(createdGroup.idgroup); // postavlja group ID i u App da ga koriste druge komponente
         props.refreshHeader();
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to create group");
       }

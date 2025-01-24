@@ -21,14 +21,20 @@ const ShowAllUsersFromGroup = () => {
     const groupId = localStorage.getItem("myGroupId"); // ID grupe u kojem se nalazi ovaj user
     const loggedInUsername = localStorage.getItem("username");
     try {
-      const response = await fetch(`http://localhost:8080/${groupId}/getUsers`); //dohvacamo sve usere
+      const response = await fetch(`http://localhost:8080/${groupId}/getUsers`, {
+        credentials : "include",
+      }); //dohvacamo sve usere
       if (response.ok) {
         const data = await response.json();
         //console.log(data);
         const filteredUsers = data.filter(username => username !== loggedInUsername); //filtrirano da se taj korisnik ne prikazuje na spisku
         //console.log(filteredUsers); filtrirano
         setUsers(filteredUsers);
-      } else {
+      } 
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }else {
         console.error("Failed to fetch users by group");
       }
     } catch (error) {
