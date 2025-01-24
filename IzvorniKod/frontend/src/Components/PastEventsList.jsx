@@ -212,7 +212,7 @@ const PastEventList = (refresh) => {
   return (
     <Box sx={{ maxWidth: 600, margin: "0 auto", padding: 2 }}>
       <Typography variant="h4" gutterBottom>
-        Event List
+        Conquered Quests
       </Typography>
       <List>
         {events.map((event) => (
@@ -267,19 +267,19 @@ const PastEventList = (refresh) => {
                   </>
                 }
               />
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box sx={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center" }}>
                 <IconButton onClick={() => handleLike(event.id)}>
                   <ThumbUpIcon
-                    sx={{ color: likedEvents[event.id] ? "#1976d2" : "gray" }}
+                    sx={{ color: likedEvents[event.id] ? event.color : "gray" }}
                   />
                 </IconButton>
                 <Typography>{event.likes}</Typography>
                 <Button
                   variant="outlined"
-                  size="small"
+                  width= "auto"
                   startIcon={<CommentIcon />}
                   onClick={() => handleCommentsToggle(event.id)}
-                  sx={{ marginLeft: 2 }}
+                  sx={{ marginLeft: 2, color: event.color }}
                 >
                   Comments
                 </Button>

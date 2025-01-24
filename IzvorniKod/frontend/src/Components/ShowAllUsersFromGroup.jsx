@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   Box,
   Button,
-  Dialog,
+  Dialog, DialogActions,
   DialogContent,
   DialogTitle,
   List,
@@ -48,54 +48,45 @@ const ShowAllUsersFromGroup = () => {
 
   return (
     <Box>
-      <Button sx={{marginTop: "20px"}} variant="contained" color="primary" onClick={handleClickOpen}>
+      <Button sx={{}} variant="contained" color="primary" onClick={handleClickOpen}>
         Show participants
       </Button>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle
-          sx={{
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: "1rem",
-          }}
-        >
-          Users in Group
-        </DialogTitle>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle sx={{ backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>Users in Group</DialogTitle>
         <DialogContent
           sx={{
-            maxHeight: 200, // Maksimalna visina za prikaz
-            overflowY: "auto", // Omogućeno skrolanje
-            textAlign: "center", // Centrirani tekst
+            maxHeight: 400, // Maksimalna visina liste
+            overflowY: 'auto', // Omogući skrolanje
+            backgroundColor: '#fafafa',
+            padding: '16px',
           }}
         >
-          {users.length > 0 ? (
-            <List
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center", // Centriranje stavki
-              }}
-            >
-              {users.map((username, index) => (
-                <ListItem key={index}>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        sx={{
-                          textAlign: "center", // Centriranje imena
-                        }}
-                      >
-                        {username}
-                      </Typography>
-                    }
-                  />
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            <Typography>No participants</Typography>
-          )}
+          <List>
+            {users.map((username) => (
+              <ListItem
+                key={username}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '8px',
+                  backgroundColor: '#ffffff',
+                  borderRadius: '8px',
+                  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+                  padding: '8px 16px',
+                }}
+              >
+                <ListItemText primary={username} sx={{ color: '#333' }} />
+
+              </ListItem>
+            ))}
+          </List>
         </DialogContent>
+        <DialogActions sx={{ padding: '8px 16px', justifyContent: 'center' }}>
+          <Button onClick={handleClose} variant="outlined" color="secondary">
+            Cancel
+          </Button>
+        </DialogActions>
       </Dialog>
     </Box>
   );

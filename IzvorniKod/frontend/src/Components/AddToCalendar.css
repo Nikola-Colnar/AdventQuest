@@ -161,7 +161,7 @@
 
 .modal-content li button {
     font-size: 18px;
-    color: #fff;
+    color: #882e2e;
     background-color: #27ae60;
     border: none;
     padding: 10px 20px;
@@ -206,6 +206,7 @@
 }
 .modalC {
     position: fixed;
+
     top: 0;
     left: 0;
     right: 0;
@@ -215,7 +216,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 500;
 }
 
 

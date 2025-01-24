@@ -71,11 +71,12 @@ function Header({ isLoggedIn, handlelogin, username, userAvatar, refreshProp }) 
         </Link>
 
         {/* Prikaz naziva grupe ako postoji */}
-        {groupName && (
+        {/*{groupName && (
           <Typography variant="h6" color="white">
             {groupName.toUpperCase()}
           </Typography>
         )}
+        */}
 
         {/* Conditional rendering ovisno je li korisnik prijavljen ili nije */}
         {(isLoggedIn) ? (

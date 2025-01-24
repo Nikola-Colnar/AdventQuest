@@ -163,8 +163,19 @@ const AddToCalendar = ({ refreshComponent }) => {
   return (
     <div className="calendar-container">
       {/* Gumb za otvaranje kalendara */}
-      <Button onClick={() => setCalendarVisible(!calendarVisible)}>
-        {calendarVisible ? "Close Calendar" : "Open Calendar"}
+      <Button onClick={() => setCalendarVisible(!calendarVisible)}
+              color={calendarVisible ? "secondary" : "primary"} // Promjena boje ovisno o stanju
+              sx={{
+                textTransform: "none",
+                fontSize: "16px",
+                backgroundColor: "rgba(234,234,234,0.53)",
+
+                "&:hover": {
+                  backgroundColor: "rgba(18,76,2,0.49)" // Promjena boje na hover
+                },
+              }}
+      >
+        {calendarVisible ? "Close Calendar" : "Manage Advent Calendar"}
       </Button>
 
       {/* Prikaz kalendara ako je vidljiv */}

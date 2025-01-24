@@ -12,7 +12,7 @@ import {
   InputLabel,
 } from "@mui/material";
 
-const GetALLGroupsAdmin = () => {
+const GetALLGroupsAdmin = (props) => {
   const [open, setOpen] = useState(false);
   const [groups, setGroups] = useState([]);
   const [selectedGroupId, setSelectedGroupId] = useState("");
@@ -46,12 +46,14 @@ const GetALLGroupsAdmin = () => {
   const handleGroupSelect = (event) => {
     const groupId = event.target.value; // GroupId iz odabrane vrijednosti
     setSelectedGroupId(groupId); // postavljamo vrijednost
-    const selectedGroup = groups.find(group => group.idgroup === groupId);
-    setSelectedGroupName(selectedGroup?.nazivGrupa || ""); // Postavimo naziv grupe
+    const selectedGroup = groups.find(group => group.groupId === groupId);
+    setSelectedGroupName(selectedGroup?.groupName || ""); // Postavimo naziv grupe
   };
 
   const handleSubmit = () => {
     if (selectedGroupId) {
+      // eslint-disable-next-line react/prop-types
+      props.setSelectedGroupId(selectedGroupId); // postavlja group ID i u App da ga koriste druge komponente
       localStorage.setItem("myGroupId", selectedGroupId); // Spremi groupId u localStorage
       localStorage.setItem("myGroupName", selectedGroupName);
       console.log("Selected Group ID saved to localStorage:", selectedGroupId);
@@ -105,7 +107,7 @@ const GetALLGroupsAdmin = () => {
         </DialogActions>
       </Dialog>
 
-      {selectedGroupId && <p>Selected Group: {selectedGroupName}</p>}
+
     </Box>
   );
 };

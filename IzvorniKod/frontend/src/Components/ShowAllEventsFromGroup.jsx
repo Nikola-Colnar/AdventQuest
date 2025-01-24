@@ -114,8 +114,8 @@ const ShowAllEventsFromGroup = () => {
 
   return (
     <Box>
-      <Button sx = {{marginTop:"20px"}} variant="contained" color="primary" onClick={handleClickOpen}>
-        Show Events
+      <Button sx = {{}} variant="contained" color="primary" onClick={handleClickOpen}>
+        Holiday Quests
       </Button>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle
@@ -170,7 +170,7 @@ const ShowAllEventsFromGroup = () => {
               ))}
             </Grid>
           ) : (
-            <Typography>No events available</Typography>
+            <Typography>No Quests available</Typography>
           )}
         </DialogContent>
       </Dialog>
@@ -310,7 +310,7 @@ const ShowAllEventsFromGroup = () => {
                   onClick={handleDetailDialogClose}
                   sx={{ marginTop: "1rem", marginLeft: "1rem"  }}
                 >
-                  Activities
+                  Back
                 </Button>
               </>
             )}

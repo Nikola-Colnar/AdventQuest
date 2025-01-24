@@ -69,19 +69,19 @@ const AddEvent = () => {
         variant="contained"
         color="primary"
         onClick={() => setOpen(true)}
-        style={{ marginTop: "20px" }}
+        style={{ }}
       >
-        Add Activity
+        Add Quest
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm" >
-        <DialogTitle align="center">Add New Activity</DialogTitle>
+        <DialogTitle align="center">Add New Quest</DialogTitle>
         <DialogContent>
           <Grid container spacing={3} justifyContent="center" style={{ marginTop: "16px" }}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Activity Title"
+                label="Quest Title"
                 name="title"
                 value={eventDetails.title}
                 onChange={handleInputChange}
@@ -93,7 +93,7 @@ const AddEvent = () => {
                 fullWidth
                 multiline
                 rows={3}
-                label="Activity details"
+                label="Quest details"
                 name="description"
                 value={eventDetails.description}
                 onChange={handleInputChange}
@@ -115,7 +115,7 @@ const AddEvent = () => {
 
             <Grid item xs={12}>
               <Typography align="center" gutterBottom>
-                Activity Color
+                Color
               </Typography>
               <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
                     <input

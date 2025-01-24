@@ -127,8 +127,8 @@ const AdventCalendar = (refresh) => {
       {selectedEvent && (
         <div className="modal">
           <div className="modal-content">
-            <h2>To do Today</h2>
-            <p><strong>Name:</strong> {selectedEvent.title}</p>
+            <h2>Quest To Do</h2>
+            <p><strong>Quest Name: </strong> {selectedEvent.title}</p>
             <p><strong>Details:</strong> {selectedEvent.description}</p>
             <p><strong>Date:</strong> {selectedEvent.date}</p>
 

@@ -71,10 +71,10 @@ const AddUserToGroupButton = () => {
   return (
     <Box>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        Add User to Group
+        Add to Group
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add User to Group</DialogTitle>
+        <DialogTitle>Add to Group by Username</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus

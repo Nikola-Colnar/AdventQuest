@@ -81,13 +81,13 @@ const DeleteUser = () => {
   return (
     <Box>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        Delete users from group
+        Delete Accounts
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Users in Group</DialogTitle>
         <DialogContent
           sx={{
-            maxHeight: 100, // maksimalnavisina prikaza
+            maxHeight: 400, // maksimalnavisina prikaza
             overflowY: 'auto', // skrolanje
           }}
         >

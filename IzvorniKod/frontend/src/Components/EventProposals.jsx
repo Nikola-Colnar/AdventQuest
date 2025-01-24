@@ -127,9 +127,9 @@ const EventProposals = () => {
         variant="contained"
         color="primary"
         onClick={handleOpen}
-        style={{ display: "block", marginTop: "20px" }}
+        style={{ display: "block", }}
       >
-        Show Event Proposals
+        Quest Suggestions
       </Button>
 
       <Modal
@@ -152,7 +152,7 @@ const EventProposals = () => {
           }}
         >
           <Typography id="event-proposals-modal" variant="h6" component="h2" gutterBottom>
-            Event Proposals
+            Add Quests to Group List
           </Typography>
           <div>
             {events.map((event, index) => (
@@ -191,7 +191,7 @@ const EventProposals = () => {
             onClick={fetchEvents}
             style={{ marginTop: "20px" }}
           >
-            Refresh Event Proposals
+            Refresh Suggestions
           </Button>
         </Box>
       </Modal>

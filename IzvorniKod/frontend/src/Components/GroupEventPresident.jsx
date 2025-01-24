@@ -139,7 +139,7 @@ const GroupEventsPresident = () => {
   return (
     <Box>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        Show Events
+        Group Quests
       </Button>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle

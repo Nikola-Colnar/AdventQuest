@@ -38,10 +38,21 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      sx={{ zIndex: 11, maxWidth: '100%' }}>
+      sx={{ maxWidth: '100%' }}>
       {/* Pocetni dio - biranje grupe ili stvaranje nove */}
-      <Typography variant="h4" gutterBottom>
-        Group Management
+      <Typography
+        variant="h5"
+        gutterBottom
+        sx={{
+          color: "#B22222",
+          fontWeight: "bold",
+          textAlign: "center",
+          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
+          position: "relative",
+          cursor: "default",
+        }}
+      >
+        Select your Advent Group
       </Typography>
 
       <Box sx = {{backgroundColor: "transparent"}}mb={3} display="flex" gap={2}>
@@ -66,22 +77,57 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
       ) : (
         <Stack spacing={3} mt={3} sx={{ width: "80%" }}>
           {/* Panel samo koji predsjednik vidi */}
+          <Typography
+            variant="h3"
+            sx={{
+              textAlign: "center",
+              fontWeight: "bold",
+              color: "#8B0000",
+              textShadow: "4px 4px 6px rgba(0, 0, 0, 0.4)",
+              position: "relative",
+              padding: "10px 0",
+              cursor: "default",
+
+
+            }}
+          >
+            {localStorage.getItem("myGroupName")}
+          </Typography>
           {isPresident && (
-            <Paper elevation={3} sx={{ p: 2 ,
+            <Paper elevation={3} sx={{ p: 2 , zIndex: 12,
               display: "flex" ,
               flexDirection: "row",
-              justifyContent: "space-between"
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+
             }}>
               <Typography variant="h6">President Panel</Typography>
               <AddUserToGroupButton />
               <DeleteUserFromGroup />
-              <GroupEventPresident />
               <AddToCalendar refreshComponent={refreshComponent} refreshProp={refresh} />
+              <GroupEventPresident />
+              <AddEvent refreshComponent={refreshComponent}/>
+              <EventProposal />
+            </Paper>
+          )}
+          {!isPresident && (
+            <Paper elevation={3} sx={{ p: 2, zIndex: 11,
+              display: "flex" ,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+            }}>
+              <Typography variant="h6">User Panel</Typography>
+              <AddEvent refreshComponent={refreshComponent}/>
+              <EventProposal />
+              <ShowAllEventsFromGroup></ShowAllEventsFromGroup>
+              <ShowAllUsersFromGroup></ShowAllUsersFromGroup>
+
             </Paper>
           )}
 
           {/* Chat Section */}
-          <Paper elevation={3} sx={{ p: 2}}>
+          <Paper elevation={3} sx={{ p: 2, zIndex: 11}}>
             <Typography variant="h6">Group Chat</Typography>
             <Conversation
               groupID={selectedGroupId}
@@ -90,17 +136,11 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
           </Paper>
 
           {/* Panel koji svi vide */}
-          <Paper  elevation={3} sx={{ p: 2}}>
+          <Paper  elevation={3} sx={{ p: 2, zIndex: 11}}>
             <Typography variant="h6">
               Advent Calendar
             </Typography>
             <AdventCalendar refreshProp={refresh} />
-            <Box sx={{display: "flex", flexDirection:"row"}}>
-            <AddEvent refreshComponent={refreshComponent}/>
-            <EventProposal />
-              <ShowAllEventsFromGroup></ShowAllEventsFromGroup>
-              <ShowAllUsersFromGroup></ShowAllUsersFromGroup>
-            </Box>
             <PastEventsList refreshProp={refresh} />
           </Paper>
         </Stack>
