@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 // styling za navigacijsku traku
 const StyledAppBar = styled(AppBar)(() => ({
   position: "relative",  // position relative jer static position ne moze mijenjati z index
-  backgroundColor: "#ff0000",  // boja navigacijskog bara
+  backgroundColor: "rgba(255,0,0,0.87)",  // boja navigacijskog bara
   boxShadow: "none",
   zIndex: 11,
 }));

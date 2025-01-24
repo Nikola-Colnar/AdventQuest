@@ -99,6 +99,7 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
               flexDirection: "row",
               justifyContent: "space-between",
               flexWrap: "wrap",
+              backgroundColor: "rgba(255,255,255,0.75)"
 
             }}>
               <Typography variant="h6">President Panel</Typography>
@@ -116,6 +117,7 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
               flexDirection: "row",
               justifyContent: "space-between",
               flexWrap: "wrap",
+              backgroundColor: "rgba(255,255,255,0.75)"
             }}>
               <Typography variant="h6">User Panel</Typography>
               <AddEvent refreshComponent={refreshComponent}/>
@@ -136,12 +138,26 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
           </Paper>
 
           {/* Panel koji svi vide */}
-          <Paper  elevation={3} sx={{ p: 2, zIndex: 11}}>
-            <Typography variant="h6">
+          <Paper  elevation={3} sx={{ p: 2, zIndex: 11, backgroundColor: "rgba(255,255,255,0.75)" }}>
+            <Typography variant="h4"
+                        sx={{
+                          color: "#2E8B57",
+                          fontWeight: "bold",
+                          textAlign: "center",
+                          textShadow: "4px 4px 6px rgba(0, 0, 0, 0.4)",
+                          position: "relative",
+                          padding: "10px 0",
+                          cursor: "default",
+                        }}>
               Advent Calendar
             </Typography>
+            <Paper  elevation={2} sx={{ p: 2, zIndex: 11, marginTop: "10px" }}>
             <AdventCalendar refreshProp={refresh} />
+            </Paper>
+            <Paper  elevation={2} sx={{ p: 2, zIndex: 11, marginTop: "15px" }}>
             <PastEventsList refreshProp={refresh} />
+            </Paper>
+
           </Paper>
         </Stack>
       )}
