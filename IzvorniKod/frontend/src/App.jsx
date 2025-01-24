@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Navigate, BrowserRouter as Router, useRoutes } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "./styles/App.css";
@@ -15,15 +15,7 @@ import GroupDashboard from "./Components/GroupDashboard.jsx";
 import backgroundImage from './assets/Winter.jpg';
 import backgroundImage2 from './assets/Background2.jpg';
 import backgroundLogin from './assets/LoginPic.jpg';
-import { Paper, Typography } from "@mui/material";
-import AddUserToGroupButton from "./Components/AddUserToGroupButton.jsx";
-import DeleteUserFromGroup from "./Components/DeleteUserFromGroup.jsx";
-import AddToCalendar from "./Components/AddToCalendar.jsx";
-import GroupEventPresident from "./Components/GroupEventPresident.jsx";
-import AddEvent from "./Components/AddEvent.jsx";
-import EventProposal from "./Components/EventProposals.jsx";
-import GetAllGroupsAdmin from "./Components/GetAllGroupsAdmin.jsx";
-import DeleteUser from "./Components/DeleteUser.jsx";
+
 
 const christmasTheme = createTheme({
   palette: {
