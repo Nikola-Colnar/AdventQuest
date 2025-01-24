@@ -236,6 +236,10 @@ const PastEventList = (refresh) => {
                     sx={{
                       color: event.color,
                       fontWeight: "bold",
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
                     }}
                   >
                     {event.title}
@@ -244,14 +248,22 @@ const PastEventList = (refresh) => {
                 secondary={
                   <>
                     <Typography
-                      sx={{ display: "inline" }}
+                      sx={{ display: "inline",
+                      }}
                       component="span"
                       variant="body2"
                       color="text.primary"
                     >
                       {event.date.toDateString()}
                     </Typography>
+                    <Typography sx={{wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
+
+                    }}>
                     {" — " + event.description}
+                      </Typography>
                   </>
                 }
               />
@@ -310,6 +322,12 @@ const PastEventList = (refresh) => {
                     >
 
                       <ListItemText
+                        sx={{wordWrap: "break-word",
+                          overflowWrap: "break-word",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
+
+                      }}
                         primary={
                           <>
                             <Typography
@@ -341,7 +359,9 @@ const PastEventList = (refresh) => {
                               color: "#424242", // Neutralna boja za tekst komentara
                               fontSize: "1rem",
                               lineHeight: 1.5, // Bolja čitljivost
-
+                              wordWrap: "break-word",
+                              overflowWrap: "break-word",
+                              whiteSpace: "normal",
                             }}
                           >
                             {comment.comment}

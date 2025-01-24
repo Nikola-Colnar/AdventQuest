@@ -127,7 +127,7 @@ const EventProposals = () => {
         variant="contained"
         color="primary"
         onClick={handleOpen}
-        style={{ margin: "20px auto", display: "block" }}
+        style={{ display: "block", marginTop: "20px" }}
       >
         Show Event Proposals
       </Button>

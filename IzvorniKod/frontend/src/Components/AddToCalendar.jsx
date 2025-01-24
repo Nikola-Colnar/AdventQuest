@@ -5,7 +5,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "./AddToCalendar.css";
 import { Button } from "@mui/material";
 
-const AddToCalendar = ({refreshComponent}) => {
+// eslint-disable-next-line react/prop-types
+const AddToCalendar = ({ refreshComponent }) => {
   const calendarRef = useRef(null);
   const calendarInstance = useRef(null);
   const [events, setEvents] = useState([]);
@@ -113,7 +114,6 @@ const AddToCalendar = ({refreshComponent}) => {
             e.stopPropagation(); // Sprječava otvaranje detalja događaja
             setSelectedDate(arg.date);
             setModalOpen(true);
-
           });
         }
 
@@ -146,7 +146,6 @@ const AddToCalendar = ({refreshComponent}) => {
             "Just have as much fun as you can!",
           date: info.event.start.toDateString(),
         });
-
       },
     });
 
@@ -169,11 +168,23 @@ const AddToCalendar = ({refreshComponent}) => {
       </Button>
 
       {/* Prikaz kalendara ako je vidljiv */}
-      {calendarVisible && <div ref={calendarRef}></div>}
+      {calendarVisible && (
+        <div className="modalC" onClick={() => setCalendarVisible(false)}>
+          <div
+            className="modal-contentC"
+            onClick={(e) => e.stopPropagation()} // Sprječava zatvaranje pri kliku na sadržaj
+          >
+            <div ref={calendarRef}></div>
+          </div>
+        </div>
+      )}
 
       {modalOpen && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal" onClick={() => setModalOpen(false)}>
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h2>Select a Christmas Event</h2>
             <ul>
               {allEvents
@@ -204,8 +215,11 @@ const AddToCalendar = ({refreshComponent}) => {
 
       {/* Popup za detalje eventa */}
       {eventDetails && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal" onClick={() => setEventDetails(null)}>
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h2>Event Details</h2>
             <p>
               <strong>Name:</strong> {eventDetails.title}

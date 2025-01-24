@@ -65,12 +65,16 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
         <Stack spacing={3} mt={3} sx={{ width: "80%" }}>
           {/* Panel samo koji predsjednik vidi */}
           {isPresident && (
-            <Paper elevation={3} sx={{ p: 2 }}>
+            <Paper elevation={3} sx={{ p: 2 ,
+              display: "flex" ,
+              flexDirection: "row",
+              justifyContent: "space-between"
+            }}>
               <Typography variant="h6">President Panel</Typography>
               <AddUserToGroupButton />
               <DeleteUserFromGroup />
               <GroupEventPresident />
-              <AddToCalendar refreshComponent={refreshComponent} />
+              <AddToCalendar refreshComponent={refreshComponent} refreshProp={refresh} />
             </Paper>
           )}
 
@@ -89,8 +93,10 @@ const GroupDashboard = ({ username, userID, refreshHeader }) => {
               Advent Calendar
             </Typography>
             <AdventCalendar refreshProp={refresh} />
-            <AddEvent />
+            <Box sx={{display: "flex", flexDirection:"row"}}>
+            <AddEvent refreshComponent={refreshComponent}/>
             <EventProposal />
+            </Box>
             <PastEventsList refreshProp={refresh} />
           </Paper>
         </Stack>

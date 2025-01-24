@@ -32,13 +32,6 @@
     height: 95%;
     text-align: center;
 }
-.custom-event-content {
-    height: 100%;
-    display: flex;
-    justify-content: center; /* Opcionalno: Horizontalno centrirajte */
-    align-items: flex-end; /* Sadržaj na dno */
-    padding-bottom: 10px; /* Dodajte razmak od dna */
-}
 {/*ovo je za uredivanje velicine celije, samo day je i za velicinu celije nazivlja dana (pon,uto,sri, itd.)*/}
 .fc-event{
     border: none;
@@ -63,6 +56,7 @@
 }
 .fc-daygrid-day-number{
     width: 100%;
+    font-size: 1.2rem;
 }
 .fc-custom-day-content{
     width: 100%;
@@ -205,4 +199,49 @@
     border-radius: 5px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+.modalC {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+
+.modal-contentC {
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    width: 80vw;
+
+    min-width: 400px;
+    min-height: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+/*uredivanje contenta unutar kalendara*/
+.event-title{
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+.custom-event-content {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 1vw;
 }

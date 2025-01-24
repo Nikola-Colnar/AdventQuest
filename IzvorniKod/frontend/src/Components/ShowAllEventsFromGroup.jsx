@@ -132,6 +132,11 @@ const ShowAllEventsFromGroup = () => {
             maxHeight: 500,
             overflowY: "auto",
             textAlign: "center",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            whiteSpace: "normal",
+            wordBreak: "break-word",
+
           }}
         >
           {events.length > 0 ? (
@@ -151,6 +156,10 @@ const ShowAllEventsFromGroup = () => {
                           fontWeight: "bold",
                           color: "#fff",
                           textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)",
+                          wordWrap: "break-word",
+                          overflowWrap: "break-word",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
                         }}
                       >
                         {event.eventName || "Untitled"}
@@ -179,6 +188,10 @@ const ShowAllEventsFromGroup = () => {
               textAlign: "center",
               fontWeight: "bold",
               fontSize: "1.25rem",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              whiteSpace: "normal",
+              wordBreak: "break-word",
             }}
           >
             {selectedEvent?.eventName || "Untitled Event"}
@@ -202,7 +215,10 @@ const ShowAllEventsFromGroup = () => {
                       eventName: e.target.value,
                     })
                   }
-                  sx={{ marginBottom: "1rem", marginTop: "1rem" }}
+                  sx={{ marginBottom: "1rem", marginTop: "1rem", wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word", }}
                 />
                 <TextField
                   label="Activity Details"
@@ -217,7 +233,10 @@ const ShowAllEventsFromGroup = () => {
                       description: e.target.value,
                     })
                   }
-                  sx={{ marginBottom: "1rem" }}
+                  sx={{ marginBottom: "1rem", wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word", }}
                 />
                 <Box
                   sx={{
@@ -270,7 +289,11 @@ const ShowAllEventsFromGroup = () => {
               </>
             ) : (
               <>
-                <Typography variant="body1">
+                <Typography variant="body1"
+                            sx={{wordWrap: "break-word",
+                                  overflowWrap: "break-word",
+                                  whiteSpace: "normal",
+                                  wordBreak: "break-word",}}>
                   {selectedEvent.description || "Details not planned, yet!"}
                 </Typography>
                 <Button

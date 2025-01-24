@@ -153,16 +153,20 @@ const GroupEventsPresident = () => {
         </DialogTitle>
         <DialogContent
           sx={{
-            maxHeight: 500,
+            maxHeight: "auto",
             overflowY: "auto",
             textAlign: "center",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            whiteSpace: "normal",
+            wordBreak: "break-word",
           }}
         >
           {events.length > 0 ? (
             <Grid container spacing={2}>
               {events.map((event) => (
                 <Grid item xs={12} sm={6} md={4} key={event.eventId}>
-                  <StyledCard
+                  <StyledCard sx={{}}
                     onClick={() => handleCardClick(event)}
                     style={{
                       backgroundColor: event.color || "#e0e0e0",
@@ -175,6 +179,10 @@ const GroupEventsPresident = () => {
                           fontWeight: "bold",
                           color: "#fff",
                           textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)",
+                          wordWrap: "break-word",
+                          overflowWrap: "break-word",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
                         }}
                       >
                         {event.eventName || "Untitled"}
@@ -203,12 +211,21 @@ const GroupEventsPresident = () => {
               textAlign: "center",
               fontWeight: "bold",
               fontSize: "1.25rem",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              whiteSpace: "normal",
+              wordBreak: "break-word",
             }}
           >
             {selectedEvent?.eventName || "Untitled Event"}
+
           </DialogTitle>
           <DialogContent
             sx={{
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              whiteSpace: "normal",
+              wordBreak: "break-word",
               textAlign: "center",
               padding: "2rem",
             }}
@@ -226,7 +243,10 @@ const GroupEventsPresident = () => {
                       eventName: e.target.value,
                     })
                   }
-                  sx={{ marginBottom: "1rem", marginTop: "1rem" }}
+                  sx={{ marginBottom: "1rem", marginTop: "1rem", wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word", }}
                 />
                 <TextField
                   label="Activity Details"
@@ -241,7 +261,10 @@ const GroupEventsPresident = () => {
                       description: e.target.value,
                     })
                   }
-                  sx={{ marginBottom: "1rem" }}
+                  sx={{ marginBottom: "1rem", wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word",  }}
                 />
                 <Box
                   sx={{

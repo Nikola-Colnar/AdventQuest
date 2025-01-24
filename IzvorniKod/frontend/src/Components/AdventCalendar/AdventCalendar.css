@@ -66,29 +66,37 @@
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white; {/*Sjena da se brojka vidi na bilo kojoj pozadini, moze se mijenjati po zelji*/}
 }
 
-
-
-
-
-.fc-daygrid-day-content {
+/*uredivanje kartica*/
+.fc-event-card {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    justify-content: normal;
-    align-items: end;
-}
-
-.fc-event-card {
-    width: 100%;
-    display: flex;
-    align-items: start;
+    align-items: center;
     justify-content: center;
     border-radius: 8px;
     background-color: #3174ad;
     color: white;
-    box-sizing: border-box;
+
     position: relative;
     height: auto;
+
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: wrap;
+    word-break: break-all;
+
+
+}
+.fc-event-card.locked {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background-color: #3174ad;
+    color: white;
+    position: relative;
+    height: 100%;
+
 }
 
 {/*defaultne margine koje smetaju pri uredivanju kalendara*/}
@@ -98,14 +106,39 @@
 {/*to je custom dan koji content kartica koristi ali je hidden
 posto postoji vec number za ispisivanje, ali suzi tome da se title ispisuje u drugom redu*/}
 .fc-daygrid-day-number-sticky{
-    visibility: hidden;
+    display: none;
+}
+
+{/*OVI SLJEDECI SU DA EVENT POPUNJAVA CIJELI PROZOR!!!!!!!!!!!!!*/}
+.fc-event{
+    border: none;
+    height: 100%;
+}
+.fc-daygrid-event-harness{
+    margin-bottom:0;
+    height: 100%;
+}
+
+.locked-day{
+    height: 100%;
+}.locked{
+    height: 100%;
+ }
+
+ /*Upravljanje contentom kucice*/
+.fc-daygrid-day-content {
+    height: 8vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
 }
 {/*Za zakljucane datume*/}
 .fc-daygrid-day-content.locked-day {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+
 }
 
 .fc-event-card.locked {
@@ -124,20 +157,3 @@ posto postoji vec number za ispisivanje, ali suzi tome da se title ispisuje u dr
 .fc-daygrid-day-number-sticky.locked-day {
     display: none;
 }
-{/*OVI SLJEDECI SU DA EVENT POPUNJAVA CIJELI PROZOR!!!!!!!!!!!!!*/}
-.fc-event{
-    border: none;
-    height: 100%;
-}
-.fc-daygrid-event-harness{
-    margin-bottom:0;
-    height: 100%;
-}
-.fc-event-main{
-    height:100%
-}
-.locked-day{
-    height: 100%;
-}.locked{
-    height: 100%;
- }

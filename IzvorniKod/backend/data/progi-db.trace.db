@@ -8267,3 +8267,21 @@ select u1_0.id,u1_0.email,u1_0.is_admin,u1_0.password,u1_0.username from users u
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
 	at java.base/java.lang.Thread.run(Thread.java:1575)
+2025-01-23 22:33:46.675205+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'xyxyycycnarsgnyxndgdfxdfxgfngfnxxyxyycycnarsgnyxndgdfxdfxgfngfnxxyxyycycnarsgny... (652)"; SQL statement:
+update event set color=?,date=?,description=?,event_name=?,id_grupa=? where id_event=? [22001-224]
+2025-01-24 01:46:57.491330+01:00 jdbc[75]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'SADDSADASDASDASDASSADDSADASDASDASDASSADDSADASDASDASDASSADDSADASDASDASDASSADDSAD... (288)"; SQL statement:
+update event set color=?,date=?,description=?,event_name=?,id_grupa=? where id_event=? [22001-224]
+2025-01-24 01:47:09.043712+01:00 jdbc[73]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "U&'SADDSADASDASDASDASSADDSADASDASDASDASSADDSADASDASDASDASSADDSADASDASDASDASSADDS... (257)"; SQL statement:
+update event set color=?,date=?,description=?,event_name=?,id_grupa=? where id_event=? [22001-224]
+2025-01-24 01:47:10.698796+01:00 jdbc[73]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "U&'SADDSADASDASDASDASSADDSADASDASDASDASSADDSADASDASDASDASSADDSADASDASDASDASSADDS... (257)"; SQL statement:
+update event set color=?,date=?,description=?,event_name=?,id_grupa=? where id_event=? [22001-224]
+2025-01-24 01:47:11.634607+01:00 jdbc[74]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "U&'SADDSADASDASDASDASSADDSADASDASDASDASSADDSADASDASDASDASSADDSADASDASDASDASSADDS... (257)"; SQL statement:
+update event set color=?,date=?,description=?,event_name=?,id_grupa=? where id_event=? [22001-224]
+2025-01-24 01:52:31.638702+01:00 jdbc[73]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "DESCRIPTION CHARACTER VARYING(255)": "'fsafsafsafasfasfsafsafsafasfasfsafsafsafasfasfsafsafsafasfasfsafsafsafasfasfsaf... (420)"; SQL statement:
+update event set color=?,date=?,description=?,event_name=?,id_grupa=? where id_event=? [22001-224]
