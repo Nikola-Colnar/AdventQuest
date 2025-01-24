@@ -21,12 +21,19 @@ const SelectGroupForUserButton = (props) => {
   const fetchUserGroups = async () => {
     try {
       const storedUsername = localStorage.getItem("username");
-      const response = await fetch(`http://localhost:8080/${storedUsername}/getGroups`);
+      const response = await fetch(`http://localhost:8080/getGroups`, {
+        credentials: "include",
+      });
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched groups:", data); // Provjera podataka
         setGroups(data); // Postavljanje grupa
-      } else {
+      } 
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }
+      else {
         console.error("Failed to fetch user groups");
       }
     } catch (error) {
@@ -46,17 +53,18 @@ const SelectGroupForUserButton = (props) => {
   const handleGroupSelect = (event) => {
     const groupId = event.target.value; // GroupId iz odabrane vrijednosti
     setSelectedGroupId(groupId); // postavljamo vrijednost
-    props.setSelectedGroupId(groupId); // postavlja group ID i u App da ga koriste druge komponente
     const selectedGroup = groups.find(group => group.groupId === groupId);
     setSelectedGroupName(selectedGroup?.groupName || ""); // Postavimo naziv grupe
   };
 
   const handleSubmit = () => {
     if (selectedGroupId) {
+      props.setSelectedGroupId(selectedGroupId); // postavlja group ID i u App da ga koriste druge komponente
       localStorage.setItem("myGroupId", selectedGroupId); // Spremi groupId u localStorage
       localStorage.setItem("myGroupName", selectedGroupName);
       console.log("Selected Group ID saved to localStorage:", selectedGroupId);
       console.log("Selected Group Name saved to localStorage:", selectedGroupName);
+      props.refreshHeader();
     } else {
       console.error("No group selected!");
     }
@@ -104,8 +112,6 @@ const SelectGroupForUserButton = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {selectedGroupId && <p>Selected Group: {selectedGroupName}</p>}
     </Box>
   );
 };

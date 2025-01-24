@@ -13,7 +13,9 @@ const useIsPresident = (username, groupId) => {
         setLoading(true);
 
         // dohvati korisnicki ID na temelju username
-        const userIdResponse = await fetch(`${API_BASE_URL}/${username}/getUserId`);
+        const userIdResponse = await fetch(`${API_BASE_URL}/getUserId`, {
+          credentials: "include",
+        });
         if (!userIdResponse.ok) {
           throw new Error("Failed to fetch user ID.");
         }
@@ -22,7 +24,9 @@ const useIsPresident = (username, groupId) => {
         // dohvati predsjednicki ID za grupu
         const presidentResponse = await fetch(
           `${API_BASE_URL}/api/groups/${groupId}/getIdPredstavnik`
-        );
+        , {
+          credentials: "include",
+        });
         if (!presidentResponse.ok) {
           throw new Error("Failed to fetch president ID.");
         }

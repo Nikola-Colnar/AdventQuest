@@ -36,11 +36,17 @@ const GroupEventsPresident = () => {
     const groupId = localStorage.getItem("myGroupId");
     try {
       const response = await fetch(
-        `http://localhost:8080/api/groups/${groupId}/getEvents`
+        `http://localhost:8080/api/groups/${groupId}/getEvents` , {
+          credentials : "include",
+        }
       );
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch events by group");
       }
@@ -93,6 +99,7 @@ const GroupEventsPresident = () => {
         `http://localhost:8080/api/groups/${groupId}/updateEvent/${selectedEvent.eventId}`,
         {
           method: "PUT",
+          credentials : "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -104,6 +111,10 @@ const GroupEventsPresident = () => {
         console.log("Event updated successfully");
         setIsEditing(false);
         await fetchEventsByGroup();
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to update event");
       }
@@ -118,6 +129,7 @@ const GroupEventsPresident = () => {
         `http://localhost:8080/api/groups/${groupId}/deleteEvent/${selectedEvent.eventId}`,
         {
           method: "DELETE",
+          credentials : "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -128,6 +140,10 @@ const GroupEventsPresident = () => {
         console.log("Event deleted successfully");
         setOpenDetailDialog(false); // Zatvaranje dijaloga
         await fetchEventsByGroup(); // Osvježi popis događaja
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to delete event");
       }
@@ -139,7 +155,7 @@ const GroupEventsPresident = () => {
   return (
     <Box>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        Show Events
+        Group Quests
       </Button>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle
@@ -153,16 +169,20 @@ const GroupEventsPresident = () => {
         </DialogTitle>
         <DialogContent
           sx={{
-            maxHeight: 500,
+            maxHeight: "auto",
             overflowY: "auto",
             textAlign: "center",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            whiteSpace: "normal",
+            wordBreak: "break-word",
           }}
         >
           {events.length > 0 ? (
             <Grid container spacing={2}>
               {events.map((event) => (
                 <Grid item xs={12} sm={6} md={4} key={event.eventId}>
-                  <StyledCard
+                  <StyledCard sx={{}}
                     onClick={() => handleCardClick(event)}
                     style={{
                       backgroundColor: event.color || "#e0e0e0",
@@ -175,6 +195,10 @@ const GroupEventsPresident = () => {
                           fontWeight: "bold",
                           color: "#fff",
                           textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)",
+                          wordWrap: "break-word",
+                          overflowWrap: "break-word",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
                         }}
                       >
                         {event.eventName || "Untitled"}
@@ -203,12 +227,21 @@ const GroupEventsPresident = () => {
               textAlign: "center",
               fontWeight: "bold",
               fontSize: "1.25rem",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              whiteSpace: "normal",
+              wordBreak: "break-word",
             }}
           >
             {selectedEvent?.eventName || "Untitled Event"}
+
           </DialogTitle>
           <DialogContent
             sx={{
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              whiteSpace: "normal",
+              wordBreak: "break-word",
               textAlign: "center",
               padding: "2rem",
             }}
@@ -226,7 +259,10 @@ const GroupEventsPresident = () => {
                       eventName: e.target.value,
                     })
                   }
-                  sx={{ marginBottom: "1rem", marginTop: "1rem" }}
+                  sx={{ marginBottom: "1rem", marginTop: "1rem", wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word", }}
                 />
                 <TextField
                   label="Activity Details"
@@ -241,7 +277,10 @@ const GroupEventsPresident = () => {
                       description: e.target.value,
                     })
                   }
-                  sx={{ marginBottom: "1rem" }}
+                  sx={{ marginBottom: "1rem", wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word",  }}
                 />
                 <Box
                   sx={{

@@ -24,13 +24,19 @@ const DeleteUser = () => {
   const fetchUsersByGroup = async () => {
     const adminName = localStorage.getItem("username");
     try {
-      const response = await fetch(`http://localhost:8080/${adminName}/getAllUsers`); //dohvacamo sve usere
+      const response = await fetch(`http://localhost:8080/${adminName}/getAllUsers`, {
+        credentials : "include",
+      }); //dohvacamo sve usere
       if (response.ok) {
         const data = await response.json();
         console.log(data);
         const filteredUsers = data.filter(user => user.username !== adminName); //filtrirano da se taj korisnik ne prikazuje na spisku
         //console.log(filteredUsers); filtrirano
         setUsers(filteredUsers);
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch users by group");
       }
@@ -53,14 +59,19 @@ const DeleteUser = () => {
     const adminName = localStorage.getItem("username");
     const deleteuser = userToDelete.username; //uzimamo ime usera kojeg zelimo obrisati
     try {
-      const response = await fetch(`http://localhost:8080/admin/${adminName}/deleteUser/${deleteuser}`, {
+      const response = await fetch(`http://localhost:8080/admin/deleteUser/${deleteuser}`, {
         method: "DELETE",
+        credentials: "include",
       });
       if (response.ok) {
         // Ako je korisnik uspješno obrisan, ažuriraj korisnički popis
         setUsers(users.filter(username => username !== userToDelete));
         setDeleteDialogOpen(false); // Zatvori dijalog
-      } else {
+      } 
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }else {
         console.error("Failed to delete user");
       }
     } catch (error) {
@@ -81,13 +92,13 @@ const DeleteUser = () => {
   return (
     <Box>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        Delete users from group
+        Delete Accounts
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Users in Group</DialogTitle>
         <DialogContent
           sx={{
-            maxHeight: 100, // maksimalnavisina prikaza
+            maxHeight: 400, // maksimalnavisina prikaza
             overflowY: 'auto', // skrolanje
           }}
         >

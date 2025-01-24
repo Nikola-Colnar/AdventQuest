@@ -16,7 +16,7 @@ import EventIcon from "@mui/icons-material/Event";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
 
-const PastEventList = () => {
+const PastEventList = (refresh) => {
   const [events, setEvents] = useState([]);
   const [likedEvents, setLikedEvents] = useState({}); //podaci o stanju like buttona
   const [comments, setComments] = useState({}); //komentari po eventIdu
@@ -33,6 +33,7 @@ const PastEventList = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials : "include",
         }
       );
       if (response.ok) {
@@ -54,11 +55,12 @@ const PastEventList = () => {
 
         // Fetch likes and personal likes
         const likesResponse = await fetch(
-          `http://localhost:8080/api/groups/${groupId}/getPastEvents/${username}`,
+          `http://localhost:8080/api/groups/${groupId}/getPastEvents`,
           {
             headers: {
               "Content-Type": "application/json",
             },
+            credentials: "include",
           }
         );
 
@@ -80,10 +82,21 @@ const PastEventList = () => {
           }, {});
           setLikedEvents(initialLikedEvents)
           setEvents(updatedEvents);
-        } else {
+        }
+        else if(response.status == 401){
+          console.log("Unauthorized: Redirecting to /logout")
+          window.location.href = "/logout";
+        }
+        
+         else {
           console.error("Failed to fetch likes");
         }
-      } else {
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }
+       else {
         console.error("Failed to fetch events");
       }
     } catch (error) {
@@ -93,7 +106,7 @@ const PastEventList = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, [fetchEvents]);
+  }, [fetchEvents,refresh]);
 
   //upravljanje likeovima
   const handleLike = (eventId) => {
@@ -123,9 +136,10 @@ const PastEventList = () => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     };
 
-    const url = `http://localhost:8080/api/groups/${username}/${
+    const url = `http://localhost:8080/api/groups/${
       likedEvents[eventId] ? "deleteLike" : "reviewEvent"
     }/${eventId}`;
 
@@ -133,6 +147,10 @@ const PastEventList = () => {
       .then((response) => {
         if (response.ok) {
           console.log("Event successfully updated.");
+        }
+        else if(response.status == 401){
+          console.log("Unauthorized: Redirecting to /logout")
+          window.location.href = "/logout";
         } else {
           console.error("Failed to update the event.");
         }
@@ -151,6 +169,7 @@ const PastEventList = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials : "include",
         }
       );
 
@@ -160,6 +179,10 @@ const PastEventList = () => {
           ...prev,
           [eventId]: data, // Spremi komentare u stanje pod eventId ključem
         }));
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch comments");
       }
@@ -178,11 +201,12 @@ const PastEventList = () => {
     if (!commentInput.trim()) return; //ako je komentar prazan ne moze se dodati
 
     // Slanje komentara na backend
-    fetch(`http://localhost:8080/api/groups/${localStorage.getItem("username")}/addComment/${eventId}`, {
+    fetch(`http://localhost:8080/api/groups/addComment/${eventId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: commentInput,
     })
       .then(response => {
@@ -190,7 +214,11 @@ const PastEventList = () => {
           console.log("Comment successfully added.");
           setCommentInput("")
           fetchComments(eventId);
-        } else {
+        } 
+        else if(response.status == 401){
+          console.log("Unauthorized: Redirecting to /logout")
+          window.location.href = "/logout";
+        }else {
           console.error("Failed to add comment.");
         }
       })
@@ -212,7 +240,7 @@ const PastEventList = () => {
   return (
     <Box sx={{ maxWidth: 600, margin: "0 auto", padding: 2 }}>
       <Typography variant="h4" gutterBottom>
-        Event List
+        Conquered Quests
       </Typography>
       <List>
         {events.map((event) => (
@@ -236,6 +264,10 @@ const PastEventList = () => {
                     sx={{
                       color: event.color,
                       fontWeight: "bold",
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
                     }}
                   >
                     {event.title}
@@ -244,30 +276,38 @@ const PastEventList = () => {
                 secondary={
                   <>
                     <Typography
-                      sx={{ display: "inline" }}
+                      sx={{ display: "inline",
+                      }}
                       component="span"
                       variant="body2"
                       color="text.primary"
                     >
                       {event.date.toDateString()}
                     </Typography>
+                    <Typography sx={{wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
+
+                    }}>
                     {" — " + event.description}
+                      </Typography>
                   </>
                 }
               />
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box sx={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center" }}>
                 <IconButton onClick={() => handleLike(event.id)}>
                   <ThumbUpIcon
-                    sx={{ color: likedEvents[event.id] ? "#1976d2" : "gray" }}
+                    sx={{ color: likedEvents[event.id] ? event.color : "gray" }}
                   />
                 </IconButton>
                 <Typography>{event.likes}</Typography>
                 <Button
                   variant="outlined"
-                  size="small"
+                  width= "auto"
                   startIcon={<CommentIcon />}
                   onClick={() => handleCommentsToggle(event.id)}
-                  sx={{ marginLeft: 2 }}
+                  sx={{ marginLeft: 2, color: event.color }}
                 >
                   Comments
                 </Button>
@@ -310,6 +350,12 @@ const PastEventList = () => {
                     >
 
                       <ListItemText
+                        sx={{wordWrap: "break-word",
+                          overflowWrap: "break-word",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
+
+                      }}
                         primary={
                           <>
                             <Typography
@@ -341,7 +387,9 @@ const PastEventList = () => {
                               color: "#424242", // Neutralna boja za tekst komentara
                               fontSize: "1rem",
                               lineHeight: 1.5, // Bolja čitljivost
-
+                              wordWrap: "break-word",
+                              overflowWrap: "break-word",
+                              whiteSpace: "normal",
                             }}
                           >
                             {comment.comment}

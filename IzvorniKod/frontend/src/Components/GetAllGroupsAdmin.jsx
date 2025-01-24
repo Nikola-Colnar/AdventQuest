@@ -12,7 +12,7 @@ import {
   InputLabel,
 } from "@mui/material";
 
-const GetALLGroupsAdmin = () => {
+const GetALLGroupsAdmin = (props) => {
   const [open, setOpen] = useState(false);
   const [groups, setGroups] = useState([]);
   const [selectedGroupId, setSelectedGroupId] = useState("");
@@ -21,12 +21,18 @@ const GetALLGroupsAdmin = () => {
   const fetchUserGroups = async () => {
     const adminName = localStorage.getItem("username");
     try {
-      const response = await fetch(`http://localhost:8080/${adminName}/getAllGroups`);
+      const response = await fetch(`http://localhost:8080/${adminName}/getAllGroups`, {
+        credentials : "include",
+      });
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched groups:", data); // Provjera podataka
         setGroups(data); // Postavljanje grupa
-      } else {
+      } 
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }else {
         console.error("Failed to fetch user groups");
       }
     } catch (error) {
@@ -46,12 +52,14 @@ const GetALLGroupsAdmin = () => {
   const handleGroupSelect = (event) => {
     const groupId = event.target.value; // GroupId iz odabrane vrijednosti
     setSelectedGroupId(groupId); // postavljamo vrijednost
-    const selectedGroup = groups.find(group => group.idgroup === groupId);
-    setSelectedGroupName(selectedGroup?.nazivGrupa || ""); // Postavimo naziv grupe
+    const selectedGroup = groups.find(group => group.groupId === groupId);
+    setSelectedGroupName(selectedGroup?.groupName || ""); // Postavimo naziv grupe
   };
 
   const handleSubmit = () => {
     if (selectedGroupId) {
+      // eslint-disable-next-line react/prop-types
+      props.setSelectedGroupId(selectedGroupId); // postavlja group ID i u App da ga koriste druge komponente
       localStorage.setItem("myGroupId", selectedGroupId); // Spremi groupId u localStorage
       localStorage.setItem("myGroupName", selectedGroupName);
       console.log("Selected Group ID saved to localStorage:", selectedGroupId);
@@ -105,7 +113,7 @@ const GetALLGroupsAdmin = () => {
         </DialogActions>
       </Dialog>
 
-      {selectedGroupId && <p>Selected Group: {selectedGroupName}</p>}
+
     </Box>
   );
 };

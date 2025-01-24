@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Navigate, BrowserRouter as Router, useRoutes } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "./styles/App.css";
 import Form from "./Components/form/Form.jsx";
 import RegForm from "./Components/form/RegForm.jsx";
@@ -11,6 +12,47 @@ import { Box } from "@mui/system";
 import ProtectedRoute from "./Components/ProtectedRoute.jsx";
 import AdminRoute from "./Components/AdminRoute.jsx";
 import GroupDashboard from "./Components/GroupDashboard.jsx";
+import backgroundImage from './assets/Winter.jpg';
+import backgroundImage2 from './assets/Background2.jpg';
+import backgroundLogin from './assets/LoginPic.jpg';
+
+
+const christmasTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#2E8B57",
+      contrastText: "#FFFFFF",
+    },
+    secondary: {
+      main: "#800020",
+      contrastText: "#FFFFFF",
+    },
+    info: {
+      main: "#DAA520",
+      contrastText: "#FFFFFF",
+    },
+    background: {
+      default: "#F5F5F5",
+      paper: "#FFFFFF",
+    },
+    text: {
+      primary: "#000000",
+      secondary: "#800020",
+    },
+  },
+  typography: {
+    h1: {
+      fontWeight: 700,
+    },
+    h2: {
+      fontWeight: 600,
+    },
+    body1: {
+      fontWeight: 400,
+    },
+  },
+});
+import Logout from "./Components/form/Logout.jsx";
 
 function App() {
   // definiranje stanja prijave, korisnickog imena i kalendara
@@ -18,6 +60,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState((localStorage.getItem("username") ? true : false));
   const [username, setUsername] = useState((localStorage.getItem("username")) || "Guest");
   const [userID, setUserID] = useState((localStorage.getItem("userID")));
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // dodano radi prikaza odabrane grupe
 
   const handleLoginStatusChange = (status) => {
     setIsLoggedIn(status);
@@ -35,6 +78,11 @@ function App() {
     setIsLoggedIn(status);
   };
 
+  const refreshHeader = () => {
+    setRefreshTrigger((prev) => prev + 1); // Povećanje refreshTrigger stanja
+  };
+
+  
   const AppRoutes = () => {
     const routes = [
       {
@@ -42,14 +90,37 @@ function App() {
         element: (
           <ProtectedRoute isLoggedIn={isLoggedIn}>
             <>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                width="100%"
+                maxWidth="100vw"
+                sx={{
+                  backgroundImage: `url(${backgroundImage2})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundAttachment: 'fixed',
+                  height: '100%',
+                  minHeight: '100vh',
+                  width: '100%',
+                  paddingTop: '10px',
+
+
+                }}
+
+              >
               <Snowfall className="snowfall" />
               <Header
+
                 className="header"
                 isLoggedIn={isLoggedIn}
                 handlelogin={handlelogin}
                 username={username}
+                refreshTrigger={refreshTrigger}
               />
               <Countdown targetDate="2025-12-25T00:00:00" />
+                </Box>
             </>
           </ProtectedRoute>
         ),
@@ -63,6 +134,13 @@ function App() {
             justifyContent="center"
             height="100vh"
             width="100vw"
+            sx={{
+                backgroundImage: `url(${backgroundLogin})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed',
+              }}
+
           >
             <Snowfall className="snowfall" />
             <Form loggedIn={handleLoginStatusChange} />
@@ -80,6 +158,13 @@ function App() {
             justifyContent="center"
             height="100vh"
             width="100vw"
+            sx={{
+              backgroundImage: `url(${backgroundLogin})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundAttachment: 'fixed',
+            }}
+
           >
             <Snowfall className="snowfall" />
             <RegForm signIn={handleSignInStatusChange} />
@@ -92,21 +177,34 @@ function App() {
         path: "/dashboard",
         element: (
           <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <Snowfall className="snowfall" />
             <Box
               display="flex"
               flexDirection="column"
-              height="100vh"
+              alignItems="center"
               width="100%"
-              alignItems={"center"}
+              maxWidth="100vw"
+              sx={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed',
+                height: '100%',
+                minHeight: '100vh',
+                width: '100%',
+                paddingTop: '10px',
+
+
+              }}
             >
+              <Snowfall className="snowfall" />
               <Header
                 className="header"
                 isLoggedIn={isLoggedIn}
                 handlelogin={handlelogin}
                 username={username}
+                refreshTrigger={refreshTrigger}
               />
-              <GroupDashboard username={username} userID={userID} />
+              <GroupDashboard username={username} userID={userID} refreshHeader={refreshHeader} />
             </Box>
           </ProtectedRoute>
         ),
@@ -115,18 +213,36 @@ function App() {
         path: "/admin",
         element: (
           <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <AdminRoute username={username}>
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                height="100vh"
-                width="100vw"
-              >
-                <Snowfall className="snowfall" />
-                <h1>Admin</h1>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              width="100%"
+              maxWidth="100vw"
+              sx={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed',
+                height: '100%',
+                minHeight: '100vh',
+                width: '100%',
+                paddingTop: '10px',
+
+
+              }}
+            >
+              <Snowfall className="snowfall" />
+              <Header
+                className="header"
+                isLoggedIn={isLoggedIn}
+                handlelogin={handlelogin}
+                username={username}
+                refreshTrigger={refreshTrigger}
+              />
+            <AdminRoute username={username} userID={userID}/>
               </Box>
-            </AdminRoute>
+
           </ProtectedRoute>
 
         ),
@@ -137,15 +253,23 @@ function App() {
           <UserInfo setIsLoggedIn={setIsLoggedIn} loadUsername={setUsername} />
         ),
       },
+      {
+        path: "/logout",
+        element: (
+        <Logout setIsLoggedIn={setIsLoggedIn}  />
+      ),
+      }
     ];
 
     return useRoutes(routes);
   };
 
   return (
-    <Router>
-      <AppRoutes />
-    </Router>
+    <ThemeProvider theme={christmasTheme}>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </ThemeProvider>
   );
 }
 

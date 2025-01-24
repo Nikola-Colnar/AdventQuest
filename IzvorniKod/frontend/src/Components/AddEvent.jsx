@@ -40,6 +40,7 @@ const AddEvent = () => {
     try {
       const response = await fetch(`http://localhost:8080/api/groups/${groupId}/addEvent`, {
         method: "POST",
+        credentials : "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -69,19 +70,19 @@ const AddEvent = () => {
         variant="contained"
         color="primary"
         onClick={() => setOpen(true)}
-        style={{ marginTop: "20px" }}
+        style={{ }}
       >
-        Add Activity
+        Add Quest
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm" >
-        <DialogTitle align="center">Add New Activity</DialogTitle>
+        <DialogTitle align="center">Add New Quest</DialogTitle>
         <DialogContent>
           <Grid container spacing={3} justifyContent="center" style={{ marginTop: "16px" }}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Activity Title"
+                label="Quest Title"
                 name="title"
                 value={eventDetails.title}
                 onChange={handleInputChange}
@@ -93,13 +94,13 @@ const AddEvent = () => {
                 fullWidth
                 multiline
                 rows={3}
-                label="Activity details"
+                label="Quest details"
                 name="description"
                 value={eventDetails.description}
                 onChange={handleInputChange}
               />
             </Grid>
-
+            {/* Ne Koristimo vise datum u dodavanju evenata, samo predsjednik moze rasporedivati evente
   <Grid item xs={12}>
     <TextField
       type="date"
@@ -111,10 +112,11 @@ const AddEvent = () => {
       onChange={handleInputChange}
     />
   </Grid>
+  */}
 
             <Grid item xs={12}>
               <Typography align="center" gutterBottom>
-                Activity Color
+                Color
               </Typography>
               <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
                     <input
@@ -128,6 +130,7 @@ const AddEvent = () => {
                         border: "1px solid #ccc",
                         borderRadius: "5px",
                         cursor: "pointer",
+                        width: "80%",
                       }}
                     />
                 </Box>

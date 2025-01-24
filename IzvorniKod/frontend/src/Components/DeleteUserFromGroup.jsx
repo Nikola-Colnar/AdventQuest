@@ -25,13 +25,19 @@ const DeleteUserFromGroup = () => {
     const groupId = localStorage.getItem("myGroupId"); // ID grupe u kojem se nalazi ovaj user
     const loggedInUsername = localStorage.getItem("username");
     try {
-      const response = await fetch(`http://localhost:8080/${groupId}/getUsers`); //dohvacamo sve usere
+      const response = await fetch(`http://localhost:8080/${groupId}/getUsers`, {
+        credentials : "include",
+      }); //dohvacamo sve usere
       if (response.ok) {
         const data = await response.json();
         //console.log(data);
          const filteredUsers = data.filter(username => username !== loggedInUsername); //filtrirano da se taj korisnik ne prikazuje na spisku
         //console.log(filteredUsers); filtrirano
         setUsers(filteredUsers);
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch users by group");
       }
@@ -55,12 +61,17 @@ const DeleteUserFromGroup = () => {
       const groupId = localStorage.getItem("myGroupId"); // ID grupe u kojem se nalazi ovaj user
       const response = await fetch(`http://localhost:8080/user/${userToDelete}/group/${groupId}`, {
         method: "DELETE",
+        credentials: "include",
       });
       if (response.ok) {
         // Ako je korisnik uspješno obrisan, ažuriraj korisnički popis
         setUsers(users.filter(username => username !== userToDelete));
         setDeleteDialogOpen(false); // Zatvori dijalog
-      } else {
+      } 
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }else {
         console.error("Failed to delete user");
       }
     } catch (error) {
@@ -81,24 +92,39 @@ const DeleteUserFromGroup = () => {
   return (
     <Box>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        Delete users from group
+        Delete from group
       </Button>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Users in Group</DialogTitle>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle sx={{ backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>Users in Group</DialogTitle>
         <DialogContent
           sx={{
-            maxHeight: 100, // maksimalnavisina prikaza
-            overflowY: 'auto', // skrolanje
+            maxHeight: "300px", // Maksimalna visina liste
+            overflowY: 'auto', // Omogući skrolanje
+            backgroundColor: '#fafafa',
+            padding: '16px',
           }}
         >
           <List>
             {users.map((username) => (
-              <ListItem key={username}>
-                <ListItemText primary={username} />
+              <ListItem
+                key={username}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '8px',
+                  backgroundColor: '#ffffff',
+                  borderRadius: '8px',
+                  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+                  padding: '8px 16px',
+                }}
+              >
+                <ListItemText primary={username} sx={{ color: '#333' }} />
                 <IconButton
                   edge="end"
                   aria-label="delete"
                   onClick={() => handleDeleteDialogOpen(username)}
+                  sx={{ color: 'rgba(170,21,34,0.87)' }}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -106,24 +132,36 @@ const DeleteUserFromGroup = () => {
             ))}
           </List>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">
+        <DialogActions sx={{ padding: '8px 16px', justifyContent: 'center' }}>
+          <Button onClick={handleClose} variant="outlined" color="secondary">
             Cancel
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Dijalog za potvrdu brisanja korisnika */}
-      <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose}>
-        <DialogTitle>Delete User</DialogTitle>
-        <DialogContent>
-          <p>Are you sure you want to delete this user?</p>
+      <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose} maxWidth="xs">
+        <DialogTitle sx={{ backgroundColor: '#f8d7da', color: '#721c24', fontWeight: 'bold' }}>
+          Confirm Deletion
+        </DialogTitle>
+        <DialogContent sx={{ padding: '16px', backgroundColor: '#fefefe' }}>
+          <p style={{ fontSize: '16px', color: '#333' }}>
+            Are you sure you want to delete <b>{userToDelete}</b> from this group?
+          </p>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteDialogClose} color="secondary">
+        <DialogActions sx={{ padding: '8px 16px', justifyContent: 'space-between' }}>
+          <Button
+            onClick={handleDeleteDialogClose}
+            variant="outlined"
+            color="secondary"
+          >
             Cancel
           </Button>
-          <Button onClick={handleDeleteUser} color="primary">
+          <Button
+            onClick={handleDeleteUser}
+            variant="contained"
+            color="primary"
+          >
             Confirm
           </Button>
         </DialogActions>

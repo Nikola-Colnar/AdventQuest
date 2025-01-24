@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction"; // Za podršku klikova
 import "./AdventCalendar.css"; // Dodajte prilagođene stilove
 
-const AdventCalendar = () => {
+const AdventCalendar = (refresh) => {
   const calendarRef = useRef(null);
   const calendarInstance = useRef(null);
   const [events, setEvents] = useState([]);
@@ -20,6 +20,7 @@ const AdventCalendar = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials : "include",
         }
       );
       if (response.ok) {
@@ -37,13 +38,17 @@ const AdventCalendar = () => {
         if (calendarInstance.current) {
           calendarInstance.current.setOption("events", formattedEvents);
         }
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch events");
       }
     } catch (error) {
       console.error("Error fetching events:", error);
     }
-  }, []);
+  }, [refresh]);
 
   // Inicijalizacija kalendara
   useEffect(() => {
@@ -127,8 +132,8 @@ const AdventCalendar = () => {
       {selectedEvent && (
         <div className="modal">
           <div className="modal-content">
-            <h2>To do Today</h2>
-            <p><strong>Name:</strong> {selectedEvent.title}</p>
+            <h2>Quest To Do</h2>
+            <p><strong>Quest Name: </strong> {selectedEvent.title}</p>
             <p><strong>Details:</strong> {selectedEvent.description}</p>
             <p><strong>Date:</strong> {selectedEvent.date}</p>
 

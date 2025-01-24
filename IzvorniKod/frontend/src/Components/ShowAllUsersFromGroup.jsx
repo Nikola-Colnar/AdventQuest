@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   Box,
   Button,
-  Dialog,
+  Dialog, DialogActions,
   DialogContent,
   DialogTitle,
   List,
@@ -21,14 +21,20 @@ const ShowAllUsersFromGroup = () => {
     const groupId = localStorage.getItem("myGroupId"); // ID grupe u kojem se nalazi ovaj user
     const loggedInUsername = localStorage.getItem("username");
     try {
-      const response = await fetch(`http://localhost:8080/${groupId}/getUsers`); //dohvacamo sve usere
+      const response = await fetch(`http://localhost:8080/${groupId}/getUsers`, {
+        credentials : "include",
+      }); //dohvacamo sve usere
       if (response.ok) {
         const data = await response.json();
         //console.log(data);
         const filteredUsers = data.filter(username => username !== loggedInUsername); //filtrirano da se taj korisnik ne prikazuje na spisku
         //console.log(filteredUsers); filtrirano
         setUsers(filteredUsers);
-      } else {
+      } 
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
+      }else {
         console.error("Failed to fetch users by group");
       }
     } catch (error) {
@@ -48,54 +54,45 @@ const ShowAllUsersFromGroup = () => {
 
   return (
     <Box>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+      <Button sx={{}} variant="contained" color="primary" onClick={handleClickOpen}>
         Show participants
       </Button>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle
-          sx={{
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: "1rem",
-          }}
-        >
-          Users in Group
-        </DialogTitle>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle sx={{ backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>Users in Group</DialogTitle>
         <DialogContent
           sx={{
-            maxHeight: 200, // Maksimalna visina za prikaz
-            overflowY: "auto", // Omogućeno skrolanje
-            textAlign: "center", // Centrirani tekst
+            maxHeight: 400, // Maksimalna visina liste
+            overflowY: 'auto', // Omogući skrolanje
+            backgroundColor: '#fafafa',
+            padding: '16px',
           }}
         >
-          {users.length > 0 ? (
-            <List
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center", // Centriranje stavki
-              }}
-            >
-              {users.map((username, index) => (
-                <ListItem key={index}>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        sx={{
-                          textAlign: "center", // Centriranje imena
-                        }}
-                      >
-                        {username}
-                      </Typography>
-                    }
-                  />
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            <Typography>No participants</Typography>
-          )}
+          <List>
+            {users.map((username) => (
+              <ListItem
+                key={username}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '8px',
+                  backgroundColor: '#ffffff',
+                  borderRadius: '8px',
+                  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+                  padding: '8px 16px',
+                }}
+              >
+                <ListItemText primary={username} sx={{ color: '#333' }} />
+
+              </ListItem>
+            ))}
+          </List>
         </DialogContent>
+        <DialogActions sx={{ padding: '8px 16px', justifyContent: 'center' }}>
+          <Button onClick={handleClose} variant="outlined" color="secondary">
+            Cancel
+          </Button>
+        </DialogActions>
       </Dialog>
     </Box>
   );

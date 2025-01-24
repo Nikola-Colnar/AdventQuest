@@ -37,10 +37,16 @@ const ShowAllEventsFromGroup = () => {
     try {
       const response = await fetch(
         `http://localhost:8080/api/groups/${groupId}/getEvents`
-      );
+      , {
+        credentials : "include",
+      });
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to fetch events by group");
       }
@@ -93,6 +99,7 @@ const ShowAllEventsFromGroup = () => {
         `http://localhost:8080/api/groups/${groupId}/updateEvent/${selectedEvent.eventId}`,
         {
           method: "PUT",
+          credentials : "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -104,6 +111,10 @@ const ShowAllEventsFromGroup = () => {
         console.log("Event updated successfully");
         setIsEditing(false);
         await fetchEventsByGroup();
+      }
+      else if(response.status == 401){
+        console.log("Unauthorized: Redirecting to /logout")
+        window.location.href = "/logout";
       } else {
         console.error("Failed to update event");
       }
@@ -114,8 +125,8 @@ const ShowAllEventsFromGroup = () => {
 
   return (
     <Box>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        Show Events
+      <Button sx = {{}} variant="contained" color="primary" onClick={handleClickOpen}>
+        Holiday Quests
       </Button>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle
@@ -132,6 +143,11 @@ const ShowAllEventsFromGroup = () => {
             maxHeight: 500,
             overflowY: "auto",
             textAlign: "center",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            whiteSpace: "normal",
+            wordBreak: "break-word",
+
           }}
         >
           {events.length > 0 ? (
@@ -151,6 +167,10 @@ const ShowAllEventsFromGroup = () => {
                           fontWeight: "bold",
                           color: "#fff",
                           textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)",
+                          wordWrap: "break-word",
+                          overflowWrap: "break-word",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
                         }}
                       >
                         {event.eventName || "Untitled"}
@@ -161,7 +181,7 @@ const ShowAllEventsFromGroup = () => {
               ))}
             </Grid>
           ) : (
-            <Typography>No events available</Typography>
+            <Typography>No Quests available</Typography>
           )}
         </DialogContent>
       </Dialog>
@@ -179,6 +199,10 @@ const ShowAllEventsFromGroup = () => {
               textAlign: "center",
               fontWeight: "bold",
               fontSize: "1.25rem",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              whiteSpace: "normal",
+              wordBreak: "break-word",
             }}
           >
             {selectedEvent?.eventName || "Untitled Event"}
@@ -202,7 +226,10 @@ const ShowAllEventsFromGroup = () => {
                       eventName: e.target.value,
                     })
                   }
-                  sx={{ marginBottom: "1rem", marginTop: "1rem" }}
+                  sx={{ marginBottom: "1rem", marginTop: "1rem", wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word", }}
                 />
                 <TextField
                   label="Activity Details"
@@ -217,7 +244,10 @@ const ShowAllEventsFromGroup = () => {
                       description: e.target.value,
                     })
                   }
-                  sx={{ marginBottom: "1rem" }}
+                  sx={{ marginBottom: "1rem", wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word", }}
                 />
                 <Box
                   sx={{
@@ -270,7 +300,11 @@ const ShowAllEventsFromGroup = () => {
               </>
             ) : (
               <>
-                <Typography variant="body1">
+                <Typography variant="body1"
+                            sx={{wordWrap: "break-word",
+                                  overflowWrap: "break-word",
+                                  whiteSpace: "normal",
+                                  wordBreak: "break-word",}}>
                   {selectedEvent.description || "Details not planned, yet!"}
                 </Typography>
                 <Button
@@ -287,7 +321,7 @@ const ShowAllEventsFromGroup = () => {
                   onClick={handleDetailDialogClose}
                   sx={{ marginTop: "1rem", marginLeft: "1rem"  }}
                 >
-                  Activities
+                  Back
                 </Button>
               </>
             )}

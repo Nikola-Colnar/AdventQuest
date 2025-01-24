@@ -99,11 +99,20 @@ public class JWTService {
                 }
             }
         }
-        return null;
+        return "There is no jwt token in cookies";
     }
 
     public Claims getAllClaimsFromToken(String token) {
         return extractAllClaims(token);
+    }
+
+    public String getUsernameFromHttpServletRequest(HttpServletRequest request) { //ovo samo po sebi autentificira korisnika
+
+        String token = extractJwtFromCookies(request);
+        if (token != null) {
+            return extractUserName(token);
+        }
+        return null;
     }
 }
 
